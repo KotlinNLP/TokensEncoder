@@ -41,7 +41,7 @@ open class ConcatTokensEncoder(
   private val usedEncoders = mutableListOf<TokensEncoder>()
 
   /**
-   * The backward helper to splits the output errors.
+   * The backward helper to split the output errors.
    */
   private val errorsSplitter = SplitVHelper(*this.model.models.map { it.tokenEncodingSize }.toIntArray())
 
