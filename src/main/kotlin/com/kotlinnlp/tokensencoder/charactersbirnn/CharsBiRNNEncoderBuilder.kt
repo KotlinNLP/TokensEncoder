@@ -13,6 +13,7 @@ import com.kotlinnlp.tokensencoder.TokensEncoderBuilder
  * A simple [CharsBiRNNEncoder] builder.
  *
  * @param model the encoder model
+ * @param trainingMode whether the encoder is being trained
  */
 class CharsBiRNNEncoderBuilder(model: CharsBiRNNEncoderModel, trainingMode: Boolean) : TokensEncoderBuilder {
 
