@@ -60,7 +60,7 @@
         <surfire.version>2.19.1</surfire.version>
         <spek.version>1.1.4</spek.version>
         <dokka.version>0.9.13</dokka.version>
-        <simplednn.version>[0.7.0]</simplednn.version>
+        <simplednn.version>[0.8.0]</simplednn.version>
         <neuralparser.version>0.2.8</neuralparser.version>
     </properties>
 
@@ -160,6 +160,23 @@
                 </executions>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>${maven-gpg-plugin.version}</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
