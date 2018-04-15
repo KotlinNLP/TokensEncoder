@@ -18,6 +18,8 @@ import com.kotlinnlp.tokensencoder.ensamble.concat.ConcatTokensEncoderModel
 import com.kotlinnlp.tokensencoder.ensamble.concat.ConcatTokensEncoderOptimizer
 import com.kotlinnlp.tokensencoder.ensamble.feedforward.FFTokensEncoderModel
 import com.kotlinnlp.tokensencoder.ensamble.feedforward.FFTokensEncoderOptimizer
+import com.kotlinnlp.tokensencoder.morpho.MorphoEncoderModel
+import com.kotlinnlp.tokensencoder.morpho.MorphoEncoderOptimizer
 
 /**
  * The factory of [TokensEncoderOptimizer]s.
@@ -37,6 +39,7 @@ object TokensEncoderOptimizerFactory {
       is EmbeddingsEncoderModel -> EmbeddingsEncoderOptimizer(model, updateMethod)
       is FFTokensEncoderModel -> FFTokensEncoderOptimizer(model, updateMethod)
       is ConcatTokensEncoderModel -> ConcatTokensEncoderOptimizer(model, updateMethod)
+      is MorphoEncoderModel -> MorphoEncoderOptimizer(model, updateMethod)
       else -> throw RuntimeException("Invalid TokensEncoder model.")
     }
 }
