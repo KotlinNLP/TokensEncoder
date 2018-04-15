@@ -38,6 +38,6 @@ object TokensEncoderFactory {
       is FFTokensEncoderModel -> FFTokensEncoderBuilder(model, trainingMode)
       is ConcatTokensEncoderModel -> ConcatTokensEncoderBuilder(model, trainingMode)
       is MorphoEncoderModel -> MorphoEncoderBuilder(model, trainingMode)
-      else -> throw RuntimeException("Invalid TokensEncoder model.")
+      else -> throw RuntimeException("Invalid TokensEncoder model ${model::javaClass.name}.")
     }
 }
