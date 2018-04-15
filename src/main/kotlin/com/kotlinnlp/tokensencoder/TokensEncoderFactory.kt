@@ -17,6 +17,8 @@ import com.kotlinnlp.tokensencoder.ensamble.concat.ConcatTokensEncoderBuilder
 import com.kotlinnlp.tokensencoder.ensamble.concat.ConcatTokensEncoderModel
 import com.kotlinnlp.tokensencoder.ensamble.feedforward.FFTokensEncoderBuilder
 import com.kotlinnlp.tokensencoder.ensamble.feedforward.FFTokensEncoderModel
+import com.kotlinnlp.tokensencoder.morpho.MorphoEncoderBuilder
+import com.kotlinnlp.tokensencoder.morpho.MorphoEncoderModel
 
 /**
  * The factory of [TokensEncoder]s.
@@ -35,6 +37,7 @@ object TokensEncoderFactory {
       is EmbeddingsEncoderByDictionaryModel -> EmbeddingsEncoderByDictionaryBuilder(model, trainingMode)
       is FFTokensEncoderModel -> FFTokensEncoderBuilder(model, trainingMode)
       is ConcatTokensEncoderModel -> ConcatTokensEncoderBuilder(model, trainingMode)
+      is MorphoEncoderModel -> MorphoEncoderBuilder(model, trainingMode)
       else -> throw RuntimeException("Invalid TokensEncoder model.")
     }
 }
