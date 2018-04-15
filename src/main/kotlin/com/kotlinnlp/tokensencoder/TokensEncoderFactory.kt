@@ -13,6 +13,8 @@ import com.kotlinnlp.tokensencoder.charactersbirnn.CharsBiRNNEncoderBuilder
 import com.kotlinnlp.tokensencoder.charactersbirnn.CharsBiRNNEncoderModel
 import com.kotlinnlp.tokensencoder.embeddings.dictionary.EmbeddingsEncoderByDictionaryBuilder
 import com.kotlinnlp.tokensencoder.embeddings.dictionary.EmbeddingsEncoderByDictionaryModel
+import com.kotlinnlp.tokensencoder.embeddings.pretrained.EmbeddingsEncoderByPretrainedBuilder
+import com.kotlinnlp.tokensencoder.embeddings.pretrained.EmbeddingsEncoderByPretrainedModel
 import com.kotlinnlp.tokensencoder.ensamble.concat.ConcatTokensEncoderBuilder
 import com.kotlinnlp.tokensencoder.ensamble.concat.ConcatTokensEncoderModel
 import com.kotlinnlp.tokensencoder.ensamble.feedforward.FFTokensEncoderBuilder
@@ -35,6 +37,7 @@ object TokensEncoderFactory {
       is CharsAttentionEncoderModel -> CharsAttentionEncoderBuilder(model, trainingMode)
       is CharsBiRNNEncoderModel -> CharsBiRNNEncoderBuilder(model, trainingMode)
       is EmbeddingsEncoderByDictionaryModel -> EmbeddingsEncoderByDictionaryBuilder(model, trainingMode)
+      is EmbeddingsEncoderByPretrainedModel -> EmbeddingsEncoderByPretrainedBuilder(model, trainingMode)
       is FFTokensEncoderModel -> FFTokensEncoderBuilder(model, trainingMode)
       is ConcatTokensEncoderModel -> ConcatTokensEncoderBuilder(model, trainingMode)
       is MorphoEncoderModel -> MorphoEncoderBuilder(model, trainingMode)
