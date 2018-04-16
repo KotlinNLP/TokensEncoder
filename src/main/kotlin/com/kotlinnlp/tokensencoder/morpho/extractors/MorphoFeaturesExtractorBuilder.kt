@@ -13,6 +13,7 @@ import com.kotlinnlp.linguisticdescription.morphology.morphologies.relations.*
 import com.kotlinnlp.linguisticdescription.morphology.morphologies.things.Article
 import com.kotlinnlp.linguisticdescription.morphology.morphologies.things.Noun
 import com.kotlinnlp.linguisticdescription.morphology.morphologies.things.Pronoun
+import com.kotlinnlp.linguisticdescription.morphology.morphologies.things.Number as MorphoNumber
 
 /**
  * The builder of [MorphoFeaturesExtractor].
@@ -28,6 +29,7 @@ object MorphoFeaturesExtractorBuilder {
     is Verb -> VerbFeaturesExtractor(morphology)
     is Noun -> NounFeaturesExtractor(morphology)
     is Adjective -> AdjectiveFeaturesExtractor(morphology)
+    is MorphoNumber -> NumberFeaturesExtractor(morphology)
     is Pronoun -> PronounFeaturesExtractor(morphology)
     is Article -> ArticleFeaturesExtractor(morphology)
     is Adverb -> AdverbFeaturesExtractor(morphology)
