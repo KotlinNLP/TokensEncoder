@@ -62,6 +62,9 @@
         <dokka.version>0.9.13</dokka.version>
         <simplednn.version>[0.8.0]</simplednn.version>
         <neuralparser.version>0.2.8</neuralparser.version>
+        <morphologicalanalyzer.version>0.1.0</morphologicalanalyzer.version>
+        <linguisticdescription.version>0.8.0</linguisticdescription.version>
+        <neuraltokenizer.version>0.1.0</neuraltokenizer.version>
     </properties>
 
     <pluginRepositories>
@@ -236,6 +239,24 @@
             <groupId>com.kotlinnlp</groupId>
             <artifactId>neuralparser</artifactId>
             <version>${neuralparser.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.kotlinnlp</groupId>
+            <artifactId>morphologicalanalyzer</artifactId>
+            <version>${morphologicalanalyzer.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.kotlinnlp</groupId>
+            <artifactId>linguisticdescription</artifactId>
+            <version>${linguisticdescription.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.kotlinnlp</groupId>
+            <artifactId>neuraltokenizer</artifactId>
+            <version>${neuraltokenizer.version}</version>
         </dependency>
     </dependencies>
 </project>
