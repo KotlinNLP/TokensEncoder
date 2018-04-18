@@ -44,7 +44,7 @@ class FeaturesExtractor(
    */
   fun extractFeatures(): List<Set<String>> {
 
-    val tokensFeatures = mutableListOf<Set<String>>()
+    val tokensFeatures = mutableListOf<MutableSet<String>>()
 
     this.analysis.tokens.zip(this.tkTokens).filterNot { (_, token) -> token.isSpace }.forEach { (entries, token) ->
 
@@ -55,7 +55,30 @@ class FeaturesExtractor(
       tokensFeatures.add(tokenFeaturesSet)
     }
 
+    this.addMWEFeatures(tokensFeatures)
+
     return tokensFeatures
+  }
+
+  /**
+   * @param tokensFeatures a list of the same size of the [tokens]
+   */
+  private fun addMWEFeatures(tokensFeatures: List<MutableSet<String>>) {
+
+    if (this.analysis.multiWords.isNotEmpty()) {
+
+      this.analysis.multiWords.forEach { multiword ->
+
+        (multiword.startToken .. multiword.endToken).forEach { tokenIndex ->
+
+          val tokenFeaturesSet = mutableSetOf<String>()
+
+          multiword.morphologies.map { tokenFeaturesSet.addAll(it.toFeatures()) }
+
+          tokensFeatures[tokenIndex].addAll(tokenFeaturesSet)
+        }
+      }
+    }
   }
 
   /**
