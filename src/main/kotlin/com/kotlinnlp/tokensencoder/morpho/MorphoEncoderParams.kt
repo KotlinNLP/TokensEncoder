@@ -11,6 +11,6 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
 
 /**
- * @property feedforwardParameters the param of the feed-forward network of the [MorphoEncoderModel]
+ * @property parameters the param of the feed-forward network of the [MorphoEncoderModel]
  */
-class MorphoEncoderParams(val feedforwardParameters: NetworkParameters) : TokensEncoderParameters
+class MorphoEncoderParams(val parameters: NetworkParameters) : TokensEncoderParameters

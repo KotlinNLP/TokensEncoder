@@ -9,7 +9,6 @@ package com.kotlinnlp.tokensencoder.morpho
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
-import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.tokensencoder.TokensEncoderOptimizer
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
@@ -50,6 +49,6 @@ class MorphoEncoderOptimizer(
 
     paramsErrors as MorphoEncoderParams
 
-    this.optimizer.accumulate(paramsErrors.feedforwardParameters, copy = copy)
+    this.optimizer.accumulate(paramsErrors.parameters, copy = copy)
   }
 }
