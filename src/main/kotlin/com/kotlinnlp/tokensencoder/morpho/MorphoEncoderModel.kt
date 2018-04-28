@@ -19,15 +19,16 @@ import com.kotlinnlp.tokensencoder.TokensEncoderModel
 import java.io.Serializable
 
 /**
- * @property langCode
- * @property dictionary
- * @property featuresDictionary
+ * @property langCode the language (iso-a2)
+ * @property dictionary the morphological dictionary
+ * @property lexiconDictionary the lexicon dictionary (can be null)
+ * @property featuresDictionary the list of possible features
  * @property tokenEncodingSize the size of the token encoding vectors.
  */
 class MorphoEncoderModel(
   val langCode: String,
   val dictionary: MorphologyDictionary,
-  val lexiconDictionary: LexiconDictionary,
+  val lexiconDictionary: LexiconDictionary?,
   val featuresDictionary: DictionarySet<String>,
   override val tokenEncodingSize: Int,
   activation: ActivationFunction?,

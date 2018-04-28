@@ -18,12 +18,13 @@ import com.kotlinnlp.simplednn.utils.DictionarySet
  * Collect all the possible features from the given given [sentences].
  *
  * @param dictionary the morphological dictionary
+ * @param lexicalDictionary the lexicon dictionary (can be null)
  * @param langCode the language code
  * @param sentences the list of sentences
  */
 class FeaturesCollector(
   private val dictionary: MorphologyDictionary,
-  private val lexicalDictionary: LexiconDictionary,
+  private val lexicalDictionary: LexiconDictionary?,
   private val langCode: String,
   private val sentences: List<Sentence>
 ) {
