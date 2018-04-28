@@ -46,7 +46,8 @@ class MorphoEncoder(
     val tokenFeatures = FeaturesExtractor(
       tokens = tokens,
       analyzer = MorphologicalAnalyzer(this.model.dictionary),
-      langCode = this.model.langCode).extractFeatures()
+      langCode = this.model.langCode,
+      lexicalDictionary = this.model.lexiconDictionary).extractFeatures()
 
     return this.encoder.encode(Array(size = tokens.size, init = {
 
@@ -69,7 +70,7 @@ class MorphoEncoder(
    * @return the errors of the [TokensEncoderParameters] parameters
    */
   override fun getParamsErrors(copy: Boolean): TokensEncoderParameters =
-    MorphoEncoderParams(feedforwardParameters = this.encoder.getParamsErrors(copy = copy))
+    MorphoEncoderParams(parameters = this.encoder.getParamsErrors(copy = copy))
 
   /**
    * Map the features set to the features ids using the featuresDictionary.

@@ -7,6 +7,7 @@
 
 package com.kotlinnlp.tokensencoder.morpho
 
+import com.kotlinnlp.linguisticdescription.lexicon.LexiconDictionary
 import com.kotlinnlp.linguisticdescription.morphology.dictionary.MorphologyDictionary
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
@@ -26,6 +27,7 @@ import java.io.Serializable
 class MorphoEncoderModel(
   val langCode: String,
   val dictionary: MorphologyDictionary,
+  val lexiconDictionary: LexiconDictionary,
   val featuresDictionary: DictionarySet<String>,
   override val tokenEncodingSize: Int,
   activation: ActivationFunction?,

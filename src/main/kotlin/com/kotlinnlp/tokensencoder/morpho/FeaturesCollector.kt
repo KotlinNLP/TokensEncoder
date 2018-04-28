@@ -7,6 +7,7 @@
 
 package com.kotlinnlp.tokensencoder.morpho
 
+import com.kotlinnlp.linguisticdescription.lexicon.LexiconDictionary
 import com.kotlinnlp.linguisticdescription.morphology.dictionary.MorphologyDictionary
 import com.kotlinnlp.morphologicalanalyzer.MorphologicalAnalyzer
 import com.kotlinnlp.neuralparser.language.Sentence
@@ -22,6 +23,7 @@ import com.kotlinnlp.simplednn.utils.DictionarySet
  */
 class FeaturesCollector(
   private val dictionary: MorphologyDictionary,
+  private val lexicalDictionary: LexiconDictionary,
   private val langCode: String,
   private val sentences: List<Sentence>
 ) {
@@ -32,7 +34,6 @@ class FeaturesCollector(
   fun collect(): DictionarySet<String> {
 
     val featuresDictionary = DictionarySet<String>()
-
     val progress = ProgressIndicatorBar(total = sentences.size)
 
     this.sentences.forEach { sentence ->
@@ -42,7 +43,8 @@ class FeaturesCollector(
       val tokenFeatures: List<Set<String>> = FeaturesExtractor(
         tokens = sentence.tokens,
         analyzer = MorphologicalAnalyzer(this.dictionary),
-        langCode = this.langCode).extractFeatures()
+        langCode = this.langCode,
+        lexicalDictionary = lexicalDictionary).extractFeatures()
 
       tokenFeatures.forEach { featuresDictionary.addAll(it) }
     }
