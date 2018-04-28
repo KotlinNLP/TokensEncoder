@@ -19,15 +19,23 @@ class AdjectiveFeaturesExtractor(private val morphology: Adjective) : MorphoFeat
   /**
    * Return a list of features.
    */
-  override fun get(): List<String> = listOf(
-    "t:%s".format("Adjective"),
-    "p:%s".format(this.morphology.type),
-    "p:%s l:%s".format(this.morphology.type, this.morphology.lemma),
-    "p:%s n:%s p:%s g:%s c:%s".format(
-      this.morphology.type,
-      this.morphology.person,
-      this.morphology.number,
-      this.morphology.gender,
-      this.morphology.case)
-  )
+  override fun get(): List<String> {
+
+    val out = mutableListOf(
+      "t:%s".format("Adjective"),
+      "p:%s".format(this.morphology.type),
+      "p:%s n:%s p:%s g:%s c:%s".format(
+        this.morphology.type,
+        this.morphology.person,
+        this.morphology.number,
+        this.morphology.gender,
+        this.morphology.case)
+    )
+
+    if (this.morphology !is Adjective.Qualifying) {
+      out.add("p:%s l:%s".format(this.morphology.type, this.morphology.lemma))
+    }
+
+    return out
+  }
 }
