@@ -7,6 +7,7 @@
 
 package com.kotlinnlp.tokensencoder.morpho
 
+import com.kotlinnlp.linguisticdescription.lexicon.LexiconDictionary
 import com.kotlinnlp.linguisticdescription.morphology.dictionary.MorphologyEntry
 import com.kotlinnlp.morphologicalanalyzer.MorphologicalAnalysis
 import com.kotlinnlp.morphologicalanalyzer.MorphologicalAnalyzer
@@ -17,14 +18,16 @@ import com.kotlinnlp.neuraltokenizer.Token as TKToken
 /**
  * The features extractor of the [MorphoEncoder].
  *
- * @param tokens
- * @param analyzer
- * @param langCode
+ * @param tokens the list of tokens
+ * @param analyzer the morphological analyzer
+ * @param langCode the language (iso-a2)
+ * @param lexicalDictionary the lexical dictionary (can be null)
  */
 class FeaturesExtractor(
   private val tokens: List<Token>,
   private val analyzer: MorphologicalAnalyzer,
-  private val langCode: String) {
+  private val langCode: String,
+  private val lexicalDictionary: LexiconDictionary?) {
 
   /**
    * The list of tokens.
@@ -50,7 +53,7 @@ class FeaturesExtractor(
 
       val tokenFeaturesSet = mutableSetOf<String>()
 
-      entries?.map { tokenFeaturesSet.addAll(it.toFeatures()) } ?: tokenFeaturesSet.add("i:0 f:${token.form}")
+      entries?.map { tokenFeaturesSet.addAll(it.toFeatures()) } ?: tokenFeaturesSet.add("i:0 _")
 
       tokensFeatures.add(tokenFeaturesSet)
     }
@@ -93,11 +96,25 @@ class FeaturesExtractor(
     this.list.forEachIndexed { index, morphology ->
 
       list.addAll(
+
         MorphoFeaturesExtractorBuilder(morphology)
           ?.get()
           ?.map { "i:$index $it" }
           ?: listOf("i:%d p:%s".format(index, morphology.type))
       )
+
+      this@FeaturesExtractor.lexicalDictionary?.get(
+        lemma = morphology.lemma,
+        posTag = morphology.type.baseAnnotation)?.syntax?.let { syntacticInfo ->
+
+        syntacticInfo.regencies?.let {
+          list.addAll(it.map { "i:%d p:%s r:%s".format(index, morphology.type, it) })
+        }
+
+        syntacticInfo.subcategorization?.let {
+          list.addAll(it.map { "i:%d p:%s s:%s".format(index, morphology.type, it) })
+        }
+      }
     }
 
     return list
