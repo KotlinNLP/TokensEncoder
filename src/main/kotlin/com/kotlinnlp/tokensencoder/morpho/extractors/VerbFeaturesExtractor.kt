@@ -25,11 +25,11 @@ class VerbFeaturesExtractor(private val morphology: Verb) : MorphoFeaturesExtrac
     "p:%s m:%s".format(this.morphology.type, this.morphology.mood),
     "p:%s m:%s t:%s".format(this.morphology.type, this.morphology.mood, this.morphology.tense),
     "p:%s m:%s n:%s p:%s g:%s".format(
-      morphology.type,
-      morphology.mood,
-      morphology.person,
-      morphology.number,
-      morphology.gender)
+      this.morphology.type,
+      this.morphology.mood,
+      this.morphology.person,
+      this.morphology.number,
+      this.morphology.gender)
   )
 }
 
