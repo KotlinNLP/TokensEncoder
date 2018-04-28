@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.tokensencoder.embeddings.pretrained
 
-import com.kotlinnlp.simplednn.deeplearning.embeddings.EmbeddingsMap
+import com.kotlinnlp.simplednn.embeddings.EmbeddingsMap
 import com.kotlinnlp.tokensencoder.embeddings.EmbeddingsEncoderModel
 import com.kotlinnlp.tokensencoder.embeddings.TokenEmbeddingKey
 

@@ -8,7 +8,7 @@
 package com.kotlinnlp.tokensencoder.embeddings
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.deeplearning.embeddings.EmbeddingsOptimizer
+import com.kotlinnlp.simplednn.embeddings.EmbeddingsOptimizer
 import com.kotlinnlp.tokensencoder.TokensEncoderOptimizer
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
 

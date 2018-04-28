@@ -8,7 +8,7 @@
 package com.kotlinnlp.tokensencoder.charactersattention
 
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.HANParameters
-import com.kotlinnlp.simplednn.deeplearning.embeddings.Embedding
+import com.kotlinnlp.simplednn.embeddings.Embedding
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
 
 /**

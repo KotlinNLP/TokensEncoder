@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.tokensencoder.embeddings.dictionary
 
-import com.kotlinnlp.simplednn.deeplearning.embeddings.EmbeddingsMapByDictionary
+import com.kotlinnlp.simplednn.embeddings.EmbeddingsMapByDictionary
 import com.kotlinnlp.tokensencoder.embeddings.EmbeddingsEncoderModel
 import com.kotlinnlp.tokensencoder.embeddings.TokenEmbeddingKey
 

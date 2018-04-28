@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.deeplearning.sequenceencoder.SequenceFeedforwardNetwork
+import com.kotlinnlp.simplednn.encoders.sequenceencoder.SequenceFeedforwardNetwork
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 import com.kotlinnlp.tokensencoder.ensamble.concat.ConcatTokensEncoderModel
 

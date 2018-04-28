@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.HAN
-import com.kotlinnlp.simplednn.deeplearning.embeddings.EmbeddingsMap
+import com.kotlinnlp.simplednn.embeddings.EmbeddingsMap
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 import java.io.Serializable
 

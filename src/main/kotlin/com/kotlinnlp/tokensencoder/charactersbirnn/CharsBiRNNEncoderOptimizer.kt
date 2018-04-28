@@ -9,8 +9,8 @@ package com.kotlinnlp.tokensencoder.charactersbirnn
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
-import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParameters
-import com.kotlinnlp.simplednn.deeplearning.embeddings.EmbeddingsOptimizer
+import com.kotlinnlp.simplednn.encoders.birnn.BiRNNParameters
+import com.kotlinnlp.simplednn.embeddings.EmbeddingsOptimizer
 import com.kotlinnlp.tokensencoder.TokensEncoderOptimizer
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
 

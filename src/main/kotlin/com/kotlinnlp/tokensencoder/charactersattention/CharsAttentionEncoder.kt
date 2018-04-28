@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.HANEncoder
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.HANEncodersPool
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.HierarchySequence
-import com.kotlinnlp.simplednn.deeplearning.embeddings.Embedding
+import com.kotlinnlp.simplednn.embeddings.Embedding
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.HANParameters
 import com.kotlinnlp.tokensencoder.TokensEncoder

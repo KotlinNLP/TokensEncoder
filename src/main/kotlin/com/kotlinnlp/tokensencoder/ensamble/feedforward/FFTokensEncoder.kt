@@ -8,7 +8,7 @@
 package com.kotlinnlp.tokensencoder.ensamble.feedforward
 
 import com.kotlinnlp.neuralparser.language.Token
-import com.kotlinnlp.simplednn.deeplearning.sequenceencoder.SequenceFeedforwardEncoder
+import com.kotlinnlp.simplednn.encoders.sequenceencoder.SequenceFeedforwardEncoder
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
 import com.kotlinnlp.tokensencoder.ensamble.concat.ConcatTokensEncoder

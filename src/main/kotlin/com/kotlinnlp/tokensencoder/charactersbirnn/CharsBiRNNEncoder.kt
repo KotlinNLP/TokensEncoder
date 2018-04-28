@@ -9,10 +9,10 @@ package com.kotlinnlp.tokensencoder.charactersbirnn
 
 import com.kotlinnlp.neuralparser.language.Token
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
-import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNEncoder
-import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNEncodersPool
-import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParameters
-import com.kotlinnlp.simplednn.deeplearning.embeddings.Embedding
+import com.kotlinnlp.simplednn.encoders.birnn.BiRNNEncoder
+import com.kotlinnlp.simplednn.encoders.birnn.BiRNNEncodersPool
+import com.kotlinnlp.simplednn.encoders.birnn.BiRNNParameters
+import com.kotlinnlp.simplednn.embeddings.Embedding
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.tokensencoder.TokensEncoder
 
