@@ -9,12 +9,12 @@ package com.kotlinnlp.tokensencoder.charactersattention
 
 import com.kotlinnlp.neuralparser.language.Token
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.HANEncoder
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.HANEncodersPool
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.HierarchySequence
+import com.kotlinnlp.simplednn.attention.han.HANEncoder
+import com.kotlinnlp.simplednn.attention.han.HANEncodersPool
+import com.kotlinnlp.simplednn.attention.han.HierarchySequence
 import com.kotlinnlp.simplednn.embeddings.Embedding
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.HANParameters
+import com.kotlinnlp.simplednn.attention.han.HANParameters
 import com.kotlinnlp.tokensencoder.TokensEncoder
 
 /**
