@@ -64,7 +64,7 @@
         <neuralparser.version>0.2.8</neuralparser.version>
         <morphologicalanalyzer.version>0.1.0</morphologicalanalyzer.version>
         <linguisticdescription.version>0.8.0</linguisticdescription.version>
-        <neuraltokenizer.version>0.1.0</neuraltokenizer.version>
+        <neuraltokenizer.version>[0.1.0]</neuraltokenizer.version>
     </properties>
 
     <pluginRepositories>
