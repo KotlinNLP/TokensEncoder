@@ -15,6 +15,8 @@ import com.kotlinnlp.tokensencoder.embeddings.dictionary.EmbeddingsEncoderByDict
 import com.kotlinnlp.tokensencoder.embeddings.dictionary.EmbeddingsEncoderByDictionaryModel
 import com.kotlinnlp.tokensencoder.embeddings.pretrained.EmbeddingsEncoderByPretrainedBuilder
 import com.kotlinnlp.tokensencoder.embeddings.pretrained.EmbeddingsEncoderByPretrainedModel
+import com.kotlinnlp.tokensencoder.ensamble.affine.AffineTokensEncoderBuilder
+import com.kotlinnlp.tokensencoder.ensamble.affine.AffineTokensEncoderModel
 import com.kotlinnlp.tokensencoder.ensamble.concat.ConcatTokensEncoderBuilder
 import com.kotlinnlp.tokensencoder.ensamble.concat.ConcatTokensEncoderModel
 import com.kotlinnlp.tokensencoder.ensamble.feedforward.FFTokensEncoderBuilder
@@ -39,6 +41,7 @@ object TokensEncoderFactory {
       is EmbeddingsEncoderByDictionaryModel -> EmbeddingsEncoderByDictionaryBuilder(model, trainingMode)
       is EmbeddingsEncoderByPretrainedModel -> EmbeddingsEncoderByPretrainedBuilder(model, trainingMode)
       is FFTokensEncoderModel -> FFTokensEncoderBuilder(model, trainingMode)
+      is AffineTokensEncoderModel -> AffineTokensEncoderBuilder(model, trainingMode)
       is ConcatTokensEncoderModel -> ConcatTokensEncoderBuilder(model, trainingMode)
       is MorphoEncoderModel -> MorphoEncoderBuilder(model, trainingMode)
       else -> throw RuntimeException("Invalid TokensEncoder model ${model::javaClass.name}.")

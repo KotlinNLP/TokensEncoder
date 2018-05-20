@@ -14,6 +14,8 @@ import com.kotlinnlp.tokensencoder.charactersbirnn.CharsBiRNNEncoderModel
 import com.kotlinnlp.tokensencoder.charactersbirnn.CharsBiRNNEncoderOptimizer
 import com.kotlinnlp.tokensencoder.embeddings.EmbeddingsEncoderModel
 import com.kotlinnlp.tokensencoder.embeddings.EmbeddingsEncoderOptimizer
+import com.kotlinnlp.tokensencoder.ensamble.affine.AffineTokensEncoderModel
+import com.kotlinnlp.tokensencoder.ensamble.affine.AffineTokensEncoderOptimizer
 import com.kotlinnlp.tokensencoder.ensamble.concat.ConcatTokensEncoderModel
 import com.kotlinnlp.tokensencoder.ensamble.concat.ConcatTokensEncoderOptimizer
 import com.kotlinnlp.tokensencoder.ensamble.feedforward.FFTokensEncoderModel
@@ -38,6 +40,7 @@ object TokensEncoderOptimizerFactory {
       is CharsBiRNNEncoderModel -> CharsBiRNNEncoderOptimizer(model, updateMethod)
       is EmbeddingsEncoderModel -> EmbeddingsEncoderOptimizer(model, updateMethod)
       is FFTokensEncoderModel -> FFTokensEncoderOptimizer(model, updateMethod)
+      is AffineTokensEncoderModel -> AffineTokensEncoderOptimizer(model, updateMethod)
       is ConcatTokensEncoderModel -> ConcatTokensEncoderOptimizer(model, updateMethod)
       is MorphoEncoderModel -> MorphoEncoderOptimizer(model, updateMethod)
       else -> throw RuntimeException("Invalid TokensEncoder model.")
