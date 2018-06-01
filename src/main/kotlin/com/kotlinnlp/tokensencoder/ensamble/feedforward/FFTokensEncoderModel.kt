@@ -10,8 +10,9 @@ package com.kotlinnlp.tokensencoder.ensamble.feedforward
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
+import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.encoders.sequenceencoder.SequenceFeedforwardNetwork
+import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 import com.kotlinnlp.tokensencoder.ensamble.concat.ConcatTokensEncoderModel
 
@@ -30,16 +31,21 @@ class FFTokensEncoderModel(
   private val activation: ActivationFunction?,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = null
-  ) : ConcatTokensEncoderModel(models = models) {
+) : ConcatTokensEncoderModel(models = models) {
 
   /**
    * The network for the output tokens encodings.
    */
-  val tokenEncodingNetwork = SequenceFeedforwardNetwork(
-    inputType = LayerType.Input.Dense,
-    inputSize = this.models.sumBy { it.tokenEncodingSize },
-    outputSize = this.tokenEncodingSize,
-    outputActivation = this.activation,
+  val tokenEncodingNetwork = NeuralNetwork (
+    LayerConfiguration(
+      size = this.models.sumBy { it.tokenEncodingSize },
+      inputType = LayerType.Input.Dense),
+    LayerConfiguration(
+      size = this.tokenEncodingSize,
+      activationFunction = this.activation,
+      connectionType = LayerType.Connection.Feedforward
+    ),
     weightsInitializer = weightsInitializer,
-    biasesInitializer = biasesInitializer)
+    biasesInitializer = biasesInitializer
+  )
 }

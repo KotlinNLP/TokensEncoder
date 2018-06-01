@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.tokensencoder.embeddings
 
-import com.kotlinnlp.simplednn.embeddings.Embedding
+import com.kotlinnlp.simplednn.core.embeddings.Embedding
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
 
 /**

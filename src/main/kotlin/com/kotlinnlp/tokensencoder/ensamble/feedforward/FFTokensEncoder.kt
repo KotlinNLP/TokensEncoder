@@ -8,7 +8,7 @@
 package com.kotlinnlp.tokensencoder.ensamble.feedforward
 
 import com.kotlinnlp.neuralparser.language.Token
-import com.kotlinnlp.simplednn.encoders.sequenceencoder.SequenceFeedforwardEncoder
+import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedforwardProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
 import com.kotlinnlp.tokensencoder.ensamble.concat.ConcatTokensEncoder
@@ -32,7 +32,7 @@ class FFTokensEncoder(
   /**
    * The feed-forward encoder used to merge the results of the other tokens-encoders.
    */
-  private val outputEncoder = SequenceFeedforwardEncoder<DenseNDArray>(this.model.tokenEncodingNetwork)
+  private val outputEncoder = BatchFeedforwardProcessor<DenseNDArray>(this.model.tokenEncodingNetwork)
 
   /**
    * Encode a list of tokens.
@@ -41,7 +41,7 @@ class FFTokensEncoder(
    *
    * @return a list of the same size of the [tokens] with their encoded representation
    */
-  override fun encode(tokens: List<Token>): Array<DenseNDArray> = this.outputEncoder.encode(super.encode(tokens))
+  override fun encode(tokens: List<Token>): Array<DenseNDArray> = this.outputEncoder.forward(super.encode(tokens))
 
   /**
    * Propagate the errors.
@@ -51,7 +51,7 @@ class FFTokensEncoder(
   override fun backward(errors: Array<DenseNDArray>) {
 
     this.outputEncoder.backward(errors, propagateToInput = true)
-    super.backward(this.outputEncoder.getInputSequenceErrors(copy = false))
+    super.backward(this.outputEncoder.getBatchInputErrors(copy = false))
   }
 
   /**

@@ -7,8 +7,8 @@
 
 package com.kotlinnlp.tokensencoder.charactersbirnn
 
-import com.kotlinnlp.simplednn.encoders.birnn.BiRNNParameters
-import com.kotlinnlp.simplednn.embeddings.Embedding
+import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParameters
+import com.kotlinnlp.simplednn.core.embeddings.Embedding
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
 
 /**

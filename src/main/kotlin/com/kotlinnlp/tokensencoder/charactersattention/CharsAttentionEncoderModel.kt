@@ -10,8 +10,8 @@ package com.kotlinnlp.tokensencoder.charactersattention
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.attention.han.HAN
-import com.kotlinnlp.simplednn.embeddings.EmbeddingsMap
+import com.kotlinnlp.simplednn.deeplearning.attention.han.HAN
+import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 import java.io.Serializable
 
@@ -21,7 +21,7 @@ import java.io.Serializable
  * @param words the list of words from which to extract the list of possible characters
  * @param charEmbeddingSize the size of the character embeddings
  * @param wordEmbeddingSize the size of the token encoding vectors
- * @param hanAttentionSize the size of the attention arrays of the HAN attention layers
+ * @param hanAttentionSize the size of the attention core.arrays of the HAN attention core.layers
  * @param hanConnectionType the layer connection type of the HAN BiRNN
  * @param hanHiddenActivation the activation function of the HAN BiRNN
  */

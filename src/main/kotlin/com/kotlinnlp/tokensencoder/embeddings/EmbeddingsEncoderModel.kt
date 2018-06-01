@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.tokensencoder.embeddings
 
-import com.kotlinnlp.simplednn.embeddings.EmbeddingsMap
+import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 import java.io.Serializable
 

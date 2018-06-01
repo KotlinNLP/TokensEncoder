@@ -9,7 +9,7 @@ package com.kotlinnlp.tokensencoder.morpho
 
 import com.kotlinnlp.morphologicalanalyzer.MorphologicalAnalyzer
 import com.kotlinnlp.neuralparser.language.Token
-import com.kotlinnlp.simplednn.encoders.sequenceencoder.SequenceFeedforwardEncoder
+import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedforwardProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
@@ -32,7 +32,7 @@ class MorphoEncoder(
   /**
    * The feed-forward network used to transform the input from sparse to dense.
    */
-  private val encoder = SequenceFeedforwardEncoder<SparseBinaryNDArray>(this.model.denseEncoder)
+  private val encoder = BatchFeedforwardProcessor<SparseBinaryNDArray>(this.model.denseEncoder)
 
   /**
    * Encode a list of tokens.
@@ -49,7 +49,7 @@ class MorphoEncoder(
       langCode = this.model.langCode,
       lexicalDictionary = this.model.lexiconDictionary).extractFeatures()
 
-    return this.encoder.encode(Array(size = tokens.size, init = {
+    return this.encoder.forward(Array(size = tokens.size, init = {
 
       SparseBinaryNDArrayFactory.arrayOf(
         activeIndices = tokenFeatures[it].getActiveFeaturesIndicies(),

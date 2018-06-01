@@ -12,8 +12,8 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.encoders.birnn.BiRNN
-import com.kotlinnlp.simplednn.embeddings.EmbeddingsMap
+import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNN
+import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 import java.io.Serializable
 

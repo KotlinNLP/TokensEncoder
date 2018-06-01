@@ -29,7 +29,7 @@ class MorphoEncoderOptimizer(
    * The Optimizer of the outputEncoder parameters.
    */
   private val optimizer: ParamsOptimizer<NetworkParameters> =
-    ParamsOptimizer(params = this.model.denseEncoder.network.model, updateMethod = this.updateMethod)
+    ParamsOptimizer(params = this.model.denseEncoder.model, updateMethod = this.updateMethod)
 
   /**
    * Update the parameters of the neural element associated to this optimizer.

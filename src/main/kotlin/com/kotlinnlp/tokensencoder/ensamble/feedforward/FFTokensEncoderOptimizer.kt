@@ -31,7 +31,7 @@ class FFTokensEncoderOptimizer(
    * The optimizer of the feed-forward network used to reduce the concatenate vectors.
    */
   private val networkOptimizer: ParamsOptimizer<NetworkParameters> =
-    ParamsOptimizer(this.model.tokenEncodingNetwork.network.model, updateMethod)
+    ParamsOptimizer(this.model.tokenEncodingNetwork.model, updateMethod)
 
   /**
    * Update the parameters of the neural element associated to this optimizer.

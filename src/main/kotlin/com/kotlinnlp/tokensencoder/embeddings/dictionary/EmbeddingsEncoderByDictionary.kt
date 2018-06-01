@@ -8,7 +8,7 @@
 package com.kotlinnlp.tokensencoder.embeddings.dictionary
 
 import com.kotlinnlp.neuralparser.language.Token
-import com.kotlinnlp.simplednn.embeddings.Embedding
+import com.kotlinnlp.simplednn.core.embeddings.Embedding
 import com.kotlinnlp.tokensencoder.embeddings.EmbeddingsEncoder
 
 /**

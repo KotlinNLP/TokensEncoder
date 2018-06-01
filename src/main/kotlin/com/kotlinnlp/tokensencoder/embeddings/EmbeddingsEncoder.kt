@@ -9,7 +9,7 @@ package com.kotlinnlp.tokensencoder.embeddings
 
 import com.kotlinnlp.neuralparser.language.Token
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
-import com.kotlinnlp.simplednn.embeddings.Embedding
+import com.kotlinnlp.simplednn.core.embeddings.Embedding
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.tokensencoder.TokensEncoder
 

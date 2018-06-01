@@ -9,7 +9,7 @@ package com.kotlinnlp.tokensencoder.charactersattention
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
-import com.kotlinnlp.simplednn.embeddings.EmbeddingsOptimizer
+import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsOptimizer
 import com.kotlinnlp.tokensencoder.TokensEncoderOptimizer
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
 
