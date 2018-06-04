@@ -8,7 +8,7 @@
 package com.kotlinnlp.tokensencoder.morpho
 
 import com.kotlinnlp.linguisticdescription.lexicon.LexiconDictionary
-import com.kotlinnlp.linguisticdescription.morphology.dictionary.MorphologyEntry
+import com.kotlinnlp.morphologicalanalyzer.dictionary.MorphologyEntry
 import com.kotlinnlp.morphologicalanalyzer.MorphologicalAnalysis
 import com.kotlinnlp.morphologicalanalyzer.MorphologicalAnalyzer
 import com.kotlinnlp.neuralparser.language.Token
