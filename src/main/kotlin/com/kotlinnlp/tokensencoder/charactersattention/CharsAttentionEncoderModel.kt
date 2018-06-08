@@ -65,7 +65,7 @@ class CharsAttentionEncoderModel(
     attentionSize = hanAttentionSize,
     outputSize = wordEmbeddingSize,
     outputActivation = null,
-    gainFactors = arrayOf(2.0))
+    gainFactors = listOf(2.0))
 
   /**
    * Initialize chars embeddings.

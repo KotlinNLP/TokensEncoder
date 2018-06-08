@@ -41,11 +41,11 @@ abstract class EmbeddingsEncoder(
    *
    * @return a list of the same size of the [tokens] with their encoded representation
    */
-  override fun encode(tokens: List<Token>): Array<DenseNDArray> {
+  override fun encode(tokens: List<Token>): List<DenseNDArray> {
 
     this.lastEmbeddings = tokens.map { token -> this.getEmbedding(token = token) }
 
-    return this.lastEmbeddings.map { it.array.values }.toTypedArray()
+    return this.lastEmbeddings.map { it.array.values }
   }
 
   /**
@@ -53,7 +53,7 @@ abstract class EmbeddingsEncoder(
    *
    * @param errors the errors of the current encoding
    */
-  override fun backward(errors: Array<DenseNDArray>) {
+  override fun backward(errors: List<DenseNDArray>) {
 
     require(errors.size == this.lastEmbeddings.size)
 

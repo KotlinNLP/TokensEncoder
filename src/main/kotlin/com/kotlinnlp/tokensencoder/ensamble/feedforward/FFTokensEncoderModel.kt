@@ -10,7 +10,7 @@ package com.kotlinnlp.tokensencoder.ensamble.feedforward
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
+import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
@@ -37,10 +37,10 @@ class FFTokensEncoderModel(
    * The network for the output tokens encodings.
    */
   val tokenEncodingNetwork = NeuralNetwork (
-    LayerConfiguration(
+    LayerInterface(
       size = this.models.sumBy { it.tokenEncodingSize },
-      inputType = LayerType.Input.Dense),
-    LayerConfiguration(
+      type = LayerType.Input.Dense),
+    LayerInterface(
       size = this.tokenEncodingSize,
       activationFunction = this.activation,
       connectionType = LayerType.Connection.Feedforward

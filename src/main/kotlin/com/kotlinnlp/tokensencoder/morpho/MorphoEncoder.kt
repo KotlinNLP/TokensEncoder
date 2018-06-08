@@ -41,7 +41,7 @@ class MorphoEncoder(
    *
    * @return a list of the same size of the [tokens] with their encoded representation
    */
-  override fun encode(tokens: List<Token>): Array<DenseNDArray> {
+  override fun encode(tokens: List<Token>): List<DenseNDArray> {
 
     val tokenFeatures = FeaturesExtractor(
       tokens = tokens,
@@ -49,7 +49,7 @@ class MorphoEncoder(
       langCode = this.model.langCode,
       lexicalDictionary = this.model.lexiconDictionary).extractFeatures()
 
-    return this.encoder.forward(Array(size = tokens.size, init = {
+    return this.encoder.forward(List(size = tokens.size, init = {
 
       SparseBinaryNDArrayFactory.arrayOf(
         activeIndices = tokenFeatures[it].getActiveFeaturesIndicies(),
@@ -62,7 +62,7 @@ class MorphoEncoder(
    *
    * @param errors the errors of the current encoding
    */
-  override fun backward(errors: Array<DenseNDArray>) = this.encoder.backward(errors, propagateToInput = false)
+  override fun backward(errors: List<DenseNDArray>) = this.encoder.backward(errors, propagateToInput = false)
 
   /**
    * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
@@ -77,12 +77,12 @@ class MorphoEncoder(
    *
    * @return the indexes of the active features
    */
-  private fun Set<String>.getActiveFeaturesIndicies(): IntArray {
+  private fun Set<String>.getActiveFeaturesIndicies(): List<Int> {
 
     val activeIndicies = mutableListOf<Int>()
 
     this.forEach { this@MorphoEncoder.model.featuresDictionary.getId(it)?.let { activeIndicies.add(it) } }
 
-    return activeIndicies.toIntArray()
+    return activeIndicies
   }
 }

@@ -8,9 +8,9 @@
 package com.kotlinnlp.tokensencoder.ensamble.affine
 
 import com.kotlinnlp.neuralparser.language.Token
-import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
-import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerStructure
-import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayersPool
+import com.kotlinnlp.simplednn.core.layers.merge.affine.AffineLayerParameters
+import com.kotlinnlp.simplednn.core.layers.merge.affine.AffineLayerStructure
+import com.kotlinnlp.simplednn.core.layers.merge.affine.AffineLayersPool
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.tokensencoder.TokensEncoder
@@ -71,13 +71,13 @@ open class AffineTokensEncoder(
    *
    * @return a list of the same size of the [tokens] with their encoded representation
    */
-  override fun encode(tokens: List<Token>): Array<DenseNDArray> {
+  override fun encode(tokens: List<Token>): List<DenseNDArray> {
 
     this.reset() // reset forward and backward variables
 
     this.usedEncoders.addAll(this.encodersBuilder.map { it.invoke() })
 
-    val tokenEncodings = Array<MutableList<DenseNDArray>>(size = tokens.size, init = { mutableListOf() })
+    val tokenEncodings = List<MutableList<DenseNDArray>>(size = tokens.size, init = { mutableListOf() })
 
     this.usedEncoders.forEach { encoder ->
 
@@ -86,7 +86,7 @@ open class AffineTokensEncoder(
       }
     }
 
-    return tokenEncodings.map { this.doAffineTransform(it) }.toTypedArray()
+    return tokenEncodings.map { this.doAffineTransform(it) }
   }
 
   /**
@@ -94,7 +94,7 @@ open class AffineTokensEncoder(
    *
    * @param errors the errors of the current encoding
    */
-  override fun backward(errors: Array<DenseNDArray>) {
+  override fun backward(errors: List<DenseNDArray>) {
 
     val partErrors: List<List<DenseNDArray>> = errors.mapIndexed { index, values ->
       this.backwardAffineLayer(this.usedAffineLayers[index], outputErrors = values)
@@ -103,7 +103,7 @@ open class AffineTokensEncoder(
     this.affineErrorsAccumulator.averageErrors()
 
     this.usedEncoders.forEachIndexed { encoderIndex, encoder ->
-      encoder.backward(partErrors.map { it[encoderIndex] }.toTypedArray())
+      encoder.backward(partErrors.map { it[encoderIndex] } )
     }
   }
 

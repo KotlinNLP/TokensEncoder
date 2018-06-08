@@ -52,7 +52,7 @@ open class ConcatTokensEncoder(
    *
    * @return a list of the same size of the [tokens] with their encoded representation
    */
-  override fun encode(tokens: List<Token>): Array<DenseNDArray> {
+  override fun encode(tokens: List<Token>): List<DenseNDArray> {
 
     this.usedEncoders.clear()
     this.usedEncoders.addAll(this.encodersBuilder.map { it.invoke() })
@@ -66,7 +66,7 @@ open class ConcatTokensEncoder(
       }
     }
 
-    return concatEncoding.map { concatVectorsV(*it.toTypedArray()) }.toTypedArray()
+    return concatEncoding.map { concatVectorsV(*it.toTypedArray()) }
   }
 
   /**
@@ -74,12 +74,12 @@ open class ConcatTokensEncoder(
    *
    * @param errors the errors of the current encoding
    */
-  override fun backward(errors: Array<DenseNDArray>) {
+  override fun backward(errors: List<DenseNDArray>) {
 
     val splitErrors: List<List<DenseNDArray>> = errors.map { this.errorsSplitter.split(it) }
 
     this.usedEncoders.forEachIndexed { encoderIndex, encoder ->
-      encoder.backward(splitErrors.map { it[encoderIndex] }.toTypedArray())
+      encoder.backward(splitErrors.map { it[encoderIndex] } )
     }
   }
 

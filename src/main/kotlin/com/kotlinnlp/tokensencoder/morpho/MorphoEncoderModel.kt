@@ -12,11 +12,11 @@ import com.kotlinnlp.morphologicalanalyzer.dictionary.MorphologyDictionary
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
+import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
-import com.kotlinnlp.simplednn.utils.DictionarySet
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
+import com.kotlinnlp.utils.DictionarySet
 import java.io.Serializable
 
 /**
@@ -50,10 +50,10 @@ class MorphoEncoderModel(
    * The model of the feed-forward Network used to transform the input from sparse to dense
    */
   val denseEncoder = NeuralNetwork (
-    LayerConfiguration(
+    LayerInterface(
       size = this.featuresDictionary.size,
-      inputType = LayerType.Input.SparseBinary),
-    LayerConfiguration(
+      type = LayerType.Input.SparseBinary),
+    LayerInterface(
       size = this.tokenEncodingSize,
       activationFunction = activation,
       connectionType = LayerType.Connection.Feedforward

@@ -65,6 +65,7 @@
         <morphologicalanalyzer.version>0.1.0</morphologicalanalyzer.version>
         <linguisticdescription.version>0.8.0</linguisticdescription.version>
         <neuraltokenizer.version>[0.1.0]</neuraltokenizer.version>
+        <utils.version>2.1.0</utils.version>
     </properties>
 
     <pluginRepositories>
@@ -257,6 +258,12 @@
             <groupId>com.kotlinnlp</groupId>
             <artifactId>neuraltokenizer</artifactId>
             <version>${neuraltokenizer.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.kotlinnlp</groupId>
+            <artifactId>utils</artifactId>
+            <version>${utils.version}</version>
         </dependency>
     </dependencies>
 </project>

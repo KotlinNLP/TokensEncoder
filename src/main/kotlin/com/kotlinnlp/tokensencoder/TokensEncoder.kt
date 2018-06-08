@@ -22,14 +22,14 @@ interface TokensEncoder {
    *
    * @return a list of the same size of the [tokens] with their encoded representation
    */
-  fun encode(tokens: List<Token>): Array<DenseNDArray>
+  fun encode(tokens: List<Token>): List<DenseNDArray>
 
   /**
    * Propagate the errors.
    *
    * @param errors the errors of the current encoding
    */
-  fun backward(errors: Array<DenseNDArray>)
+  fun backward(errors: List<DenseNDArray>)
 
   /**
    * @param copy a Boolean indicating whether the returned errors must be a copy or a reference

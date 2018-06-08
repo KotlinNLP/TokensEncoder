@@ -50,13 +50,13 @@ class CharsAttentionEncoder(
    *
    * @return a list of the same size of the [tokens] with their encoded representation
    */
-  override fun encode(tokens: List<Token>): Array<DenseNDArray>{
+  override fun encode(tokens: List<Token>): List<DenseNDArray>{
 
     this.charsEmbeddings = tokens.map {
       it.word.map { char -> this.model.charsEmbeddings.get(char) }
     }
 
-    return this.encodeTokensByChars(tokens = tokens, charsEmbeddings = this.charsEmbeddings).toTypedArray()
+    return this.encodeTokensByChars(tokens = tokens, charsEmbeddings = this.charsEmbeddings)
   }
 
   /**
@@ -64,7 +64,7 @@ class CharsAttentionEncoder(
    *
    * @param errors the errors of the current encoding
    */
-  override fun backward(errors: Array<DenseNDArray>){
+  override fun backward(errors: List<DenseNDArray>){
 
     errors.forEachIndexed { tokenIndex, tokenErrors ->
       this.usedEncoders[tokenIndex].backward(outputErrors = tokenErrors, propagateToInput = true)

@@ -7,7 +7,8 @@
 
 package com.kotlinnlp.tokensencoder.ensamble.affine
 
-import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
+import com.kotlinnlp.simplednn.core.layers.merge.affine.AffineLayerParameters
+
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
 
 /**

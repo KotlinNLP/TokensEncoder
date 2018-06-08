@@ -49,13 +49,13 @@ class CharsBiRNNEncoder(
    *
    * @return a list of the same size of the [tokens] with their encoded representation
    */
-  override fun encode(tokens: List<Token>): Array<DenseNDArray>{
+  override fun encode(tokens: List<Token>): List<DenseNDArray>{
 
     this.charsEmbeddings = tokens.map {
       it.word.map { char -> this.model.charsEmbeddings.get(char) }
     }
 
-    return this.encodeTokensByChars(tokens = tokens, charsEmbeddings = this.charsEmbeddings).toTypedArray()
+    return this.encodeTokensByChars(tokens = tokens, charsEmbeddings = this.charsEmbeddings)
   }
 
   /**
@@ -63,7 +63,7 @@ class CharsBiRNNEncoder(
    *
    * @param errors the errors of the current encoding
    */
-  override fun backward(errors: Array<DenseNDArray>){
+  override fun backward(errors: List<DenseNDArray>){
 
     errors.forEachIndexed { tokenIndex, tokenErrors ->
       this.usedEncoders[tokenIndex].backwardMixedFinalOutput(errors = tokenErrors, propagateToInput = true)
@@ -90,7 +90,7 @@ class CharsBiRNNEncoder(
       size = tokens.size,
       init = { i ->
         this.usedEncoders.add(this.biRNNEncodersPool.getItem())
-        this.usedEncoders[i].encode(charsEmbeddings[i].map { it.array.values }.toTypedArray())
+        this.usedEncoders[i].encode(charsEmbeddings[i].map { it.array.values })
         this.usedEncoders[i].getMixedFinalOutput()
       })
   }

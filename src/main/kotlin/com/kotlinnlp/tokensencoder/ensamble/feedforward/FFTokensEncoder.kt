@@ -41,17 +41,17 @@ class FFTokensEncoder(
    *
    * @return a list of the same size of the [tokens] with their encoded representation
    */
-  override fun encode(tokens: List<Token>): Array<DenseNDArray> = this.outputEncoder.forward(super.encode(tokens))
+  override fun encode(tokens: List<Token>): List<DenseNDArray> = this.outputEncoder.forward(super.encode(tokens))
 
   /**
    * Propagate the errors.
    *
    * @param errors the errors of the current encoding
    */
-  override fun backward(errors: Array<DenseNDArray>) {
+  override fun backward(errors: List<DenseNDArray>) {
 
     this.outputEncoder.backward(errors, propagateToInput = true)
-    super.backward(this.outputEncoder.getBatchInputErrors(copy = false))
+    super.backward(this.outputEncoder.getInputErrors(copy = false))
   }
 
   /**
