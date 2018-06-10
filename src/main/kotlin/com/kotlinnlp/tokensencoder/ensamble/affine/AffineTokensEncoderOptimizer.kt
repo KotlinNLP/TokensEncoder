@@ -8,7 +8,7 @@
 package com.kotlinnlp.tokensencoder.ensamble.affine
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.core.layers.merge.affine.AffineLayerParameters
+import com.kotlinnlp.simplednn.core.layers.types.merge.affine.AffineLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.tokensencoder.TokensEncoderOptimizer
 import com.kotlinnlp.tokensencoder.TokensEncoderOptimizerFactory
