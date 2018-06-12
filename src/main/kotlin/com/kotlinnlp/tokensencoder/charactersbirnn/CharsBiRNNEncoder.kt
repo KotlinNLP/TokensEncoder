@@ -13,6 +13,7 @@ import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNEncoder
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNEncodersPool
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParameters
 import com.kotlinnlp.simplednn.core.embeddings.Embedding
+import com.kotlinnlp.simplednn.simplemath.concatVectorsV
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.tokensencoder.TokensEncoder
 
@@ -66,7 +67,13 @@ class CharsBiRNNEncoder(
   override fun backward(errors: List<DenseNDArray>){
 
     errors.forEachIndexed { tokenIndex, tokenErrors ->
-      this.usedEncoders[tokenIndex].backwardMixedFinalOutput(errors = tokenErrors, propagateToInput = true)
+
+      val splitErrors: List<DenseNDArray> = tokenErrors.splitV(this.model.tokenEncodingSize)
+
+      this.usedEncoders[tokenIndex].backwardLastOutput(
+        leftToRightErrors = splitErrors[0],
+        rightToLeftErrors = splitErrors[1],
+        propagateToInput = true)
     }
   }
 
@@ -91,7 +98,7 @@ class CharsBiRNNEncoder(
       init = { i ->
         this.usedEncoders.add(this.biRNNEncodersPool.getItem())
         this.usedEncoders[i].encode(charsEmbeddings[i].map { it.array.values })
-        this.usedEncoders[i].getMixedFinalOutput()
+        this.usedEncoders[i].getLastOutput(copy = true).let { concatVectorsV(it.first, it.second) }
       })
   }
 
