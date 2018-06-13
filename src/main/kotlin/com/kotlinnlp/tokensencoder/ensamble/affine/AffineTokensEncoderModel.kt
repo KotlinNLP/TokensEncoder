@@ -10,7 +10,7 @@ package com.kotlinnlp.tokensencoder.ensamble.affine
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.types.merge.affine.AffineLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.merge.affine.AffineLayerParameters
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 import java.io.Serializable
 

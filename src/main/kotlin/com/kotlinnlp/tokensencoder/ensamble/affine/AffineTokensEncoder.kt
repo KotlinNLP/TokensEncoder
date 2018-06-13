@@ -8,9 +8,9 @@
 package com.kotlinnlp.tokensencoder.ensamble.affine
 
 import com.kotlinnlp.neuralparser.language.Token
-import com.kotlinnlp.simplednn.core.layers.types.merge.affine.AffineLayerParameters
-import com.kotlinnlp.simplednn.core.layers.types.merge.affine.AffineLayerStructure
-import com.kotlinnlp.simplednn.core.layers.types.merge.affine.AffineLayersPool
+import com.kotlinnlp.simplednn.core.layers.models.merge.affine.AffineLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.merge.affine.AffineLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.merge.affine.AffineLayersPool
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.tokensencoder.TokensEncoder
