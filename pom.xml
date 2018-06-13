@@ -52,7 +52,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <build-helper-plugin.version>3.0.0</build-helper-plugin.version>
         <nexus-staging-plugin.version>1.6.7</nexus-staging-plugin.version>
         <maven-source-plugin.version>3.0.0</maven-source-plugin.version>
         <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
@@ -97,6 +96,11 @@
                         <goals>
                             <goal>compile</goal>
                         </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <source>src/main/kotlin</source>
+                            </sourceDirs>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>test-compile</id>
