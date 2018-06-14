@@ -11,8 +11,8 @@ import com.kotlinnlp.linguisticdescription.lexicon.LexiconDictionary
 import com.kotlinnlp.morphologicalanalyzer.dictionary.MorphologyDictionary
 import com.kotlinnlp.morphologicalanalyzer.MorphologicalAnalyzer
 import com.kotlinnlp.neuralparser.language.Sentence
-import com.kotlinnlp.progressindicator.ProgressIndicatorBar
 import com.kotlinnlp.utils.DictionarySet
+import com.kotlinnlp.utils.progressindicator.ProgressIndicatorBar
 
 /**
  * Collect all the possible features from the given given [sentences].
