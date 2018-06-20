@@ -38,7 +38,7 @@ class FeaturesExtractor(
    * The morphological analysis of the [tkTokens].
    */
   private val analysis: MorphologicalAnalysis = this.analyzer.analyze(
-    text = this.tkTokens.joinToString { it.form },
+    text = this.tkTokens.joinToString(" ") { it.form },
     tokens = this.tkTokens,
     langCode = this.langCode)
 
