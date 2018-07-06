@@ -19,16 +19,4 @@ import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 abstract class TokensEncoderOptimizer(
   private val model: TokensEncoderModel,
   updateMethod: UpdateMethod<*>
-) : Optimizer(
-  updateMethod = updateMethod
-) {
-
-  /**
-   * Accumulate the given params errors into the accumulator.
-   *
-   * @param paramsErrors the parameters errors to accumulate
-   * @param copy a Boolean indicating if the params errors can be used as reference or must be copied. Set copy = false
-   *             to optimize the accumulation when the amount of the errors to accumulate is 1. (default = true)
-   */
-  abstract fun accumulate(paramsErrors: TokensEncoderParameters, copy: Boolean = true)
-}
+) : Optimizer<TokensEncoderParameters>(updateMethod = updateMethod)
