@@ -8,6 +8,7 @@
 package com.kotlinnlp.tokensencoder.morpho
 
 import com.kotlinnlp.linguisticdescription.lexicon.LexiconDictionary
+import com.kotlinnlp.linguisticdescription.sentence.token.properties.Position
 import com.kotlinnlp.morphologicalanalyzer.dictionary.MorphologyEntry
 import com.kotlinnlp.morphologicalanalyzer.MorphologicalAnalysis
 import com.kotlinnlp.morphologicalanalyzer.MorphologicalAnalyzer
@@ -49,39 +50,24 @@ class FeaturesExtractor(
 
     val tokensFeatures = mutableListOf<MutableSet<String>>()
 
-    this.analysis.tokens.zip(this.tkTokens).filterNot { (_, token) -> token.isSpace }.forEach { (entries, token) ->
+    this.tokens.forEachIndexed { tokenIndex, _ ->
 
       val tokenFeaturesSet = mutableSetOf<String>()
 
-      entries?.map { tokenFeaturesSet.addAll(it.toFeatures()) } ?: tokenFeaturesSet.add("i:0 _")
+      this.analysis.tokens[tokenIndex]?.forEach {
+        tokenFeaturesSet.addAll(it.toFeatures())
+      }
+
+      this.analysis.getInvolvedMultiWords(tokenIndex)?.forEach {
+        it.morphologies.map { morphologyEntry -> tokenFeaturesSet.addAll(morphologyEntry.toFeatures()) }
+      }
+
+      if (tokenFeaturesSet.isEmpty()) tokenFeaturesSet.add("i:0 _")
 
       tokensFeatures.add(tokenFeaturesSet)
     }
 
-    this.addMWEFeatures(tokensFeatures)
-
     return tokensFeatures
-  }
-
-  /**
-   * @param tokensFeatures a list of the same size of the [tokens]
-   */
-  private fun addMWEFeatures(tokensFeatures: List<MutableSet<String>>) {
-
-    if (this.analysis.multiWords.isNotEmpty()) {
-
-      this.analysis.multiWords.forEach { multiword ->
-
-        (multiword.startToken .. multiword.endToken).forEach { tokenIndex ->
-
-          val tokenFeaturesSet = mutableSetOf<String>()
-
-          multiword.morphologies.map { tokenFeaturesSet.addAll(it.toFeatures()) }
-
-          tokensFeatures[tokenIndex].addAll(tokenFeaturesSet)
-        }
-      }
-    }
   }
 
   /**
@@ -124,6 +110,6 @@ class FeaturesExtractor(
    * @return a list of [TKToken]s originated from this [Token]s
    */
   private fun List<Token>.toTKTokens(): List<TKToken> = this.map {
-    TKToken(id = it.id, form = it.word, startAt = 0, endAt = 0, isSpace = false)
+    TKToken(form = it.word, position = Position(index = it.id, start = 0, end = 0))
   }
 }
