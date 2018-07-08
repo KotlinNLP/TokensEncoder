@@ -20,7 +20,6 @@ class VerbFeaturesExtractor(private val morphology: Verb) : MorphoFeaturesExtrac
    * Return a list of features.
    */
   override fun get(): List<String> = listOf(
-    "t:%s".format("Verb"),
     "p:%s".format(this.morphology.type),
     "p:%s m:%s".format(this.morphology.type, this.morphology.mood),
     "p:%s m:%s t:%s".format(this.morphology.type, this.morphology.mood, this.morphology.tense),

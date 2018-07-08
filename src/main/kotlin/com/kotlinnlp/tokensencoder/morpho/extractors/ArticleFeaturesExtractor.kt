@@ -20,7 +20,6 @@ class ArticleFeaturesExtractor(private val morphology: Article) : MorphoFeatures
    * Return a list of features.
    */
   override fun get(): List<String> = listOf(
-    "t:%s".format("Article"),
     "p:%s".format(this.morphology.type),
     "p:%s l:%s".format(this.morphology.type, this.morphology.lemma),
     "p:%s n:%s g:%s c:%s".format(

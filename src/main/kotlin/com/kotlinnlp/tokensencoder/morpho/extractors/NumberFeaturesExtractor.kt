@@ -20,7 +20,6 @@ class NumberFeaturesExtractor(private val morphology: MorphoNumber) : MorphoFeat
    * Return a list of features.
    */
   override fun get(): List<String> = listOf(
-    "t:%s".format("Number"),
     "p:%s".format(this.morphology.type),
     "p:%s n:%s g:%s".format(
       this.morphology.type,

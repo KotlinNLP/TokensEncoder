@@ -21,9 +21,7 @@ class AdverbFeaturesExtractor(private val morphology: Adverb) : MorphoFeaturesEx
    */
   override fun get(): List<String> {
 
-    val out = mutableListOf(
-      "t:%s".format("Adverb"),
-      "p:%s".format(this.morphology.type))
+    val out = mutableListOf("p:%s".format(this.morphology.type))
 
     if (this.morphology !is Adverb.Modal) {
       out.add("p:%s l:%s".format(this.morphology.type, this.morphology.lemma))
