@@ -60,7 +60,6 @@
         <spek.version>1.1.5</spek.version>
         <dokka.version>0.9.16</dokka.version>
         <simplednn.version>0.10.0</simplednn.version>
-        <neuralparser.version>0.3.2</neuralparser.version>
         <neuraltokenizer.version>0.3.0</neuraltokenizer.version>
         <morphologicalanalyzer.version>0.1.0</morphologicalanalyzer.version>
         <linguisticdescription.version>0.8.0</linguisticdescription.version>
@@ -235,12 +234,6 @@
             <groupId>com.kotlinnlp</groupId>
             <artifactId>simplednn</artifactId>
             <version>${simplednn.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.kotlinnlp</groupId>
-            <artifactId>neuralparser</artifactId>
-            <version>${neuralparser.version}</version>
         </dependency>
 
         <dependency>
