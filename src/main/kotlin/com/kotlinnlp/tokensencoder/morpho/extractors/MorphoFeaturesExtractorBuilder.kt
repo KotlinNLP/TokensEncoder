@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.tokensencoder.morpho.extractors
 
-import com.kotlinnlp.linguisticdescription.morphology.Morphology
+import com.kotlinnlp.linguisticdescription.morphology.SingleMorphology
 import com.kotlinnlp.linguisticdescription.morphology.morphologies.discourse.Punctuation
 import com.kotlinnlp.linguisticdescription.morphology.morphologies.relations.*
 import com.kotlinnlp.linguisticdescription.morphology.morphologies.things.Article
@@ -21,11 +21,11 @@ import com.kotlinnlp.linguisticdescription.morphology.morphologies.things.Number
 object MorphoFeaturesExtractorBuilder {
 
   /**
-   * @param morphology a Morphology
+   * @param morphology a single morphology
    *
    * @return a morphological features extractor
    */
-  operator fun invoke(morphology: Morphology): MorphoFeaturesExtractor? = when (morphology) {
+  operator fun invoke(morphology: SingleMorphology): MorphoFeaturesExtractor? = when (morphology) {
     is Verb -> VerbFeaturesExtractor(morphology)
     is Noun -> NounFeaturesExtractor(morphology)
     is Adjective -> AdjectiveFeaturesExtractor(morphology)

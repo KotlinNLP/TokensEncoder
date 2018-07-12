@@ -8,7 +8,7 @@
 package com.kotlinnlp.tokensencoder.morpho
 
 import com.kotlinnlp.linguisticdescription.lexicon.LexiconDictionary
-import com.kotlinnlp.linguisticdescription.morphology.MorphologyEntry
+import com.kotlinnlp.linguisticdescription.morphology.Morphology
 import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.linguisticdescription.sentence.token.LexicalToken
 import com.kotlinnlp.tokensencoder.morpho.extractors.MorphoFeaturesExtractorBuilder
@@ -30,7 +30,7 @@ class FeaturesExtractor(
 
     val tokensFeatures = mutableListOf<MutableSet<String>>()
 
-    this.sentence.tokens.forEachIndexed { tokenIndex, token ->
+    this.sentence.tokens.forEach { token ->
 
       val tokenFeaturesSet = mutableSetOf<String>()
 
@@ -41,7 +41,7 @@ class FeaturesExtractor(
       /*
         TODO: handle multi-words
         this.sentence.getInvolvedMultiWords(tokenIndex)?.forEach {
-          it.morphologies.map { morphologyEntry -> tokenFeaturesSet.addAll(morphologyEntry.toFeatures()) }
+          it.morphologies.map { morphology -> tokenFeaturesSet.addAll(morphology.toFeatures()) }
         }
       */
 
@@ -54,11 +54,11 @@ class FeaturesExtractor(
   }
 
   /**
-   * Transform a [MorphologyEntry] in a list of features.
+   * Transform a [Morphology] in a list of features.
    *
    * @return a list of features
    */
-  private fun MorphologyEntry.toFeatures(): List<String> {
+  private fun Morphology.toFeatures(): List<String> {
 
     val list = mutableListOf<String>()
 
