@@ -5,21 +5,17 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.tokensencoder.ensamble.feedforward
+package com.kotlinnlp.tokensencoder.ensemble
 
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
-import com.kotlinnlp.tokensencoder.ensamble.concat.ConcatTokensEncoderParams
 
 /**
- * The parameters of the [FFTokensEncoder].
+ * The parameters of the [EnsembleTokensEncoderParams].
  *
  * @param encodersParams list of tokens-encoder parameters
- * @property networkParams the feed-forward output network parameters
+ * @param outputMergeParams the params of the merge output network
  */
-class FFTokensEncoderParams(
-  encodersParams: List<TokensEncoderParameters>,
-  val networkParams: NetworkParameters
-) : ConcatTokensEncoderParams(
-  params = encodersParams
-)
+class EnsembleTokensEncoderParams(
+  val encodersParams: List<TokensEncoderParameters>,
+  val outputMergeParams: NetworkParameters) : TokensEncoderParameters

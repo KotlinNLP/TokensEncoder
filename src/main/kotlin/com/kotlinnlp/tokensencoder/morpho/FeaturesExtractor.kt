@@ -8,40 +8,20 @@
 package com.kotlinnlp.tokensencoder.morpho
 
 import com.kotlinnlp.linguisticdescription.lexicon.LexiconDictionary
-import com.kotlinnlp.linguisticdescription.sentence.token.properties.Position
-import com.kotlinnlp.morphologicalanalyzer.dictionary.MorphologyEntry
-import com.kotlinnlp.morphologicalanalyzer.MorphologicalAnalysis
-import com.kotlinnlp.morphologicalanalyzer.MorphologicalAnalyzer
-import com.kotlinnlp.neuralparser.language.Token
+import com.kotlinnlp.linguisticdescription.morphology.MorphologyEntry
+import com.kotlinnlp.linguisticdescription.sentence.Sentence
+import com.kotlinnlp.linguisticdescription.sentence.token.LexicalToken
 import com.kotlinnlp.tokensencoder.morpho.extractors.MorphoFeaturesExtractorBuilder
-import com.kotlinnlp.neuraltokenizer.Token as TKToken
 
 /**
  * The features extractor of the [MorphoEncoder].
  *
- * @param tokens the list of tokens
- * @param analyzer the morphological analyzer
- * @param langCode the language (iso-a2)
+ * @param sentence the sentence
  * @param lexicalDictionary the lexical dictionary (can be null)
  */
 class FeaturesExtractor(
-  private val tokens: List<Token>,
-  private val analyzer: MorphologicalAnalyzer,
-  private val langCode: String,
+  private val sentence: Sentence<LexicalToken>,
   private val lexicalDictionary: LexiconDictionary?) {
-
-  /**
-   * The list of tokens.
-   */
-  private val tkTokens: List<TKToken> = this.tokens.toTKTokens()
-
-  /**
-   * The morphological analysis of the [tkTokens].
-   */
-  private val analysis: MorphologicalAnalysis = this.analyzer.analyze(
-    text = this.tkTokens.joinToString(" ") { it.form },
-    tokens = this.tkTokens,
-    langCode = this.langCode)
 
   /**
    * @return a set of features for each token
@@ -50,17 +30,20 @@ class FeaturesExtractor(
 
     val tokensFeatures = mutableListOf<MutableSet<String>>()
 
-    this.tokens.forEachIndexed { tokenIndex, _ ->
+    this.sentence.tokens.forEachIndexed { tokenIndex, token ->
 
       val tokenFeaturesSet = mutableSetOf<String>()
 
-      this.analysis.tokens[tokenIndex]?.forEach {
+      token.lexicalForms.forEach {
         tokenFeaturesSet.addAll(it.toFeatures())
       }
 
-      this.analysis.getInvolvedMultiWords(tokenIndex)?.forEach {
-        it.morphologies.map { morphologyEntry -> tokenFeaturesSet.addAll(morphologyEntry.toFeatures()) }
-      }
+      /*
+        TODO: handle multi-words
+        this.sentence.getInvolvedMultiWords(tokenIndex)?.forEach {
+          it.morphologies.map { morphologyEntry -> tokenFeaturesSet.addAll(morphologyEntry.toFeatures()) }
+        }
+      */
 
       if (tokenFeaturesSet.isEmpty()) tokenFeaturesSet.add("i:0 _")
 
@@ -104,12 +87,5 @@ class FeaturesExtractor(
     }
 
     return list
-  }
-
-  /**
-   * @return a list of [TKToken]s originated from this [Token]s
-   */
-  private fun List<Token>.toTKTokens(): List<TKToken> = this.map {
-    TKToken(form = it.word, position = Position(index = it.id, start = 0, end = 0))
   }
 }

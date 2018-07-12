@@ -8,7 +8,6 @@
 package com.kotlinnlp.tokensencoder.morpho
 
 import com.kotlinnlp.linguisticdescription.lexicon.LexiconDictionary
-import com.kotlinnlp.morphologicalanalyzer.dictionary.MorphologyDictionary
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
@@ -20,15 +19,14 @@ import com.kotlinnlp.utils.DictionarySet
 import java.io.Serializable
 
 /**
- * @property langCode the language (iso-a2)
- * @property dictionary the morphological dictionary
  * @property lexiconDictionary the lexicon dictionary (can be null)
  * @property featuresDictionary the list of possible features
  * @property tokenEncodingSize the size of the token encoding vectors.
+ * @param activation the activation function of the dense transformation
+ * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
+ * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  */
 class MorphoEncoderModel(
-  val langCode: String,
-  val dictionary: MorphologyDictionary,
   val lexiconDictionary: LexiconDictionary?,
   val featuresDictionary: DictionarySet<String>,
   override val tokenEncodingSize: Int,

@@ -14,12 +14,8 @@ import com.kotlinnlp.tokensencoder.charactersbirnn.CharsBiRNNEncoderModel
 import com.kotlinnlp.tokensencoder.charactersbirnn.CharsBiRNNEncoderOptimizer
 import com.kotlinnlp.tokensencoder.embeddings.EmbeddingsEncoderModel
 import com.kotlinnlp.tokensencoder.embeddings.EmbeddingsEncoderOptimizer
-import com.kotlinnlp.tokensencoder.ensamble.affine.AffineTokensEncoderModel
-import com.kotlinnlp.tokensencoder.ensamble.affine.AffineTokensEncoderOptimizer
-import com.kotlinnlp.tokensencoder.ensamble.concat.ConcatTokensEncoderModel
-import com.kotlinnlp.tokensencoder.ensamble.concat.ConcatTokensEncoderOptimizer
-import com.kotlinnlp.tokensencoder.ensamble.feedforward.FFTokensEncoderModel
-import com.kotlinnlp.tokensencoder.ensamble.feedforward.FFTokensEncoderOptimizer
+import com.kotlinnlp.tokensencoder.ensemble.EnsembleTokensEncoderModel
+import com.kotlinnlp.tokensencoder.ensemble.EnsembleTokensEncoderOptimizer
 import com.kotlinnlp.tokensencoder.morpho.MorphoEncoderModel
 import com.kotlinnlp.tokensencoder.morpho.MorphoEncoderOptimizer
 
@@ -39,10 +35,8 @@ object TokensEncoderOptimizerFactory {
       is CharsAttentionEncoderModel -> CharsAttentionEncoderOptimizer(model, updateMethod)
       is CharsBiRNNEncoderModel -> CharsBiRNNEncoderOptimizer(model, updateMethod)
       is EmbeddingsEncoderModel -> EmbeddingsEncoderOptimizer(model, updateMethod)
-      is FFTokensEncoderModel -> FFTokensEncoderOptimizer(model, updateMethod)
-      is AffineTokensEncoderModel -> AffineTokensEncoderOptimizer(model, updateMethod)
-      is ConcatTokensEncoderModel -> ConcatTokensEncoderOptimizer(model, updateMethod)
       is MorphoEncoderModel -> MorphoEncoderOptimizer(model, updateMethod)
+      is EnsembleTokensEncoderModel -> EnsembleTokensEncoderOptimizer(model, updateMethod)
       else -> throw RuntimeException("Invalid TokensEncoder model.")
     }
 }

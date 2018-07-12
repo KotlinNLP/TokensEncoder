@@ -7,17 +7,23 @@
 
 package com.kotlinnlp.tokensencoder.embeddings
 
+import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
+import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMapByDictionary
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 import java.io.Serializable
 
 /**
  * The model of the [EmbeddingsEncoder].
  *
- * @param wordEmbeddingSize the size of each word embedding vector
+ * @param embeddingsMap the embeddings map
+ * @param dropoutCoefficient the dropout coefficient
+ * @param getEmbeddingKey TODO
  */
-abstract class EmbeddingsEncoderModel(
-  private val wordEmbeddingSize: Int
+class EmbeddingsEncoderModel(
+  val embeddingsMap: EmbeddingsMapByDictionary,
+  val dropoutCoefficient: Double = 0.0,
+  val getEmbeddingKey: ((Sentence: Sentence<*>, tokenId: Int) -> String)
 ) : TokensEncoderModel, Serializable {
 
   companion object {
@@ -32,19 +38,15 @@ abstract class EmbeddingsEncoderModel(
   /**
    * The size of the token encoding vectors.
    */
-  override val tokenEncodingSize: Int = this.wordEmbeddingSize
-
-  /**
-   * The word embeddings.
-   */
-  abstract val embeddingsMap: EmbeddingsMap<*>
+  override val tokenEncodingSize: Int = this.embeddingsMap.size
 
   /**
    * @return the string representation of this model
    */
   override fun toString(): String = """
-    encoding size %d
+    encoding size %d (dropout %.2f)
   """.trimIndent().format(
-    this.tokenEncodingSize
+    this.tokenEncodingSize,
+    this.dropoutCoefficient
   )
 }

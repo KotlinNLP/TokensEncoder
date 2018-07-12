@@ -5,21 +5,23 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.tokensencoder.ensamble.concat
+package com.kotlinnlp.tokensencoder.ensemble
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
+import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.tokensencoder.TokensEncoderOptimizer
 import com.kotlinnlp.tokensencoder.TokensEncoderOptimizerFactory
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
 
 /**
- * The optimizer of the [ConcatTokensEncoder]
+ * The optimizer of the [EnsembleTokensEncoderOptimizer]
  *
  * @param model the model to optimize
  * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...
  */
-open class ConcatTokensEncoderOptimizer(
-  private val model: ConcatTokensEncoderModel,
+open class EnsembleTokensEncoderOptimizer(
+  private val model: EnsembleTokensEncoderModel,
   updateMethod: UpdateMethod<*>
 ) : TokensEncoderOptimizer(
   model = model,
@@ -27,14 +29,22 @@ open class ConcatTokensEncoderOptimizer(
 ) {
 
   /**
-   * The optimizer of the word embeddings map.
+   * The list of optimizers.
    */
-  private val optimizers = this.model.models.map { TokensEncoderOptimizerFactory(it, updateMethod) }
+  private val encodersOptimizers  = this.model.models.map { TokensEncoderOptimizerFactory(it, updateMethod) }
+
+  /**
+   *
+   */
+  private val outputMergeOptimizer = ParamsOptimizer(this.model.outputMergeNetwork.model, updateMethod)
 
   /**
    * Update the parameters of the neural element associated to this optimizer.
    */
-  override fun update() = this.optimizers.forEach { it.update() }
+  override fun update() {
+    this.outputMergeOptimizer.update()
+    this.encodersOptimizers.forEach { it.update() }
+  }
 
   /**
    * Accumulate the given params errors into the accumulator.
@@ -45,10 +55,12 @@ open class ConcatTokensEncoderOptimizer(
    */
   override fun accumulate(paramsErrors: TokensEncoderParameters, copy: Boolean) {
 
-    paramsErrors as ConcatTokensEncoderParams
+    paramsErrors as EnsembleTokensEncoderParams
 
-    paramsErrors.params.forEachIndexed { index, values ->
-      this.optimizers[index].accumulate(values, copy)
+    this.outputMergeOptimizer.accumulate(paramsErrors.outputMergeParams, copy = copy)
+
+    paramsErrors.encodersParams.forEachIndexed { index, values ->
+      this.encodersOptimizers[index].accumulate(values, copy)
     }
   }
 }

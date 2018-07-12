@@ -7,21 +7,15 @@
 
 package com.kotlinnlp.tokensencoder
 
-import com.kotlinnlp.tokensencoder.charactersattention.CharsAttentionEncoderBuilder
+import com.kotlinnlp.tokensencoder.charactersattention.CharsAttentionEncoder
 import com.kotlinnlp.tokensencoder.charactersattention.CharsAttentionEncoderModel
-import com.kotlinnlp.tokensencoder.charactersbirnn.CharsBiRNNEncoderBuilder
+import com.kotlinnlp.tokensencoder.charactersbirnn.CharsBiRNNEncoder
 import com.kotlinnlp.tokensencoder.charactersbirnn.CharsBiRNNEncoderModel
-import com.kotlinnlp.tokensencoder.embeddings.dictionary.EmbeddingsEncoderByDictionaryBuilder
-import com.kotlinnlp.tokensencoder.embeddings.dictionary.EmbeddingsEncoderByDictionaryModel
-import com.kotlinnlp.tokensencoder.embeddings.pretrained.EmbeddingsEncoderByPretrainedBuilder
-import com.kotlinnlp.tokensencoder.embeddings.pretrained.EmbeddingsEncoderByPretrainedModel
-import com.kotlinnlp.tokensencoder.ensamble.affine.AffineTokensEncoderBuilder
-import com.kotlinnlp.tokensencoder.ensamble.affine.AffineTokensEncoderModel
-import com.kotlinnlp.tokensencoder.ensamble.concat.ConcatTokensEncoderBuilder
-import com.kotlinnlp.tokensencoder.ensamble.concat.ConcatTokensEncoderModel
-import com.kotlinnlp.tokensencoder.ensamble.feedforward.FFTokensEncoderBuilder
-import com.kotlinnlp.tokensencoder.ensamble.feedforward.FFTokensEncoderModel
-import com.kotlinnlp.tokensencoder.morpho.MorphoEncoderBuilder
+import com.kotlinnlp.tokensencoder.embeddings.EmbeddingsEncoder
+import com.kotlinnlp.tokensencoder.embeddings.EmbeddingsEncoderModel
+import com.kotlinnlp.tokensencoder.ensemble.EnsembleTokensEncoder
+import com.kotlinnlp.tokensencoder.ensemble.EnsembleTokensEncoderModel
+import com.kotlinnlp.tokensencoder.morpho.MorphoEncoder
 import com.kotlinnlp.tokensencoder.morpho.MorphoEncoderModel
 
 /**
@@ -32,18 +26,15 @@ object TokensEncoderFactory {
   /**
    * @param model the model of a [TokensEncoder]
    *
-   * @return a new instance of a [TokensEncoderBuilder]
+   * @return a new instance of a [TokensEncoder]
    */
-  operator fun invoke(model: TokensEncoderModel, trainingMode: Boolean = false): TokensEncoderBuilder =
+  operator fun invoke(model: TokensEncoderModel, useDropout: Boolean, id: Int = 0): TokensEncoder =
     when (model) {
-      is CharsAttentionEncoderModel -> CharsAttentionEncoderBuilder(model, trainingMode)
-      is CharsBiRNNEncoderModel -> CharsBiRNNEncoderBuilder(model, trainingMode)
-      is EmbeddingsEncoderByDictionaryModel -> EmbeddingsEncoderByDictionaryBuilder(model, trainingMode)
-      is EmbeddingsEncoderByPretrainedModel -> EmbeddingsEncoderByPretrainedBuilder(model, trainingMode)
-      is FFTokensEncoderModel -> FFTokensEncoderBuilder(model, trainingMode)
-      is AffineTokensEncoderModel -> AffineTokensEncoderBuilder(model, trainingMode)
-      is ConcatTokensEncoderModel -> ConcatTokensEncoderBuilder(model, trainingMode)
-      is MorphoEncoderModel -> MorphoEncoderBuilder(model, trainingMode)
+      is CharsAttentionEncoderModel -> CharsAttentionEncoder(model, useDropout, id)
+      is CharsBiRNNEncoderModel -> CharsBiRNNEncoder(model, useDropout, id)
+      is EmbeddingsEncoderModel -> EmbeddingsEncoder(model, useDropout, id)
+      is MorphoEncoderModel -> MorphoEncoder(model, useDropout, id)
+      is EnsembleTokensEncoderModel -> EnsembleTokensEncoder(model, useDropout, id)
       else -> throw RuntimeException("Invalid TokensEncoder model ${model::javaClass.name}.")
     }
 }

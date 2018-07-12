@@ -7,9 +7,10 @@
 
 package com.kotlinnlp.tokensencoder.embeddings
 
-import com.kotlinnlp.neuralparser.language.Token
+import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.embeddings.Embedding
+import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.tokensencoder.TokensEncoder
 
@@ -17,12 +18,14 @@ import com.kotlinnlp.tokensencoder.TokensEncoder
  * The [TokensEncoder] that encodes a token using the word embeddings
  *
  * @property model the model of this tokens encoder
- * @property trainingMode whether the encoder is being trained
+ * @property useDropout whether to apply the dropout
+ * @property id an identification number useful to track a specific processor
  */
-abstract class EmbeddingsEncoder(
+class EmbeddingsEncoder(
   private val model: EmbeddingsEncoderModel,
-  private val trainingMode: Boolean
-) : TokensEncoder {
+  override val useDropout: Boolean,
+  override val id: Int = 0
+) : TokensEncoder() {
 
   /**
    * The word embeddings of the last encoded sentence.
@@ -37,13 +40,18 @@ abstract class EmbeddingsEncoder(
   /**
    * Encode a list of tokens.
    *
-   * @param tokens a list of [Token]
+   * @param input an input sentence
    *
-   * @return a list of the same size of the [tokens] with their encoded representation
+   * @return a list of dense encoded representations of the given sentence tokens
    */
-  override fun encode(tokens: List<Token>): List<DenseNDArray> {
+  override fun forward(input: Sentence<*>): List<DenseNDArray> {
 
-    this.lastEmbeddings = tokens.map { token -> this.getEmbedding(token = token) }
+    this.lastEmbeddings = (0 until input.tokens.size).map {
+
+      this.model.embeddingsMap.get(
+        element = this.model.getEmbeddingKey(input, it),
+        dropoutCoefficient = if (this.useDropout) this.model.dropoutCoefficient else 0.0)
+    }
 
     return this.lastEmbeddings.map { it.array.values }
   }
@@ -51,15 +59,15 @@ abstract class EmbeddingsEncoder(
   /**
    * Propagate the errors.
    *
-   * @param errors the errors of the current encoding
+   * @param outputErrors the errors of the current encoding
    */
-  override fun backward(errors: List<DenseNDArray>) {
+  override fun backward(outputErrors: List<DenseNDArray>) {
 
-    require(errors.size == this.lastEmbeddings.size)
+    require(outputErrors.size == this.lastEmbeddings.size)
 
     this.lastEmbeddingsErrors.clear()
 
-    errors.forEachIndexed { i, tokenErrors ->
+    outputErrors.forEachIndexed { i, tokenErrors ->
       this.accumulateTokenErrors(tokenIndex = i, errors = tokenErrors)
     }
   }
@@ -75,13 +83,6 @@ abstract class EmbeddingsEncoder(
   }
 
   /**
-   * @param token a token
-   *
-   * @return the word embedding of the given [token]
-   */
-  protected abstract fun getEmbedding(token: Token): Embedding
-
-  /**
    * Accumulate the [errors] of a given token.
    *
    * @param tokenIndex the index of a token
@@ -93,4 +94,13 @@ abstract class EmbeddingsEncoder(
       id = this.lastEmbeddings[tokenIndex].id,
       array = UpdatableDenseArray(errors.copy())))
   }
+
+  /**
+   * Return the input errors of the last backward.
+   *
+   * @param copy whether to return by value or by reference (default true)
+   *
+   * @return the input errors
+   */
+  override fun getInputErrors(copy: Boolean) = NeuralProcessor.NoInputErrors
 }

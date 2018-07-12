@@ -7,34 +7,23 @@
 
 package com.kotlinnlp.tokensencoder
 
-import com.kotlinnlp.neuralparser.language.Token
+import com.kotlinnlp.linguisticdescription.sentence.Sentence
+import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * Encoder that generates a dense representation of the sentence tokens.
+ * Encoder that generates a dense representation of sentence tokens.
  */
-interface TokensEncoder {
+abstract class TokensEncoder : NeuralProcessor<
+  Sentence<*>, // InputType
+  List<DenseNDArray>, // OutputType
+  List<DenseNDArray>, // ErrorsType
+  NeuralProcessor.NoInputErrors, // InputErrorsType
+  TokensEncoderParameters // ParamsType
+  > {
 
   /**
-   * Encode a list of tokens.
-   *
-   * @param tokens a list of [Token]
-   *
-   * @return a list of the same size of the [tokens] with their encoded representation
+   * Do not propagate input errors during the backward.
    */
-  fun encode(tokens: List<Token>): List<DenseNDArray>
-
-  /**
-   * Propagate the errors.
-   *
-   * @param errors the errors of the current encoding
-   */
-  fun backward(errors: List<DenseNDArray>)
-
-  /**
-   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
-   *
-   * @return the errors of the [TokensEncoderParameters] parameters
-   */
-  fun getParamsErrors(copy: Boolean = true): TokensEncoderParameters
+  override val propagateToInput: Boolean = false
 }

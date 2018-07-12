@@ -7,12 +7,14 @@
 
 package com.kotlinnlp.tokensencoder.charactersattention
 
-import com.kotlinnlp.neuralparser.language.Token
+import com.kotlinnlp.linguisticdescription.sentence.Sentence
+import com.kotlinnlp.linguisticdescription.sentence.token.FormToken
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.deeplearning.attention.han.HANEncoder
 import com.kotlinnlp.simplednn.deeplearning.attention.han.HANEncodersPool
 import com.kotlinnlp.simplednn.deeplearning.attention.han.HierarchySequence
 import com.kotlinnlp.simplednn.core.embeddings.Embedding
+import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.deeplearning.attention.han.HANParameters
 import com.kotlinnlp.tokensencoder.TokensEncoder
@@ -21,12 +23,14 @@ import com.kotlinnlp.tokensencoder.TokensEncoder
  * The [TokensEncoder] that encodes a token using an [HANEncoder] on its characters.
  *
  * @property model the model of this tokens encoder
- * @property trainingMode whether the encoder is being trained
+ * @property useDropout whether to apply the dropout
+ * @property id an identification number useful to track a specific processor
  */
 class CharsAttentionEncoder(
   private val model: CharsAttentionEncoderModel,
-  private val trainingMode: Boolean
-) : TokensEncoder {
+  override val useDropout: Boolean,
+  override val id: Int = 0
+) : TokensEncoder() {
 
   /**
    * The characters embeddings of the last encoding.
@@ -36,7 +40,10 @@ class CharsAttentionEncoder(
   /**
    * A [HANEncodersPool] to encode the chars of a token.
    */
-  private val hanEncodersPool = HANEncodersPool<DenseNDArray>(model = this.model.charactersNetwork)
+  private val hanEncodersPool = HANEncodersPool<DenseNDArray>(
+    model = this.model.charactersNetwork,
+    useDropout = this.useDropout,
+    propagateToInput = true)
 
   /**
    * The list of [HANEncoder]s used in the last encoding.
@@ -46,28 +53,31 @@ class CharsAttentionEncoder(
   /**
    * Encode a list of tokens.
    *
-   * @param tokens a list of [Token]
+   * @param input an input sentence
    *
-   * @return a list of the same size of the [tokens] with their encoded representation
+   * @return a list of dense encoded representations of the given sentence tokens
    */
-  override fun encode(tokens: List<Token>): List<DenseNDArray>{
+  override fun forward(input: Sentence<*>): List<DenseNDArray> {
 
-    this.charsEmbeddings = tokens.map {
-      it.word.map { char -> this.model.charsEmbeddings.get(char) }
+    @Suppress("UNCHECKED_CAST")
+    input as Sentence<FormToken>
+
+    this.charsEmbeddings = input.tokens.map {
+      it.form.map { char -> this.model.charsEmbeddings.get(char) }
     }
 
-    return this.encodeTokensByChars(tokens = tokens, charsEmbeddings = this.charsEmbeddings)
+    return this.encodeTokensByChars(tokens = input.tokens, charsEmbeddings = this.charsEmbeddings)
   }
 
   /**
    * Propagate the errors.
    *
-   * @param errors the errors of the current encoding
+   * @param outputErrors the errors of the current encoding
    */
-  override fun backward(errors: List<DenseNDArray>){
+  override fun backward(outputErrors: List<DenseNDArray>) {
 
-    errors.forEachIndexed { tokenIndex, tokenErrors ->
-      this.usedEncoders[tokenIndex].backward(outputErrors = tokenErrors, propagateToInput = true)
+    outputErrors.forEachIndexed { tokenIndex, tokenErrors ->
+      this.usedEncoders[tokenIndex].backward(outputErrors = tokenErrors)
     }
   }
 
@@ -80,7 +90,7 @@ class CharsAttentionEncoder(
    * @return a pair with the list of used encoders and the parallel list of tokens encodings by chars
    */
   private fun encodeTokensByChars(
-    tokens: List<Token>,
+    tokens: List<FormToken>,
     charsEmbeddings: List<List<Embedding>>
   ): List<DenseNDArray> {
 
@@ -113,7 +123,7 @@ class CharsAttentionEncoder(
 
       hanParamsErrors.add(hanEncoder.getParamsErrors(copy = copy))
 
-      (hanEncoder.getInputSequenceErrors(copy = copy) as HierarchySequence<*>)
+      (hanEncoder.getInputErrors(copy = copy) as HierarchySequence<*>)
         .forEachIndexed { charIndex, charsErrors ->
 
         embeddingsParamsErrors.add(Embedding(
@@ -126,4 +136,14 @@ class CharsAttentionEncoder(
       hanParameters = hanParamsErrors,
       embeddingsParams = embeddingsParamsErrors)
   }
+
+  /**
+   * Return the input errors of the last backward.
+   *
+   * @param copy whether to return by value or by reference (default true)
+   *
+   * @return the input errors
+   */
+  override fun getInputErrors(copy: Boolean) = NeuralProcessor.NoInputErrors
+
 }
