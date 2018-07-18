@@ -34,7 +34,7 @@ class FeaturesExtractor(
 
       val tokenFeaturesSet = mutableSetOf<String>()
 
-      token.lexicalForms.forEach {
+      token.morphologies.forEach {
         tokenFeaturesSet.addAll(it.toFeatures())
       }
 
