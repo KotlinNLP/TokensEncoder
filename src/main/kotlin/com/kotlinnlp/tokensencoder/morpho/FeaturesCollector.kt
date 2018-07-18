@@ -9,7 +9,7 @@ package com.kotlinnlp.tokensencoder.morpho
 
 import com.kotlinnlp.linguisticdescription.lexicon.LexiconDictionary
 import com.kotlinnlp.linguisticdescription.sentence.Sentence
-import com.kotlinnlp.linguisticdescription.sentence.token.LexicalToken
+import com.kotlinnlp.linguisticdescription.sentence.token.MorphoToken
 import com.kotlinnlp.morphologicalanalyzer.dictionary.MorphologyDictionary
 import com.kotlinnlp.utils.DictionarySet
 import com.kotlinnlp.utils.progressindicator.ProgressIndicatorBar
@@ -26,7 +26,7 @@ class FeaturesCollector(
   private val dictionary: MorphologyDictionary,
   private val lexicalDictionary: LexiconDictionary?,
   private val langCode: String,
-  private val sentences: List<Sentence<LexicalToken>>
+  private val sentences: List<Sentence<MorphoToken>>
 ) {
 
   /**

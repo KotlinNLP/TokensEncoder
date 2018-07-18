@@ -8,7 +8,7 @@
 package com.kotlinnlp.tokensencoder.morpho
 
 import com.kotlinnlp.linguisticdescription.sentence.Sentence
-import com.kotlinnlp.linguisticdescription.sentence.token.LexicalToken
+import com.kotlinnlp.linguisticdescription.sentence.token.MorphoToken
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedforwardProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
@@ -50,7 +50,7 @@ class MorphoEncoder(
   override fun forward(input: Sentence<*>): List<DenseNDArray> {
 
     @Suppress("UNCHECKED_CAST")
-    input as Sentence<LexicalToken>
+    input as Sentence<MorphoToken>
 
     val tokenFeatures = FeaturesExtractor(
       sentence = input,
