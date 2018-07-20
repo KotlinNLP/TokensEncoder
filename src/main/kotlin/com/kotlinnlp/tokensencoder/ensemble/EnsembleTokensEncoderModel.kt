@@ -14,7 +14,6 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig.*
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
-import java.io.Serializable
 
 /**
  * The model of the [EnsembleTokensEncoderModel].
@@ -27,7 +26,7 @@ open class EnsembleTokensEncoderModel(
   outputMergeConfiguration: MergeConfiguration = ConcatMerge(),
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = null
-) : TokensEncoderModel, Serializable {
+) : TokensEncoderModel {
 
   companion object {
 

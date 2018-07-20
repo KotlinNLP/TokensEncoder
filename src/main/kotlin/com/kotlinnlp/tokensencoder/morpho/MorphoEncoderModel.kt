@@ -16,7 +16,6 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 import com.kotlinnlp.utils.DictionarySet
-import java.io.Serializable
 
 /**
  * @property lexiconDictionary the lexicon dictionary (can be null)
@@ -33,7 +32,7 @@ class MorphoEncoderModel(
   activation: ActivationFunction?,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = null
-) : TokensEncoderModel, Serializable {
+) : TokensEncoderModel {
 
   companion object {
 

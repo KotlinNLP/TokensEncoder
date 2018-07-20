@@ -9,7 +9,6 @@ package com.kotlinnlp.tokensencoder.embeddings
 
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMapByDictionary
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
-import java.io.Serializable
 
 /**
  * The model of the [EmbeddingsEncoder].
@@ -22,7 +21,7 @@ class EmbeddingsEncoderModel(
   val embeddingsMap: EmbeddingsMapByDictionary,
   val dropoutCoefficient: Double = 0.0,
   val embeddingKeyExtractor: EmbeddingKeyExtractor
-) : TokensEncoderModel, Serializable {
+) : TokensEncoderModel {
 
   companion object {
 

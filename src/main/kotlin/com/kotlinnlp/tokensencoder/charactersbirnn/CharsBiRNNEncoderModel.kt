@@ -15,7 +15,6 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNN
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
-import java.io.Serializable
 
 /**
  * The model of the [CharsBiRNNEncoder].
@@ -34,7 +33,7 @@ class CharsBiRNNEncoderModel(
   hiddenActivation: ActivationFunction? = Tanh(),
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = null
-) : TokensEncoderModel, Serializable {
+) : TokensEncoderModel {
 
   companion object {
 

@@ -13,7 +13,6 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.deeplearning.attention.han.HAN
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
-import java.io.Serializable
 
 /**
  * The model of the [CharsAttentionEncoder].
@@ -32,7 +31,7 @@ class CharsAttentionEncoderModel(
   hanAttentionSize: Int = 25,
   hanConnectionType: LayerType.Connection = LayerType.Connection.LSTM,
   hanHiddenActivation: ActivationFunction? = Tanh()
-) : TokensEncoderModel, Serializable {
+) : TokensEncoderModel {
 
   companion object {
 

@@ -7,10 +7,12 @@
 
 package com.kotlinnlp.tokensencoder
 
+import java.io.Serializable
+
 /**
  * The model of a tokens-encoder.
  */
-interface TokensEncoderModel {
+interface TokensEncoderModel : Serializable {
 
   /**
    * The size of the token encoding vectors.
