@@ -49,7 +49,7 @@ class EmbeddingsEncoder(
     this.lastEmbeddings = (0 until input.tokens.size).map {
 
       this.model.embeddingsMap.get(
-        element = this.model.getEmbeddingKey(input, it),
+        element = this.model.embeddingKeyExtractor.getKey(input, it),
         dropoutCoefficient = if (this.useDropout) this.model.dropoutCoefficient else 0.0)
     }
 

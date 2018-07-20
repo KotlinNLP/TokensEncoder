@@ -7,8 +7,6 @@
 
 package com.kotlinnlp.tokensencoder.embeddings
 
-import com.kotlinnlp.linguisticdescription.sentence.Sentence
-import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMapByDictionary
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 import java.io.Serializable
@@ -18,12 +16,12 @@ import java.io.Serializable
  *
  * @param embeddingsMap the embeddings map
  * @param dropoutCoefficient the dropout coefficient
- * @param getEmbeddingKey TODO
+ * @param embeddingKeyExtractor an embeddings key extractor
  */
 class EmbeddingsEncoderModel(
   val embeddingsMap: EmbeddingsMapByDictionary,
   val dropoutCoefficient: Double = 0.0,
-  val getEmbeddingKey: ((Sentence: Sentence<*>, tokenId: Int) -> String)
+  val embeddingKeyExtractor: EmbeddingKeyExtractor
 ) : TokensEncoderModel, Serializable {
 
   companion object {
