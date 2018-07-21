@@ -36,6 +36,6 @@ object MorphoFeaturesExtractorBuilder {
     is Preposition -> PrepositionFeaturesExtractor(morphology)
     is Conjunction -> ConjunctionFeaturesExtractor(morphology)
     is Punctuation -> PunctuationFeaturesExtractor(morphology)
-    else -> null
+    else -> GenericFeaturesExtractor(morphology)
   }
 }
