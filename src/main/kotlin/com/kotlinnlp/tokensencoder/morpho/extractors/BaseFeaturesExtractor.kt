@@ -14,7 +14,7 @@ import com.kotlinnlp.linguisticdescription.morphology.SingleMorphology
  *
  * @param morphology the morphology
  */
-class GenericFeaturesExtractor(private val morphology: SingleMorphology) : MorphoFeaturesExtractor {
+class BaseFeaturesExtractor(private val morphology: SingleMorphology) : MorphoFeaturesExtractor {
 
   /**
    * Return a list of features.
