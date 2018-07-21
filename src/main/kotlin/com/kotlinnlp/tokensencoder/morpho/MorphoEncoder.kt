@@ -59,7 +59,7 @@ class MorphoEncoder(
     return this.encoder.forward(List(size = input.tokens.size, init = {
 
       SparseBinaryNDArrayFactory.arrayOf(
-        activeIndices = tokenFeatures[it].getActiveFeaturesIndicies(),
+        activeIndices = tokenFeatures[it].getActiveFeaturesIndices(),
         shape = Shape(this.model.featuresDictionary.size))
     }))
   }
@@ -93,7 +93,7 @@ class MorphoEncoder(
    *
    * @return the indexes of the active features
    */
-  private fun Set<String>.getActiveFeaturesIndicies(): List<Int> {
+  private fun Set<String>.getActiveFeaturesIndices(): List<Int> {
 
     val activeIndices = mutableListOf<Int>()
 
