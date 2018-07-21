@@ -25,7 +25,7 @@ object MorphoFeaturesExtractorBuilder {
    *
    * @return a morphological features extractor
    */
-  operator fun invoke(morphology: SingleMorphology): MorphoFeaturesExtractor? = when (morphology) {
+  operator fun invoke(morphology: SingleMorphology): MorphoFeaturesExtractor = when (morphology) {
     is Verb -> VerbFeaturesExtractor(morphology)
     is Noun -> NounFeaturesExtractor(morphology)
     is Adjective -> AdjectiveFeaturesExtractor(morphology)
