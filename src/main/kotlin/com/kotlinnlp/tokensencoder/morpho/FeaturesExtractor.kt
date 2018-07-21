@@ -9,6 +9,7 @@ package com.kotlinnlp.tokensencoder.morpho
 
 import com.kotlinnlp.linguisticdescription.lexicon.LexiconDictionary
 import com.kotlinnlp.linguisticdescription.morphology.Morphology
+import com.kotlinnlp.linguisticdescription.morphology.SingleMorphology
 import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.linguisticdescription.sentence.token.MorphoToken
 import com.kotlinnlp.tokensencoder.morpho.extractors.MorphoFeaturesExtractorBuilder
@@ -26,31 +27,17 @@ class FeaturesExtractor(
   /**
    * @return a set of features for each token
    */
-  fun extractFeatures(): List<Set<String>> {
+  fun extractFeatures(): List<Set<String>> = this.sentence.tokens.map { token ->
 
-    val tokensFeatures = mutableListOf<MutableSet<String>>()
+    val tokenFeaturesSet = mutableSetOf<String>()
 
-    this.sentence.tokens.forEach { token ->
-
-      val tokenFeaturesSet = mutableSetOf<String>()
-
-      token.morphologies.forEach {
-        tokenFeaturesSet.addAll(it.toFeatures())
-      }
-
-      /*
-        TODO: handle multi-words
-        this.sentence.getInvolvedMultiWords(tokenIndex)?.forEach {
-          it.morphologies.map { morphology -> tokenFeaturesSet.addAll(morphology.toFeatures()) }
-        }
-      */
-
-      if (tokenFeaturesSet.isEmpty()) tokenFeaturesSet.add("i:0 _")
-
-      tokensFeatures.add(tokenFeaturesSet)
+    token.morphologies.forEach {
+      tokenFeaturesSet.addAll(it.toFeatures())
     }
 
-    return tokensFeatures
+    if (tokenFeaturesSet.isEmpty()) tokenFeaturesSet.add("i:0 p:unknown")
+
+    tokenFeaturesSet
   }
 
   /**
@@ -64,25 +51,38 @@ class FeaturesExtractor(
 
     this.list.forEachIndexed { index, morphology ->
 
-      list.addAll(
+      list.addAll(morphology.getMorphoFeatures().map { "i:$index $it" })
+      list.addAll(morphology.getLexicalFeatures().map { "i:$index $it" })
+    }
 
-        MorphoFeaturesExtractorBuilder(morphology)
-          ?.get()
-          ?.map { "i:$index $it" }
-          ?: listOf("i:%d p:%s".format(index, morphology.type))
-      )
+    return list
+  }
 
-      this@FeaturesExtractor.lexicalDictionary?.get(
-        lemma = morphology.lemma,
-        posTag = morphology.type.baseAnnotation)?.syntax?.let { syntacticInfo ->
+  /**
+   * @return a list o morphological features
+   */
+  private fun SingleMorphology.getMorphoFeatures(): List<String> =
+    MorphoFeaturesExtractorBuilder(this).get()
 
-        syntacticInfo.regencies?.let {
-          list.addAll(it.map { "i:%d p:%s r:%s".format(index, morphology.type, it) })
-        }
+  /**
+   * @return a list of lexical features
+   */
+  private fun SingleMorphology.getLexicalFeatures(): List<String> {
 
-        syntacticInfo.subcategorization?.let {
-          list.addAll(it.map { "i:%d p:%s s:%s".format(index, morphology.type, it) })
-        }
+    val list = mutableListOf<String>()
+
+    this@FeaturesExtractor.lexicalDictionary?.get(
+      lemma = this.lemma,
+      posTag = this.type.baseAnnotation)?.syntax?.let { syntacticInfo ->
+
+      syntacticInfo.regencies?.let {
+        list.addAll(it.map { regency ->
+          "p:%s r:%s".format(this.type, regency) })
+      }
+
+      syntacticInfo.subcategorization?.let {
+        list.addAll(it.map { subcategory ->
+          "p:%s s:%s".format(this.type, subcategory) })
       }
     }
 
