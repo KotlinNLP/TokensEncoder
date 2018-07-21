@@ -50,10 +50,8 @@ class MorphoEncoder(
   override fun forward(input: Sentence<*>): List<DenseNDArray> {
 
     @Suppress("UNCHECKED_CAST")
-    input as Sentence<MorphoToken>
-
     val tokenFeatures = FeaturesExtractor(
-      sentence = input,
+      sentence = input as Sentence<MorphoToken>,
       lexicalDictionary = this.model.lexiconDictionary).extractFeatures()
 
     return this.encoder.forward(List(size = input.tokens.size, init = {
