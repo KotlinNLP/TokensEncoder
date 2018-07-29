@@ -7,12 +7,15 @@
 
 package com.kotlinnlp.tokensencoder
 
+import com.kotlinnlp.linguisticdescription.sentence.Sentence
+import com.kotlinnlp.linguisticdescription.sentence.token.Token
 import java.io.Serializable
 
 /**
  * The model of a tokens-encoder.
  */
-interface TokensEncoderModel : Serializable {
+@Suppress("UNUSED")
+interface TokensEncoderModel<TokenType: Token, SentenceType: Sentence<TokenType>> : Serializable {
 
   /**
    * The size of the token encoding vectors.

@@ -7,6 +7,8 @@
 
 package com.kotlinnlp.tokensencoder.ensemble
 
+import com.kotlinnlp.linguisticdescription.sentence.Sentence
+import com.kotlinnlp.linguisticdescription.sentence.token.Token
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
@@ -22,11 +24,11 @@ import com.kotlinnlp.tokensencoder.TokensEncoderModel
  * @param outputMergeConfiguration the configuration of the output merge layer
  */
 open class EnsembleTokensEncoderModel(
-  val models: List<TokensEncoderModel>,
+  val models: List<TokensEncoderModel<*, *>>,
   outputMergeConfiguration: MergeConfiguration = ConcatMerge(),
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = null
-) : TokensEncoderModel {
+) : TokensEncoderModel<Token, Sentence<Token>> {
 
   companion object {
 

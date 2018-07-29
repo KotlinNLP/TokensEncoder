@@ -28,13 +28,13 @@ object TokensEncoderFactory {
    *
    * @return a new instance of a [TokensEncoder]
    */
-  operator fun invoke(model: TokensEncoderModel, useDropout: Boolean, id: Int = 0): TokensEncoder =
+  operator fun invoke(model: TokensEncoderModel<*, *>, useDropout: Boolean, id: Int = 0): TokensEncoder<*, *> =
     when (model) {
       is CharsAttentionEncoderModel -> CharsAttentionEncoder(model, useDropout, id)
       is CharsBiRNNEncoderModel -> CharsBiRNNEncoder(model, useDropout, id)
       is EmbeddingsEncoderModel -> EmbeddingsEncoder(model, useDropout, id)
       is MorphoEncoderModel -> MorphoEncoder(model, useDropout, id)
       is EnsembleTokensEncoderModel -> EnsembleTokensEncoder(model, useDropout, id)
-      else -> throw RuntimeException("Invalid TokensEncoder model ${model::javaClass.name}.")
+      else -> throw RuntimeException("Invalid TokensEncoder model ${model.javaClass.name}.")
     }
 }

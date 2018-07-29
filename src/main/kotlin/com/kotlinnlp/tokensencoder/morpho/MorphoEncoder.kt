@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.tokensencoder.morpho
 
-import com.kotlinnlp.linguisticdescription.sentence.Sentence
+import com.kotlinnlp.linguisticdescription.sentence.MorphoSentence
 import com.kotlinnlp.linguisticdescription.sentence.token.MorphoToken
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedforwardProcessor
@@ -27,10 +27,10 @@ import com.kotlinnlp.neuraltokenizer.Token as TKToken
  * @property id an identification number useful to track a specific processor
  */
 class MorphoEncoder(
-  private val model: MorphoEncoderModel,
+  override val model: MorphoEncoderModel,
   override val useDropout: Boolean,
   override val id: Int = 0
-) : TokensEncoder() {
+) : TokensEncoder<MorphoToken, MorphoSentence>(model) {
 
   /**
    * The feed-forward network used to transform the input from sparse to dense.
@@ -47,19 +47,18 @@ class MorphoEncoder(
    *
    * @return a list of dense encoded representations of the given sentence tokens
    */
-  override fun forward(input: Sentence<*>): List<DenseNDArray> {
+  override fun forward(input: MorphoSentence): List<DenseNDArray> {
 
-    @Suppress("UNCHECKED_CAST")
-    val tokenFeatures = FeaturesExtractor(
-      sentence = input as Sentence<MorphoToken>,
-      lexicalDictionary = this.model.lexiconDictionary).extractFeatures()
+    val tokenFeatures: List<Set<String>> =
+      FeaturesExtractor(sentence = input, lexicalDictionary = this.model.lexiconDictionary).extractFeatures()
 
-    return this.encoder.forward(List(size = input.tokens.size, init = {
-
-      SparseBinaryNDArrayFactory.arrayOf(
-        activeIndices = tokenFeatures[it].getActiveFeaturesIndices(),
-        shape = Shape(this.model.featuresDictionary.size))
-    }))
+    return this.encoder.forward(
+      input = tokenFeatures.map {
+        SparseBinaryNDArrayFactory.arrayOf(
+          activeIndices = it.getActiveFeaturesIndices(),
+          shape = Shape(this.model.featuresDictionary.size))
+      }
+    )
   }
 
   /**

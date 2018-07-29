@@ -27,10 +27,10 @@ import com.kotlinnlp.tokensencoder.TokensEncoder
  * @property id an identification number useful to track a specific processor*
  */
 class CharsBiRNNEncoder(
-  private val model: CharsBiRNNEncoderModel,
+  override val model: CharsBiRNNEncoderModel,
   override val useDropout: Boolean,
   override val id: Int = 0
-) : TokensEncoder() {
+) : TokensEncoder<FormToken, Sentence<FormToken>>(model) {
 
   /**
    * The characters embeddings of the last encoding.
@@ -57,10 +57,7 @@ class CharsBiRNNEncoder(
    *
    * @return a list of dense encoded representations of the given sentence tokens
    */
-  override fun forward(input: Sentence<*>): List<DenseNDArray> {
-
-    @Suppress("UNCHECKED_CAST")
-    input as Sentence<FormToken>
+  override fun forward(input: Sentence<FormToken>): List<DenseNDArray> {
 
     this.charsEmbeddings = input.tokens.map {
       it.form.map { char -> this.model.charsEmbeddings.get(char) }

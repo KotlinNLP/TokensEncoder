@@ -7,6 +7,8 @@
 
 package com.kotlinnlp.tokensencoder.embeddings
 
+import com.kotlinnlp.linguisticdescription.sentence.Sentence
+import com.kotlinnlp.linguisticdescription.sentence.token.Token
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMapByDictionary
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 
@@ -21,7 +23,7 @@ class EmbeddingsEncoderModel(
   val embeddingsMap: EmbeddingsMapByDictionary,
   val dropoutCoefficient: Double = 0.0,
   val embeddingKeyExtractor: EmbeddingKeyExtractor
-) : TokensEncoderModel {
+) : TokensEncoderModel<Token, Sentence<Token>> {
 
   companion object {
 

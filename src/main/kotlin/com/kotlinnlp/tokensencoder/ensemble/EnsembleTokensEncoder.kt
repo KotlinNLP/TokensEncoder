@@ -8,6 +8,7 @@
 package com.kotlinnlp.tokensencoder.ensemble
 
 import com.kotlinnlp.linguisticdescription.sentence.Sentence
+import com.kotlinnlp.linguisticdescription.sentence.token.Token
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedforwardProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -22,16 +23,16 @@ import com.kotlinnlp.tokensencoder.TokensEncoderParameters
  * @property useDropout whether to apply the dropout
  * @property id an identification number useful to track a specific processor
  */
- class EnsembleTokensEncoder(
-  private val model: EnsembleTokensEncoderModel,
+class EnsembleTokensEncoder(
+  override val model: EnsembleTokensEncoderModel,
   override val useDropout: Boolean,
   override val id: Int = 0
-) : TokensEncoder() {
+) : TokensEncoder<Token, Sentence<Token>>(model) {
 
   /**
    * List of tokens encoder builders.
    */
-  private val encoders: List<TokensEncoder> = this.model.models.map {
+  private val encoders: List<TokensEncoder<*, *>> = this.model.models.map {
     TokensEncoderFactory(it, useDropout = this.useDropout)
   }
 
@@ -50,7 +51,7 @@ import com.kotlinnlp.tokensencoder.TokensEncoderParameters
    *
    * @return a list of dense encoded representations of the given sentence tokens
    */
-  override fun forward(input: Sentence<*>): List<DenseNDArray> {
+  override fun forward(input: Sentence<Token>): List<DenseNDArray> {
 
     val tokenEncodings = List<MutableList<DenseNDArray>>(size = input.tokens.size, init = { mutableListOf() })
 

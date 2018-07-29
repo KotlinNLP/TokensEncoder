@@ -7,6 +7,8 @@
 
 package com.kotlinnlp.tokensencoder.charactersbirnn
 
+import com.kotlinnlp.linguisticdescription.sentence.Sentence
+import com.kotlinnlp.linguisticdescription.sentence.token.FormToken
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
@@ -33,7 +35,7 @@ class CharsBiRNNEncoderModel(
   hiddenActivation: ActivationFunction? = Tanh(),
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = null
-) : TokensEncoderModel {
+) : TokensEncoderModel<FormToken, Sentence<FormToken>> {
 
   companion object {
 

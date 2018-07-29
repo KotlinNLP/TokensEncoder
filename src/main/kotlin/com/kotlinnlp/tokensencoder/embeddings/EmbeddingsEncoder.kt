@@ -8,6 +8,7 @@
 package com.kotlinnlp.tokensencoder.embeddings
 
 import com.kotlinnlp.linguisticdescription.sentence.Sentence
+import com.kotlinnlp.linguisticdescription.sentence.token.Token
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.embeddings.Embedding
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
@@ -22,10 +23,10 @@ import com.kotlinnlp.tokensencoder.TokensEncoder
  * @property id an identification number useful to track a specific processor
  */
 class EmbeddingsEncoder(
-  private val model: EmbeddingsEncoderModel,
+  override val model: EmbeddingsEncoderModel,
   override val useDropout: Boolean,
   override val id: Int = 0
-) : TokensEncoder() {
+) : TokensEncoder<Token, Sentence<Token>>(model) {
 
   /**
    * The word embeddings of the last encoded sentence.
@@ -44,10 +45,9 @@ class EmbeddingsEncoder(
    *
    * @return a list of dense encoded representations of the given sentence tokens
    */
-  override fun forward(input: Sentence<*>): List<DenseNDArray> {
+  override fun forward(input: Sentence<Token>): List<DenseNDArray> {
 
     this.lastEmbeddings = (0 until input.tokens.size).map {
-
       this.model.embeddingsMap.get(
         element = this.model.embeddingKeyExtractor.getKey(input, it),
         dropoutCoefficient = if (this.useDropout) this.model.dropoutCoefficient else 0.0)
@@ -77,10 +77,8 @@ class EmbeddingsEncoder(
    *
    * @return the errors of the [EmbeddingsEncoderParams] parameters
    */
-  override fun getParamsErrors(copy: Boolean): EmbeddingsEncoderParams {
-
-    return EmbeddingsEncoderParams(this.lastEmbeddingsErrors) // TODO: fix copy
-  }
+  override fun getParamsErrors(copy: Boolean): EmbeddingsEncoderParams =
+    EmbeddingsEncoderParams(this.lastEmbeddingsErrors) // TODO: fix copy
 
   /**
    * Accumulate the [errors] of a given token.

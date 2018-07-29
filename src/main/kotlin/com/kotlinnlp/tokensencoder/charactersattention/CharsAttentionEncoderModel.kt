@@ -7,6 +7,8 @@
 
 package com.kotlinnlp.tokensencoder.charactersattention
 
+import com.kotlinnlp.linguisticdescription.sentence.Sentence
+import com.kotlinnlp.linguisticdescription.sentence.token.FormToken
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.LayerType
@@ -31,7 +33,7 @@ class CharsAttentionEncoderModel(
   hanAttentionSize: Int = 25,
   hanConnectionType: LayerType.Connection = LayerType.Connection.LSTM,
   hanHiddenActivation: ActivationFunction? = Tanh()
-) : TokensEncoderModel {
+) : TokensEncoderModel<FormToken, Sentence<FormToken>> {
 
   companion object {
 
