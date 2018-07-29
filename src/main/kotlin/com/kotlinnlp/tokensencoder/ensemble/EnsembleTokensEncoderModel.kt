@@ -22,6 +22,8 @@ import com.kotlinnlp.tokensencoder.TokensEncoderModel
  *
  * @property models the list of tokens-encoder models
  * @param outputMergeConfiguration the configuration of the output merge layer
+ * @param weightsInitializer the initializer of the output merge network weights
+ * @param biasesInitializer the initializer of the output merge network biases
  */
 open class EnsembleTokensEncoderModel(
   val models: List<TokensEncoderModel<*, *>>,
