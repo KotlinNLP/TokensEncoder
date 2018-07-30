@@ -34,7 +34,7 @@ data class TokensEncoderConverterModel<
    *
    * @return a tokens encoder wrapper compatible with this [model] and [converter]
    */
-  internal fun buildWrapper(useDropout: Boolean) = TokensEncoderWrapper(
+  fun buildWrapper(useDropout: Boolean) = TokensEncoderWrapper(
     encoder = TokensEncoderFactory(this.model, useDropout = useDropout),
     converter = this.converter
   )
