@@ -24,16 +24,16 @@ import com.kotlinnlp.tokensencoder.TokensEncoderParameters
  * @property id an identification number useful to track a specific processor
  */
 class TokensEncoderWrapper<
-  InTokenType: Token,
-  InSentenceType: Sentence<InTokenType>,
-  OutTokenType: Token,
-  OutSentenceType: Sentence<OutTokenType>
+  FromTokenType: Token,
+  FromSentenceType: Sentence<FromTokenType>,
+  ToTokenType: Token,
+  ToSentenceType: Sentence<ToTokenType>
   >(
-  val encoder: TokensEncoder<OutTokenType, OutSentenceType>,
-  val converter: SentenceConverter<InTokenType, InSentenceType, OutTokenType, OutSentenceType>,
+  val encoder: TokensEncoder<ToTokenType, ToSentenceType>,
+  val converter: SentenceConverter<FromTokenType, FromSentenceType, ToTokenType, ToSentenceType>,
   override val id: Int = 0
 ) : NeuralProcessor<
-  InSentenceType, // InputType
+  FromSentenceType, // InputType
   List<DenseNDArray>, // OutputType
   List<DenseNDArray>, // ErrorsType
   NeuralProcessor.NoInputErrors, // InputErrorsType
@@ -57,7 +57,7 @@ class TokensEncoderWrapper<
    *
    * @return a list of dense encoded representations of the given sentence tokens
    */
-  override fun forward(input: InSentenceType): List<DenseNDArray> = this.encoder.forward(this.converter.convert(input))
+  override fun forward(input: FromSentenceType): List<DenseNDArray> = this.encoder.forward(this.converter.convert(input))
 
   /**
    * The Backward.

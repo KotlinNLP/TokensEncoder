@@ -20,13 +20,13 @@ import com.kotlinnlp.tokensencoder.TokensEncoderModel
  * @property converter the sentence converter to obtain the kind of sentence required by the [model]
  */
 data class TokensEncoderConverterModel<
-  InTokenType: Token,
-  InSentenceType: Sentence<InTokenType>,
-  OutTokenType: Token,
-  OutSentenceType: Sentence<OutTokenType>>
+  FromTokenType: Token,
+  FromSentenceType: Sentence<FromTokenType>,
+  ToTokenType: Token,
+  ToSentenceType: Sentence<ToTokenType>>
 (
-  val model: TokensEncoderModel<OutTokenType, OutSentenceType>,
-  val converter: SentenceConverter<InTokenType, InSentenceType, OutTokenType, OutSentenceType>
+  val model: TokensEncoderModel<ToTokenType, ToSentenceType>,
+  val converter: SentenceConverter<FromTokenType, FromSentenceType, ToTokenType, ToSentenceType>
 ) {
 
   /**

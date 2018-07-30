@@ -15,10 +15,10 @@ import com.kotlinnlp.linguisticdescription.sentence.token.Token
  * sentence required by it.
  */
 interface SentenceConverter<
-  InTokenType: Token,
-  InSentenceType: Sentence<InTokenType>,
-  OutTokenType: Token,
-  OutSentenceType: Sentence<OutTokenType>
+  FromTokenType: Token,
+  FromSentenceType: Sentence<FromTokenType>,
+  ToTokenType: Token,
+  ToSentenceType: Sentence<ToTokenType>
   > {
 
   /**
@@ -28,5 +28,5 @@ interface SentenceConverter<
    *
    * @return a new converted sentence of the output type
    */
-  fun convert(sentence: InSentenceType): OutSentenceType
+  fun convert(sentence: FromSentenceType): ToSentenceType
 }
