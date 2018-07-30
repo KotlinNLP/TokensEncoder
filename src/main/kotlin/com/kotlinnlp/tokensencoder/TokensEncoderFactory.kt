@@ -7,6 +7,8 @@
 
 package com.kotlinnlp.tokensencoder
 
+import com.kotlinnlp.linguisticdescription.sentence.Sentence
+import com.kotlinnlp.linguisticdescription.sentence.token.Token
 import com.kotlinnlp.tokensencoder.charactersattention.CharsAttentionEncoder
 import com.kotlinnlp.tokensencoder.charactersattention.CharsAttentionEncoderModel
 import com.kotlinnlp.tokensencoder.charactersbirnn.CharsBiRNNEncoder
@@ -28,7 +30,11 @@ object TokensEncoderFactory {
    *
    * @return a new instance of a [TokensEncoder]
    */
-  operator fun invoke(model: TokensEncoderModel<*, *>, useDropout: Boolean, id: Int = 0): TokensEncoder<*, *> =
+  @Suppress("UNCHECKED_CAST")
+  operator fun <TokenType : Token, SentenceType : Sentence<TokenType>>invoke(
+    model: TokensEncoderModel<TokenType, SentenceType>,
+    useDropout: Boolean, id: Int = 0
+  ): TokensEncoder<TokenType, SentenceType> =
     when (model) {
       is CharsAttentionEncoderModel -> CharsAttentionEncoder(model, useDropout, id)
       is CharsBiRNNEncoderModel -> CharsBiRNNEncoder(model, useDropout, id)
@@ -36,5 +42,5 @@ object TokensEncoderFactory {
       is MorphoEncoderModel -> MorphoEncoder(model, useDropout, id)
       is EnsembleTokensEncoderModel -> EnsembleTokensEncoder(model, useDropout, id)
       else -> throw RuntimeException("Invalid TokensEncoder model ${model.javaClass.name}.")
-    }
+    } as TokensEncoder<TokenType, SentenceType>
 }
