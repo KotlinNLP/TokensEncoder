@@ -61,8 +61,9 @@ class EnsembleTokensEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>
       }
     }
 
-    val arrayList: ArrayList<List<DenseNDArray>> = ArrayList(tokenEncodings.toList()) // TODO: fix this
-    return this.outputMergeProcessors.forward(arrayList)
+    val mergeInput: ArrayList<List<DenseNDArray>> = ArrayList(tokenEncodings)
+
+    return this.outputMergeProcessors.forward(mergeInput)
   }
 
   /**
