@@ -15,6 +15,7 @@ import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig.*
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
+import com.kotlinnlp.tokensencoder.wrapper.TokensEncoderConverterModel
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 
 /**
@@ -25,12 +26,12 @@ import com.kotlinnlp.tokensencoder.TokensEncoderModel
  * @param weightsInitializer the initializer of the output merge network weights
  * @param biasesInitializer the initializer of the output merge network biases
  */
-open class EnsembleTokensEncoderModel(
-  val models: List<TokensEncoderModel<*, *>>,
+class EnsembleTokensEncoderModel<TokenType: Token, SentenceType: Sentence<TokenType>>(
+  val models: List<TokensEncoderConverterModel<TokenType, SentenceType, *, *>>,
   outputMergeConfiguration: MergeConfiguration = ConcatMerge(),
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = null
-) : TokensEncoderModel<Token, Sentence<Token>> {
+) : TokensEncoderModel<TokenType, SentenceType> {
 
   companion object {
 
@@ -45,10 +46,10 @@ open class EnsembleTokensEncoderModel(
     is AffineMerge -> outputMergeConfiguration.outputSize
     is BiaffineMerge -> outputMergeConfiguration.outputSize
     is ConcatFeedforwardMerge -> outputMergeConfiguration.outputSize
-    is ConcatMerge -> this.models.sumBy { it.tokenEncodingSize }
+    is ConcatMerge -> this.models.sumBy { it.model.tokenEncodingSize }
     is SumMerge, is ProductMerge, is AvgMerge -> {
-      require(this.models.all { it.tokenEncodingSize == this.models[0].tokenEncodingSize } )
-      this.models[0].tokenEncodingSize
+      require(this.models.all { it.model.tokenEncodingSize == this.models[0].model.tokenEncodingSize } )
+      this.models[0].model.tokenEncodingSize
     }
     else -> throw RuntimeException("Invalid output merge configuration.")
   }
@@ -62,22 +63,31 @@ open class EnsembleTokensEncoderModel(
    * The Merge network that combines encoded vectors of each encoder.
    */
   val outputMergeNetwork = NeuralNetwork(
-    if (outputMergeConfiguration is ConcatFeedforwardMerge) listOf(
-      LayerInterface(sizes = this.models.map { it.tokenEncodingSize }, dropout = outputMergeConfiguration.dropout),
-      LayerInterface(size = this.models.sumBy { it.tokenEncodingSize }, connectionType = LayerType.Connection.Concat),
-      LayerInterface(size = outputMergeConfiguration.outputSize, connectionType = LayerType.Connection.Feedforward))
-    else listOf(
-      LayerInterface(sizes = this.models.map { it.tokenEncodingSize }, dropout = outputMergeConfiguration.dropout),
-      LayerInterface(size = this.mergeOutputSize, connectionType = outputMergeConfiguration.type)),
+    layersConfiguration = if (outputMergeConfiguration is ConcatFeedforwardMerge)
+      listOf(
+        LayerInterface(
+          sizes = this.models.map { it.model.tokenEncodingSize },
+          dropout = outputMergeConfiguration.dropout),
+        LayerInterface(
+          size = this.models.sumBy { it.model.tokenEncodingSize },
+          connectionType = LayerType.Connection.Concat),
+        LayerInterface(
+          size = outputMergeConfiguration.outputSize,
+          connectionType = LayerType.Connection.Feedforward))
+    else
+      listOf(
+        LayerInterface(
+          sizes = this.models.map { it.model.tokenEncodingSize },
+          dropout = outputMergeConfiguration.dropout),
+        LayerInterface(
+          size = this.mergeOutputSize,
+          connectionType = outputMergeConfiguration.type)),
     weightsInitializer = weightsInitializer,
-    biasesInitializer = biasesInitializer)
+    biasesInitializer = biasesInitializer
+  )
 
   /**
    * @return the string representation of this model
    */
-  override fun toString(): String = """
-    encoding size %d
-  """.trimIndent().format(
-    this.tokenEncodingSize
-  )
+  override fun toString(): String = "encoding size %d".format(this.tokenEncodingSize)
 }

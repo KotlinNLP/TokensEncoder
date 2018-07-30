@@ -13,8 +13,8 @@ import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedforwardProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.tokensencoder.TokensEncoder
-import com.kotlinnlp.tokensencoder.TokensEncoderFactory
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
+import com.kotlinnlp.tokensencoder.wrapper.TokensEncoderWrapper
 
 /**
  * The tokens-encoder that encodes a token by concatenating the results of other [TokensEncoder]s.
@@ -23,17 +23,17 @@ import com.kotlinnlp.tokensencoder.TokensEncoderParameters
  * @property useDropout whether to apply the dropout
  * @property id an identification number useful to track a specific processor
  */
-class EnsembleTokensEncoder(
-  override val model: EnsembleTokensEncoderModel,
+class EnsembleTokensEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
+  override val model: EnsembleTokensEncoderModel<TokenType, SentenceType>,
   override val useDropout: Boolean,
   override val id: Int = 0
-) : TokensEncoder<Token, Sentence<Token>>(model) {
+) : TokensEncoder<TokenType, SentenceType>(model) {
 
   /**
    * List of tokens encoder builders.
    */
-  private val encoders: List<TokensEncoder<*, *>> = this.model.models.map {
-    TokensEncoderFactory(it, useDropout = this.useDropout)
+  private val encoders: List<TokensEncoderWrapper<TokenType, SentenceType, *, *>> = this.model.models.map {
+    it.buildWrapper(useDropout = this.useDropout)
   }
 
   /**
@@ -51,13 +51,12 @@ class EnsembleTokensEncoder(
    *
    * @return a list of dense encoded representations of the given sentence tokens
    */
-  override fun forward(input: Sentence<Token>): List<DenseNDArray> {
+  override fun forward(input: SentenceType): List<DenseNDArray> {
 
     val tokenEncodings = List<MutableList<DenseNDArray>>(size = input.tokens.size, init = { mutableListOf() })
 
-    this.encoders.forEach { encoder ->
-
-      encoder.forward(input).forEachIndexed { tokenId, values ->
+    this.encoders.forEach {
+      it.forward(input).forEachIndexed { tokenId, values ->
         tokenEncodings[tokenId].add(values)
       }
     }
