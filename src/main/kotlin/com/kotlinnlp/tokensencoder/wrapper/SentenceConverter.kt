@@ -26,7 +26,7 @@ interface SentenceConverter<
    *
    * @param sentence the input sentence
    *
-   * @return a new converted sentence of the output type
+   * @return the sentence converted to the output type
    */
   fun convert(sentence: FromSentenceType): ToSentenceType
 }
