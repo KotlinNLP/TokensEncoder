@@ -11,6 +11,7 @@ import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.linguisticdescription.sentence.token.Token
 import com.kotlinnlp.tokensencoder.TokensEncoderFactory
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
+import java.io.Serializable
 
 /**
  * A container of a [TokensEncoderModel] and the related [SentenceConverter] used to obtain the required kind of
@@ -27,7 +28,16 @@ data class TokensEncoderConverterModel<
 (
   val model: TokensEncoderModel<ToTokenType, ToSentenceType>,
   val converter: SentenceConverter<FromTokenType, FromSentenceType, ToTokenType, ToSentenceType>
-) {
+) : Serializable {
+
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed by Serializable).
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+  }
 
   /**
    * @param useDropout whether to apply the dropout
