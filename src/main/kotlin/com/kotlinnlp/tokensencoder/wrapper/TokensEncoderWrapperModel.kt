@@ -20,7 +20,7 @@ import java.io.Serializable
  * @property model a tokens encoder model
  * @property converter the sentence converter to obtain the kind of sentence required by the [model]
  */
-data class TokensEncoderConverterModel<
+data class TokensEncoderWrapperModel<
   FromTokenType: Token,
   FromSentenceType: Sentence<FromTokenType>,
   ToTokenType: Token,

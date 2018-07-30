@@ -15,7 +15,7 @@ import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig.*
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
-import com.kotlinnlp.tokensencoder.wrapper.TokensEncoderConverterModel
+import com.kotlinnlp.tokensencoder.wrapper.TokensEncoderWrapperModel
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 
 /**
@@ -27,7 +27,7 @@ import com.kotlinnlp.tokensencoder.TokensEncoderModel
  * @param biasesInitializer the initializer of the output merge network biases
  */
 class EnsembleTokensEncoderModel<TokenType: Token, SentenceType: Sentence<TokenType>>(
-  val models: List<TokensEncoderConverterModel<TokenType, SentenceType, *, *>>,
+  val models: List<TokensEncoderWrapperModel<TokenType, SentenceType, *, *>>,
   outputMergeConfiguration: MergeConfiguration = ConcatMerge(),
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = null
