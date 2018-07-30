@@ -17,6 +17,6 @@ import com.kotlinnlp.simplednn.core.optimizer.Optimizer
  * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
  */
 abstract class TokensEncoderOptimizer(
-  private val model: TokensEncoderModel,
+  private val model: TokensEncoderModel<*, *>,
   updateMethod: UpdateMethod<*>
 ) : Optimizer<TokensEncoderParameters>(updateMethod = updateMethod)
