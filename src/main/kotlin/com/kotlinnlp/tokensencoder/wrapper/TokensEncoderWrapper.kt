@@ -57,7 +57,8 @@ class TokensEncoderWrapper<
    *
    * @return a list of dense encoded representations of the given sentence tokens
    */
-  override fun forward(input: FromSentenceType): List<DenseNDArray> = this.encoder.forward(this.converter.convert(input))
+  override fun forward(input: FromSentenceType): List<DenseNDArray> =
+    this.encoder.forward(this.converter.convert(input))
 
   /**
    * The Backward.
