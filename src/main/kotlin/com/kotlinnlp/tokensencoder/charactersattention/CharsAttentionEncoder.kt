@@ -109,7 +109,7 @@ class CharsAttentionEncoder(
   /**
    * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
    *
-   * @return the errors of the [CharsAttentionEncoder] parameters
+   * @return the errors of the model parameters
    */
   override fun getParamsErrors(copy: Boolean): CharsAttentionEncoderParams {
 
@@ -135,11 +135,9 @@ class CharsAttentionEncoder(
   }
 
   /**
-   * Return the input errors of the last backward.
+   * @param copy whether to return by value or by reference
    *
-   * @param copy whether to return by value or by reference (default true)
-   *
-   * @return the input errors
+   * @return the input errors of the last backward
    */
   override fun getInputErrors(copy: Boolean) = NeuralProcessor.NoInputErrors
 

@@ -71,17 +71,15 @@ class MorphoEncoder(
   /**
    * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
    *
-   * @return the errors of the [TokensEncoderParameters] parameters
+   * @return the errors of the model parameters
    */
   override fun getParamsErrors(copy: Boolean): TokensEncoderParameters =
     MorphoEncoderParams(parameters = this.encoder.getParamsErrors(copy = copy))
 
   /**
-   * Return the input errors of the last backward.
+   * @param copy whether to return by value or by reference
    *
-   * @param copy whether to return by value or by reference (default true)
-   *
-   * @return the input errors
+   * @return the input errors of the last backward
    */
   override fun getInputErrors(copy: Boolean) = NeuralProcessor.NoInputErrors
 
