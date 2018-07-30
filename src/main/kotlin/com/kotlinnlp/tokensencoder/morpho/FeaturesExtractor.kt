@@ -10,8 +10,7 @@ package com.kotlinnlp.tokensencoder.morpho
 import com.kotlinnlp.linguisticdescription.lexicon.LexiconDictionary
 import com.kotlinnlp.linguisticdescription.morphology.Morphology
 import com.kotlinnlp.linguisticdescription.morphology.SingleMorphology
-import com.kotlinnlp.linguisticdescription.sentence.Sentence
-import com.kotlinnlp.linguisticdescription.sentence.token.MorphoToken
+import com.kotlinnlp.linguisticdescription.sentence.MorphoSentence
 import com.kotlinnlp.tokensencoder.morpho.extractors.MorphoFeaturesExtractorBuilder
 
 /**
@@ -21,8 +20,9 @@ import com.kotlinnlp.tokensencoder.morpho.extractors.MorphoFeaturesExtractorBuil
  * @param lexicalDictionary the lexical dictionary (can be null)
  */
 class FeaturesExtractor(
-  private val sentence: Sentence<MorphoToken>,
-  private val lexicalDictionary: LexiconDictionary?) {
+  private val sentence: MorphoSentence,
+  private val lexicalDictionary: LexiconDictionary?
+) {
 
   /**
    * @return a set of features for each token
