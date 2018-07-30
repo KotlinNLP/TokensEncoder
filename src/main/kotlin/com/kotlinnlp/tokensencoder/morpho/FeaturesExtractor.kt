@@ -20,7 +20,7 @@ import com.kotlinnlp.tokensencoder.morpho.extractors.MorphoFeaturesExtractorBuil
  * @param lexicalDictionary the lexical dictionary (can be null)
  */
 class FeaturesExtractor(
-  private val sentence: MorphoSentence,
+  private val sentence: MorphoSentence<*>,
   private val lexicalDictionary: LexiconDictionary?
 ) {
 

@@ -20,7 +20,7 @@ import com.kotlinnlp.utils.progressindicator.ProgressIndicatorBar
  */
 class FeaturesCollector(
   private val lexicalDictionary: LexiconDictionary?,
-  private val sentences: List<MorphoSentence>
+  private val sentences: List<MorphoSentence<*>>
 ) {
 
   /**

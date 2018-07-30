@@ -30,7 +30,7 @@ class MorphoEncoder(
   override val model: MorphoEncoderModel,
   override val useDropout: Boolean,
   override val id: Int = 0
-) : TokensEncoder<MorphoToken, MorphoSentence>(model) {
+) : TokensEncoder<MorphoToken, MorphoSentence<MorphoToken>>(model) {
 
   /**
    * The feed-forward network used to transform the input from sparse to dense.
@@ -47,7 +47,7 @@ class MorphoEncoder(
    *
    * @return a list of dense encoded representations of the given sentence tokens
    */
-  override fun forward(input: MorphoSentence): List<DenseNDArray> {
+  override fun forward(input: MorphoSentence<MorphoToken>): List<DenseNDArray> {
 
     val tokenFeatures: List<Set<String>> =
       FeaturesExtractor(sentence = input, lexicalDictionary = this.model.lexiconDictionary).extractFeatures()
