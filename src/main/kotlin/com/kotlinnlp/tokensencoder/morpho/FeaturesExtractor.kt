@@ -27,17 +27,30 @@ class FeaturesExtractor(
   /**
    * @return a set of features for each token
    */
-  fun extractFeatures(): List<Set<String>> = this.sentence.tokens.map { token ->
+  fun extractFeatures(): List<Set<String>> {
 
-    val tokenFeaturesSet = mutableSetOf<String>()
+    val tokenMultiWordsMorphologiesByIndex = mutableMapOf<Int, MutableList<List<Morphology>>>()
 
-    token.morphologies.forEach {
-      tokenFeaturesSet.addAll(it.toFeatures())
+    this.sentence.multiWords?.forEach {
+      (it.startToken..it.endToken).forEach { index ->
+        tokenMultiWordsMorphologiesByIndex.getOrPut(index) { mutableListOf() }.add(it.morphologies)
+      }
     }
 
-    if (tokenFeaturesSet.isEmpty()) tokenFeaturesSet.add("i:0 p:unknown")
+    return this.sentence.tokens.mapIndexed { i, token ->
 
-    tokenFeaturesSet
+      val tokenFeaturesSet = mutableSetOf<String>()
+
+      token.morphologies.forEach { tokenFeaturesSet.addAll(it.toFeatures()) }
+
+      tokenMultiWordsMorphologiesByIndex[i]?.forEach { possibleMorphologies ->
+        possibleMorphologies.forEach { tokenFeaturesSet.addAll(it.toFeatures()) }
+      }
+
+      if (tokenFeaturesSet.isEmpty()) tokenFeaturesSet.add("i:0 p:unknown")
+
+      tokenFeaturesSet
+    }
   }
 
   /**
