@@ -9,6 +9,7 @@ package com.kotlinnlp.tokensencoder.wrapper
 
 import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.linguisticdescription.sentence.token.Token
+import java.io.Serializable
 
 /**
  * The sentence converter associated to a TokensEncoder and used to dynamically convert an input sentence into the
@@ -19,7 +20,7 @@ interface SentenceConverter<
   FromSentenceType: Sentence<FromTokenType>,
   ToTokenType: Token,
   ToSentenceType: Sentence<ToTokenType>
-  > {
+  > : Serializable {
 
   /**
    * Convert a given sentence from a type to another.

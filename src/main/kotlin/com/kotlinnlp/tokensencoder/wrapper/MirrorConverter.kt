@@ -16,6 +16,15 @@ import com.kotlinnlp.linguisticdescription.sentence.token.Token
 class MirrorConverter<TokenType: Token, SentenceType: Sentence<TokenType>>
   : SentenceConverter<TokenType, SentenceType, TokenType, SentenceType> {
 
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed by Serializable).
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+  }
+
   /**
    * Return the same sentence given in input.
    *
