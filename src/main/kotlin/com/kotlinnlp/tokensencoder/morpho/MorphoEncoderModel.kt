@@ -60,4 +60,9 @@ class MorphoEncoderModel(
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer
   )
+
+  /**
+   * @return the string representation of this model
+   */
+  override fun toString(): String = "encoding size %d".format(this.tokenEncodingSize)
 }
