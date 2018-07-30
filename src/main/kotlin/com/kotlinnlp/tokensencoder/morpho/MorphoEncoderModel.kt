@@ -34,7 +34,7 @@ class MorphoEncoderModel(
   activation: ActivationFunction?,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = null
-) : TokensEncoderModel<MorphoToken, MorphoSentence> {
+) : TokensEncoderModel<MorphoToken, MorphoSentence<MorphoToken>> {
 
   companion object {
 

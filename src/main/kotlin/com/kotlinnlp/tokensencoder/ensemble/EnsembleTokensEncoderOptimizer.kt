@@ -8,7 +8,6 @@
 package com.kotlinnlp.tokensencoder.ensemble
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.tokensencoder.TokensEncoderOptimizer
 import com.kotlinnlp.tokensencoder.TokensEncoderOptimizerFactory
@@ -21,7 +20,7 @@ import com.kotlinnlp.tokensencoder.TokensEncoderParameters
  * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...
  */
 open class EnsembleTokensEncoderOptimizer(
-  private val model: EnsembleTokensEncoderModel,
+  private val model: EnsembleTokensEncoderModel<*, *>,
   updateMethod: UpdateMethod<*>
 ) : TokensEncoderOptimizer(
   model = model,
@@ -31,7 +30,7 @@ open class EnsembleTokensEncoderOptimizer(
   /**
    * The list of optimizers.
    */
-  private val encodersOptimizers  = this.model.models.map { TokensEncoderOptimizerFactory(it, updateMethod) }
+  private val encodersOptimizers  = this.model.models.map { TokensEncoderOptimizerFactory(it.model, updateMethod) }
 
   /**
    *
