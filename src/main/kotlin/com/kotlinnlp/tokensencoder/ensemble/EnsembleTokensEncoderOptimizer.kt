@@ -28,12 +28,12 @@ open class EnsembleTokensEncoderOptimizer(
 ) {
 
   /**
-   * The list of optimizers.
+   * The list of optimizers of the ensemble encoders models.
    */
   private val encodersOptimizers  = this.model.models.map { TokensEncoderOptimizerFactory(it.model, updateMethod) }
 
   /**
-   *
+   * The optimizer of the output merge network.
    */
   private val outputMergeOptimizer = ParamsOptimizer(this.model.outputMergeNetwork.model, updateMethod)
 
