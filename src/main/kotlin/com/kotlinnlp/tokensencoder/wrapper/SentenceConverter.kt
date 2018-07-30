@@ -11,7 +11,7 @@ import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.linguisticdescription.sentence.token.Token
 
 /**
- * The sentence converter associated to a [TokensEncoder] and used to dynamically convert an input sentence into the
+ * The sentence converter associated to a TokensEncoder and used to dynamically convert an input sentence into the
  * sentence required by it.
  */
 interface SentenceConverter<
