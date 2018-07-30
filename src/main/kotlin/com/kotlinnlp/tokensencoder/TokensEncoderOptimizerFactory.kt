@@ -29,7 +29,7 @@ object TokensEncoderOptimizerFactory {
    *
    * @return a new instance of a [TokensEncoderOptimizer]
    */
-  operator fun invoke(model: TokensEncoderModel, updateMethod: UpdateMethod<*>): TokensEncoderOptimizer =
+  operator fun invoke(model: TokensEncoderModel<*, *>, updateMethod: UpdateMethod<*>): TokensEncoderOptimizer =
 
     when (model) {
       is CharsAttentionEncoderModel -> CharsAttentionEncoderOptimizer(model, updateMethod)
