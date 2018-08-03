@@ -1,6 +1,6 @@
 # TokensEncoder
 
-TokensEncoder is a very simple to use tokens encoder library which uses neural networks from [SimpleDNN](https://github.com/nlpstep/simplednn "SimpleDNN").
+TokensEncoder is a very simple to use tokens encoder library which uses neural networks from [SimpleDNN](https://github.com/KotlinNLP/SimpleDNN "SimpleDNN").
 
 TokensEncoder is part of [KotlinNLP](http://kotlinnlp.com/ "KotlinNLP").
 
