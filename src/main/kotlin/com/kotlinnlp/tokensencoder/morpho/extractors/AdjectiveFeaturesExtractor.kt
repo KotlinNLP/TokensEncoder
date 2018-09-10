@@ -22,9 +22,9 @@ class AdjectiveFeaturesExtractor(private val morphology: Adjective) : MorphoFeat
   override fun get(): List<String> {
 
     val out = mutableListOf(
-      "p:%s".format(this.morphology.type),
+      "p:%s".format(this.morphology.pos),
       "p:%s n:%s p:%s g:%s c:%s".format(
-        this.morphology.type,
+        this.morphology.pos,
         this.morphology.person,
         this.morphology.number,
         this.morphology.gender,
@@ -32,7 +32,7 @@ class AdjectiveFeaturesExtractor(private val morphology: Adjective) : MorphoFeat
     )
 
     if (this.morphology !is Adjective.Qualifying) {
-      out.add("p:%s l:%s".format(this.morphology.type, this.morphology.lemma))
+      out.add("p:%s l:%s".format(this.morphology.pos, this.morphology.lemma))
     }
 
     return out

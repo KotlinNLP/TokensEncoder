@@ -20,6 +20,6 @@ class BaseFeaturesExtractor(private val morphology: SingleMorphology) : MorphoFe
    * Return a list of features.
    */
   override fun get(): List<String> = listOf(
-    "p:%s".format(this.morphology.type)
+    "p:%s".format(this.morphology.pos)
   )
 }

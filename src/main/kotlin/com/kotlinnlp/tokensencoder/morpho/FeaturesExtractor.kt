@@ -86,16 +86,16 @@ class FeaturesExtractor(
 
     this@FeaturesExtractor.lexicalDictionary?.get(
       lemma = this.lemma,
-      posTag = this.type.baseAnnotation)?.syntax?.let { syntacticInfo ->
+      posTag = this.pos.baseAnnotation)?.syntax?.let { syntacticInfo ->
 
       syntacticInfo.regencies?.let {
         list.addAll(it.map { regency ->
-          "p:%s r:%s".format(this.type, regency) })
+          "p:%s r:%s".format(this.pos, regency) })
       }
 
       syntacticInfo.subcategorization?.let {
         list.addAll(it.map { subcategory ->
-          "p:%s s:%s".format(this.type, subcategory) })
+          "p:%s s:%s".format(this.pos, subcategory) })
       }
     }
 

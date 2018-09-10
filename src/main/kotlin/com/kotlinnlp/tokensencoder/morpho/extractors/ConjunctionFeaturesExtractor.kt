@@ -20,7 +20,7 @@ class ConjunctionFeaturesExtractor(private val morphology: Conjunction) : Morpho
    * Return a list of features.
    */
   override fun get(): List<String> = listOf(
-    "p:%s".format(this.morphology.type),
-    "p:%s l:%s".format(this.morphology.type, this.morphology.lemma)
+    "p:%s".format(this.morphology.pos),
+    "p:%s l:%s".format(this.morphology.pos, this.morphology.lemma)
   )
 }

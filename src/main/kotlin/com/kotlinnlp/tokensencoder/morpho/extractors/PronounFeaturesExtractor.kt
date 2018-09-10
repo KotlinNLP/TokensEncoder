@@ -20,10 +20,10 @@ class PronounFeaturesExtractor(private val morphology: Pronoun) : MorphoFeatures
    * Return a list of features.
    */
   override fun get(): List<String> = listOf(
-    "p:%s".format(this.morphology.type),
-    "p:%s l:%s".format(this.morphology.type, this.morphology.lemma),
+    "p:%s".format(this.morphology.pos),
+    "p:%s l:%s".format(this.morphology.pos, this.morphology.lemma),
     "p:%s n:%s p:%s g:%s c:%s".format(
-      this.morphology.type,
+      this.morphology.pos,
       this.morphology.person,
       this.morphology.number,
       this.morphology.gender,

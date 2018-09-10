@@ -20,9 +20,9 @@ class NounFeaturesExtractor(private val morphology: Noun) : MorphoFeaturesExtrac
    * Return a list of features.
    */
   override fun get(): List<String> = listOf(
-    "p:%s".format(this.morphology.type),
+    "p:%s".format(this.morphology.pos),
     "p:%s n:%s p:%s g:%s c:%s".format(
-      this.morphology.type,
+      this.morphology.pos,
       this.morphology.person,
       this.morphology.number,
       this.morphology.gender,
