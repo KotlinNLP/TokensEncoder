@@ -62,7 +62,7 @@ class FeaturesExtractor(
 
     val list = mutableListOf<String>()
 
-    this.list.forEachIndexed { index, morphology ->
+    this.components.forEachIndexed { index, morphology ->
 
       list.addAll(morphology.getMorphoFeatures().map { "i:$index $it" })
       list.addAll(morphology.getLexicalFeatures().map { "i:$index $it" })
