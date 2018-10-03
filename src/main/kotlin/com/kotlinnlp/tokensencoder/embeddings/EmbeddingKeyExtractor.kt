@@ -8,12 +8,13 @@
 package com.kotlinnlp.tokensencoder.embeddings
 
 import com.kotlinnlp.linguisticdescription.sentence.Sentence
+import com.kotlinnlp.linguisticdescription.sentence.token.Token
 import java.io.Serializable
 
 /**
  * Extracts the string to use as embedding key from the token of a sentence.
  */
-interface EmbeddingKeyExtractor : Serializable {
+interface EmbeddingKeyExtractor<TokenType: Token, SentenceType: Sentence<TokenType>> : Serializable {
 
   /**
    * @param sentence a generic sentence
@@ -21,5 +22,5 @@ interface EmbeddingKeyExtractor : Serializable {
    *
    * @return the string to use as embedding key
    */
-  fun getKey(sentence: Sentence<*>, tokenId: Int): String
+  fun getKey(sentence: SentenceType, tokenId: Int): String
 }

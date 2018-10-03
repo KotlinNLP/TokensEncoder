@@ -45,7 +45,8 @@ object TokensEncoderFactory {
 
     is CharsBiRNNEncoderModel -> CharsBiRNNEncoder(model = model, useDropout = useDropout, id = id)
 
-    is EmbeddingsEncoderModel -> EmbeddingsEncoder(model = model, useDropout = useDropout, id = id)
+    is EmbeddingsEncoderModel<TokenType, SentenceType> ->
+      EmbeddingsEncoder(model = model, useDropout = useDropout, id = id)
 
     is MorphoEncoderModel -> MorphoEncoder(model = model, useDropout = useDropout, id = id)
 

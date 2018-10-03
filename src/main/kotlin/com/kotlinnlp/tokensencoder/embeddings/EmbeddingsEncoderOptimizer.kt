@@ -19,7 +19,7 @@ import com.kotlinnlp.tokensencoder.TokensEncoderParameters
  * @param model the model of this optimizer
  */
 class EmbeddingsEncoderOptimizer(
-  private val model: EmbeddingsEncoderModel,
+  private val model: EmbeddingsEncoderModel<*, *>,
   updateMethod: UpdateMethod<*>
 ) : TokensEncoderOptimizer(
   model = model,

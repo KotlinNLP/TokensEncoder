@@ -19,11 +19,11 @@ import com.kotlinnlp.tokensencoder.TokensEncoderModel
  * @param dropoutCoefficient the dropout coefficient
  * @param embeddingKeyExtractor an embeddings key extractor
  */
-class EmbeddingsEncoderModel(
+class EmbeddingsEncoderModel<TokenType: Token, SentenceType: Sentence<TokenType>>(
   val embeddingsMap: EmbeddingsMapByDictionary,
   val dropoutCoefficient: Double = 0.0,
-  val embeddingKeyExtractor: EmbeddingKeyExtractor
-) : TokensEncoderModel<Token, Sentence<Token>> {
+  val embeddingKeyExtractor: EmbeddingKeyExtractor<TokenType, SentenceType>
+) : TokensEncoderModel<TokenType, SentenceType> {
 
   companion object {
 

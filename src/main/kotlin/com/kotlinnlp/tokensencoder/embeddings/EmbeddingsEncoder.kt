@@ -22,11 +22,11 @@ import com.kotlinnlp.tokensencoder.TokensEncoder
  * @property useDropout whether to apply the dropout
  * @property id an identification number useful to track a specific processor
  */
-class EmbeddingsEncoder(
-  override val model: EmbeddingsEncoderModel,
+class EmbeddingsEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
+  override val model: EmbeddingsEncoderModel<TokenType, SentenceType>,
   override val useDropout: Boolean,
   override val id: Int = 0
-) : TokensEncoder<Token, Sentence<Token>>(model) {
+) : TokensEncoder<TokenType, SentenceType>(model) {
 
   /**
    * The word embeddings of the last encoded sentence.
@@ -45,7 +45,7 @@ class EmbeddingsEncoder(
    *
    * @return a list of dense encoded representations of the given sentence tokens
    */
-  override fun forward(input: Sentence<Token>): List<DenseNDArray> {
+  override fun forward(input: SentenceType): List<DenseNDArray> {
 
     this.lastEmbeddings = (0 until input.tokens.size).map {
       this.model.embeddingsMap.get(
