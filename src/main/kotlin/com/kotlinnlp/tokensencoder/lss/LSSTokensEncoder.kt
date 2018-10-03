@@ -55,6 +55,7 @@ class LSSTokensEncoder<TokenType : TokenIdentificable, SentenceType : SentenceId
       .unzip()
 
     this.lssEncoder.backward(outputErrors = LSSEncoder.OutputErrors(
+      size = outputErrors.size,
       contextVectors = splitErrors.first,
       latentHeads = splitErrors.second
     ))
