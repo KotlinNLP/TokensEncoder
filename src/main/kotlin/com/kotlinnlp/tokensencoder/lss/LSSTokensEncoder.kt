@@ -22,7 +22,7 @@ import java.lang.RuntimeException
  * @property useDropout whether to apply the dropout during the [forward]
  * @property id an identification number useful to track a specific encoder
  */
-internal class LSSTokensEncoder<TokenType : TokenIdentificable, SentenceType : SentenceIdentificable<TokenType>>(
+class LSSTokensEncoder<TokenType : TokenIdentificable, SentenceType : SentenceIdentificable<TokenType>>(
   override val model: LSSTokensEncoderModel<TokenType, SentenceType>,
   override val useDropout: Boolean,
   override val id: Int = 0
