@@ -53,6 +53,9 @@ class EnsembleTokensEncoderModel<TokenType: Token, SentenceType: Sentence<TokenT
     private const val serialVersionUID: Long = 1L
   }
 
+  /**
+   * The output size of the output merge layer.
+   */
   private val mergeOutputSize: Int = when (outputMergeConfiguration) {
     is AffineMerge -> outputMergeConfiguration.outputSize
     is BiaffineMerge -> outputMergeConfiguration.outputSize
