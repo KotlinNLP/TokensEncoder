@@ -40,6 +40,11 @@ data class TokensEncoderWrapperModel<
   }
 
   /**
+   * The size of the token encoding vectors.
+   */
+  val tokenEncodingSize: Int = this.model.tokenEncodingSize
+
+  /**
    * @param useDropout whether to apply the dropout
    *
    * @return a tokens encoder wrapper compatible with this [model] and [converter]
