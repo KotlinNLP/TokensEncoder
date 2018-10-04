@@ -10,6 +10,7 @@ package com.kotlinnlp.tokensencoder.lss
 import com.kotlinnlp.linguisticdescription.sentence.SentenceIdentificable
 import com.kotlinnlp.linguisticdescription.sentence.token.TokenIdentificable
 import com.kotlinnlp.lssencoder.LSSModel
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 
 /**
@@ -25,4 +26,26 @@ class LSSTokensEncoderModel<TokenType : TokenIdentificable, SentenceType : Sente
    * Note: the context vectors size is equal to the latent head representations size.
    */
   override val tokenEncodingSize: Int = 2 * this.lssModel.contextVectorsSize
+
+  /**
+   * @param useDropout whether to apply the dropout
+   * @param id an identification number useful to track a specific encoder
+   *
+   * @return a new tokens encoder that uses this model
+   */
+  override fun buildEncoder(useDropout: Boolean, id: Int) = LSSTokensEncoder(
+    model = this,
+    useDropout = useDropout,
+    id = id
+  )
+
+  /**
+   * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
+   *
+   * @return a new optimizer for this model
+   */
+  override fun buildOptimizer(updateMethod: UpdateMethod<*>) = LSSTokensEncoderOptimizer(
+    model = this,
+    updateMethod = updateMethod
+  )
 }

@@ -101,4 +101,26 @@ class EnsembleTokensEncoderModel<TokenType: Token, SentenceType: Sentence<TokenT
    * @return the string representation of this model
    */
   override fun toString(): String = "encoding size %d".format(this.tokenEncodingSize)
+
+  /**
+   * @param useDropout whether to apply the dropout
+   * @param id an identification number useful to track a specific encoder
+   *
+   * @return a new tokens encoder that uses this model
+   */
+  override fun buildEncoder(useDropout: Boolean, id: Int) = EnsembleTokensEncoder(
+    model = this,
+    useDropout = useDropout,
+    id = id
+  )
+
+  /**
+   * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
+   *
+   * @return a new optimizer for this model
+   */
+  override fun buildOptimizer(updateMethod: UpdateMethod<*>) = EnsembleTokensEncoderOptimizer(
+    model = this,
+    updateMethod = updateMethod
+  )
 }

@@ -14,6 +14,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.deeplearning.attention.han.HAN
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 
 /**
@@ -95,5 +96,27 @@ class CharsAttentionEncoderModel(
     else
       "None",
     this.charactersNetwork.biRNNsConnectionType
+  )
+
+  /**
+   * @param useDropout whether to apply the dropout
+   * @param id an identification number useful to track a specific encoder
+   *
+   * @return a new tokens encoder that uses this model
+   */
+  override fun buildEncoder(useDropout: Boolean, id: Int) = CharsAttentionEncoder(
+    model = this,
+    useDropout = useDropout,
+    id = id
+  )
+
+  /**
+   * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
+   *
+   * @return a new optimizer for this model
+   */
+  override fun buildOptimizer(updateMethod: UpdateMethod<*>) = CharsAttentionEncoderOptimizer(
+    model = this,
+    updateMethod = updateMethod
   )
 }

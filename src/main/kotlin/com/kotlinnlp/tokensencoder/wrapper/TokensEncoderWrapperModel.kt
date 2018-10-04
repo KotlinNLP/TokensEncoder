@@ -9,7 +9,7 @@ package com.kotlinnlp.tokensencoder.wrapper
 
 import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.linguisticdescription.sentence.token.Token
-import com.kotlinnlp.tokensencoder.TokensEncoderFactory
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 
 /**
@@ -45,11 +45,21 @@ data class TokensEncoderWrapperModel<
 
   /**
    * @param useDropout whether to apply the dropout
+   * @param id an identification number useful to track a specific encoder
    *
-   * @return a tokens encoder wrapper compatible with this [model] and [converter]
+   * @return a new tokens encoder that uses this model and the [converter]
    */
-  fun buildWrapper(useDropout: Boolean) = TokensEncoderWrapper(
-    encoder = TokensEncoderFactory(this.model, useDropout = useDropout),
-    converter = this.converter
+  override fun buildEncoder(useDropout: Boolean, id: Int) = TokensEncoderWrapper(
+    model = this,
+    converter = this.converter,
+    useDropout = useDropout,
+    id = id
   )
+
+  /**
+   * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
+   *
+   * @return a new optimizer for this model
+   */
+  override fun buildOptimizer(updateMethod: UpdateMethod<*>) = this.model.buildOptimizer(updateMethod)
 }
