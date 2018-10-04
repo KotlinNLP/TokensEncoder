@@ -12,6 +12,7 @@ import com.kotlinnlp.linguisticdescription.sentence.token.Token
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMapByDictionary
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
+import com.kotlinnlp.tokensencoder.embeddings.keyextractor.EmbeddingKeyExtractor
 
 /**
  * The model of the [EmbeddingsEncoder].
