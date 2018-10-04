@@ -47,11 +47,10 @@ data class TokensEncoderWrapperModel<
    * @param useDropout whether to apply the dropout
    * @param id an identification number useful to track a specific encoder
    *
-   * @return a new tokens encoder that uses this model and the [converter]
+   * @return a new tokens encoder that uses this model
    */
   override fun buildEncoder(useDropout: Boolean, id: Int) = TokensEncoderWrapper(
     model = this,
-    converter = this.converter,
     useDropout = useDropout,
     id = id
   )

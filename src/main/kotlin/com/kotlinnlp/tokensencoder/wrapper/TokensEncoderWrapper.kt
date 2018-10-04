@@ -18,7 +18,6 @@ import com.kotlinnlp.tokensencoder.TokensEncoderParameters
  * A [TokensEncoder] combined with a [SentenceConverter] that wraps the conversion of the input sentence.
  *
  * @property model the model of this encoder
- * @property converter a sentence converter compatible with the [encoder]
  * @property useDropout whether to apply the dropout
  * @property id an identification number useful to track a specific processor
  */
@@ -29,7 +28,6 @@ class TokensEncoderWrapper<
   ToSentenceType: Sentence<ToTokenType>>
 (
   override val model: TokensEncoderWrapperModel<FromTokenType, FromSentenceType, ToTokenType, ToSentenceType>,
-  val converter: SentenceConverter<FromTokenType, FromSentenceType, ToTokenType, ToSentenceType>,
   override val useDropout: Boolean = false,
   override val id: Int = 0
 ) : TokensEncoder<FromTokenType, FromSentenceType>(model) {
@@ -42,7 +40,7 @@ class TokensEncoderWrapper<
   /**
    * The tokens encoder wrapped.
    */
-  private val encoder: TokensEncoder<ToTokenType, ToSentenceType> = model.model.buildEncoder(
+  private val encoder: TokensEncoder<ToTokenType, ToSentenceType> = this.model.model.buildEncoder(
     useDropout = this.useDropout,
     id = this.id)
 
@@ -54,7 +52,7 @@ class TokensEncoderWrapper<
    * @return a list of dense encoded representations of the given sentence tokens
    */
   override fun forward(input: FromSentenceType): List<DenseNDArray> =
-    this.encoder.forward(this.converter.convert(input))
+    this.encoder.forward(this.model.converter.convert(input))
 
   /**
    * The Backward.
