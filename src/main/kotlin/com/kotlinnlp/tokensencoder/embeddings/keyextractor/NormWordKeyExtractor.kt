@@ -33,5 +33,5 @@ class NormWordKeyExtractor<TokenType : Token, SentenceType : Sentence<TokenType>
    * @return the form of the token
    */
   override fun getKey(sentence: SentenceType, tokenId: Int): String =
-    (sentence.tokens[tokenId] as? FormToken)?.form ?: "_"
+    (sentence.tokens[tokenId] as? FormToken)?.normalizedForm ?: "_"
 }
