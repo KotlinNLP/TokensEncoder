@@ -7,11 +7,12 @@
 
 package com.kotlinnlp.tokensencoder.charlm
 
+import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
 
 /**
  * The parameters of the [CharLMEncoder].
  *
- * It doesn't contains any parameter because the [CharLMEncoder] is not trainable.
+ * @property mergeNetworkParameters the parameters of the output merge layer
  */
-class CharLMEncoderParams : TokensEncoderParameters
+class CharLMEncoderParams(val mergeNetworkParameters: NetworkParameters) : TokensEncoderParameters

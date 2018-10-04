@@ -8,6 +8,7 @@
 package com.kotlinnlp.tokensencoder.charlm
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
+import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.tokensencoder.TokensEncoderOptimizer
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
 
@@ -26,20 +27,26 @@ class CharLMEncoderOptimizer(
 ) {
 
   /**
-   * Update the parameters of the neural element associated to this optimizer.
-   *
-   * It has no effect in this implementation.
+   * The optimizer of the merge layer.
    */
-  override fun update() = Unit
+  private val optimizer = ParamsOptimizer(this.model.outputMergeNetwork.model, updateMethod)
+
+  /**
+   * Update the parameters of the neural element associated to this optimizer.
+   */
+  override fun update() = this.optimizer.update()
 
   /**
    * Accumulate the given [paramsErrors] into the accumulator.
-   *
-   * It has no effect in this implementation.
    *
    * @param paramsErrors the parameters errors to accumulate
    * @param copy a Boolean indicating if the [paramsErrors] can be used as reference or must be copied. Set copy = false
    *             to optimize the accumulation when the amount of the errors to accumulate is 1. (default = true)
    */
-  override fun accumulate(paramsErrors: TokensEncoderParameters, copy: Boolean) = Unit
+  override fun accumulate(paramsErrors: TokensEncoderParameters, copy: Boolean) {
+
+    paramsErrors as CharLMEncoderParams
+
+    this.optimizer.accumulate(paramsErrors.mergeNetworkParameters)
+  }
 }

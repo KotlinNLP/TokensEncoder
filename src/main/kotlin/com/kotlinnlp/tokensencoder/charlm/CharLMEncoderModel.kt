@@ -10,24 +10,31 @@ package com.kotlinnlp.tokensencoder.charlm
 import com.kotlinnlp.languagemodel.CharLM
 import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.linguisticdescription.sentence.token.FormToken
+import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
+import com.kotlinnlp.simplednn.core.layers.LayerInterface
+import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig.*
+import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 
 /**
  * The model of the [CharLMEncoder].
  *
- * @param charLM
- * @param revCharLM
+ * @param charLM the CharLM trained left to right
+ * @param revCharLM the CharLM trained right to left
+ * @param outputMergeConfiguration the configuration of the output merge layer
+ * @param weightsInitializer the initializer of the weights of the merge layer (zeros if null, default: Glorot)
+ * @param biasesInitializer the initializer of the biases of the merge layer (zeros if null, default: null)
  */
 class CharLMEncoderModel(
   val charLM: CharLM,
-  val revCharLM: CharLM
+  val revCharLM: CharLM,
+  outputMergeConfiguration: MergeConfiguration = ConcatMerge(),
+  weightsInitializer: Initializer? = GlorotInitializer(),
+  biasesInitializer: Initializer? = null
 ) : TokensEncoderModel<FormToken, Sentence<FormToken>> {
-
-  /**
-   * The size of the token encoding vectors.
-   */
-  override val tokenEncodingSize = this.charLM.recurrentNetwork.outputSize + this.charLM.recurrentNetwork.outputSize
 
   companion object {
 
@@ -41,7 +48,45 @@ class CharLMEncoderModel(
   init {
     require(!this.charLM.reverseModel) { "The charLM must be trained to process the sequence from left to right."}
     require(this.revCharLM.reverseModel) { "The revCharLM must be trained to process the sequence from right to left."}
+    require(this.charLM.recurrentNetwork.outputSize == this.revCharLM.recurrentNetwork.outputSize) {
+      "The charLM and the reverse CharLM must have the same recurrent hidden size."
+    }
   }
+
+  /**
+   * The size of the token encoding vectors.
+   */
+  override val tokenEncodingSize: Int = when (outputMergeConfiguration) {
+    is AffineMerge -> outputMergeConfiguration.outputSize
+    is BiaffineMerge -> outputMergeConfiguration.outputSize
+    is ConcatFeedforwardMerge -> outputMergeConfiguration.outputSize
+    is ConcatMerge -> 2 * this.charLM.recurrentNetwork.outputSize
+    is SumMerge -> this.charLM.recurrentNetwork.outputSize
+    is ProductMerge -> this.charLM.recurrentNetwork.outputSize
+    is AvgMerge -> this.charLM.recurrentNetwork.outputSize
+    else -> throw RuntimeException("Invalid output merge configuration.")
+  }
+
+  /**
+   * The Merge network that combines the predictions of the two language models.
+   */
+  val outputMergeNetwork = NeuralNetwork(
+    if (outputMergeConfiguration is ConcatFeedforwardMerge) listOf(
+      LayerInterface(
+        sizes = listOf(this.charLM.recurrentNetwork.outputSize, this.revCharLM.recurrentNetwork.outputSize),
+        dropout = outputMergeConfiguration.dropout),
+      LayerInterface(size = 2 * this.charLM.recurrentNetwork.outputSize, connectionType = LayerType.Connection.Concat),
+      LayerInterface(
+        size = outputMergeConfiguration.outputSize,
+        activationFunction = outputMergeConfiguration.activationFunction,
+        connectionType = LayerType.Connection.Feedforward))
+    else listOf(
+      LayerInterface(
+        sizes = listOf(this.charLM.recurrentNetwork.outputSize, this.revCharLM.recurrentNetwork.outputSize),
+        dropout = outputMergeConfiguration.dropout),
+      LayerInterface(size = this.tokenEncodingSize, connectionType = outputMergeConfiguration.type)),
+    weightsInitializer = weightsInitializer,
+    biasesInitializer = biasesInitializer)
 
   /**
    * @param useDropout whether to apply the dropout
