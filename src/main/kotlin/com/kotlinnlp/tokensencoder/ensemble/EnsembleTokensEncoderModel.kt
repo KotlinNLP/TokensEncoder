@@ -11,23 +11,23 @@ import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.linguisticdescription.sentence.token.Token
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig.*
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
-import com.kotlinnlp.tokensencoder.wrapper.TokensEncoderWrapperModel
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 
 /**
  * The model of the [EnsembleTokensEncoderModel].
  *
- * @property models the list of ensemble components (tokens-encoder models)
+ * @property components the list of ensemble components (tokens encoder models)
  * @param outputMergeConfiguration the configuration of the output merge layer
  * @param weightsInitializer the initializer of the output merge network weights
  * @param biasesInitializer the initializer of the output merge network biases
  */
 class EnsembleTokensEncoderModel<TokenType: Token, SentenceType: Sentence<TokenType>>(
-  val models: List<ComponentModel<TokenType, SentenceType>>,
+  val components: List<ComponentModel<TokenType, SentenceType>>,
   outputMergeConfiguration: MergeConfiguration = ConcatMerge(),
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = null
@@ -36,13 +36,13 @@ class EnsembleTokensEncoderModel<TokenType: Token, SentenceType: Sentence<TokenT
   /**
    * The model of a component.
    *
-   * @property wrapperModel the model of a tokens encoder
-   * @property trainable whether to train the model
+   * @param model the model of a tokens encoder
+   * @property trainable whether to train the model (default = true)
    */
-  data class ComponentModel<TokenType: Token, SentenceType: Sentence<TokenType>>(
-    val wrapperModel: TokensEncoderWrapperModel<TokenType, SentenceType, *, *>,
-    val trainable: Boolean
-  )
+  class ComponentModel<TokenType: Token, SentenceType: Sentence<TokenType>>(
+    model: TokensEncoderModel<TokenType, SentenceType>,
+    val trainable: Boolean = true
+  ) : TokensEncoderModel<TokenType, SentenceType> by model
 
   companion object {
 
@@ -57,10 +57,10 @@ class EnsembleTokensEncoderModel<TokenType: Token, SentenceType: Sentence<TokenT
     is AffineMerge -> outputMergeConfiguration.outputSize
     is BiaffineMerge -> outputMergeConfiguration.outputSize
     is ConcatFeedforwardMerge -> outputMergeConfiguration.outputSize
-    is ConcatMerge -> this.models.sumBy { it.wrapperModel.model.tokenEncodingSize }
+    is ConcatMerge -> this.components.sumBy { it.tokenEncodingSize }
     is SumMerge, is ProductMerge, is AvgMerge -> {
-      require(this.models.all { it.wrapperModel.tokenEncodingSize == this.models[0].wrapperModel.tokenEncodingSize })
-      this.models[0].wrapperModel.tokenEncodingSize
+      require(this.components.all { it.tokenEncodingSize == this.components[0].tokenEncodingSize })
+      this.components[0].tokenEncodingSize
     }
     else -> throw RuntimeException("Invalid output merge configuration.")
   }
@@ -77,10 +77,10 @@ class EnsembleTokensEncoderModel<TokenType: Token, SentenceType: Sentence<TokenT
     layersConfiguration = if (outputMergeConfiguration is ConcatFeedforwardMerge)
       listOf(
         LayerInterface(
-          sizes = this.models.map { it.wrapperModel.model.tokenEncodingSize },
+          sizes = this.components.map { it.tokenEncodingSize },
           dropout = outputMergeConfiguration.dropout),
         LayerInterface(
-          size = this.models.sumBy { it.wrapperModel.model.tokenEncodingSize },
+          size = this.components.sumBy { it.tokenEncodingSize },
           connectionType = LayerType.Connection.Concat),
         LayerInterface(
           size = outputMergeConfiguration.outputSize,
@@ -88,7 +88,7 @@ class EnsembleTokensEncoderModel<TokenType: Token, SentenceType: Sentence<TokenT
     else
       listOf(
         LayerInterface(
-          sizes = this.models.map { it.wrapperModel.model.tokenEncodingSize },
+          sizes = this.components.map { it.tokenEncodingSize },
           dropout = outputMergeConfiguration.dropout),
         LayerInterface(
           size = this.mergeOutputSize,
