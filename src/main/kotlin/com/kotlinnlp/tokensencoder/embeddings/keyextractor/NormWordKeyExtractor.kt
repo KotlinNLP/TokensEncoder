@@ -14,7 +14,7 @@ import com.kotlinnlp.linguisticdescription.sentence.token.Token
 /**
  * An [EmbeddingKeyExtractor] by normalized form.
  */
-class WordKeyExtractor<TokenType : Token, SentenceType : Sentence<TokenType>>
+class NormWordKeyExtractor<TokenType : Token, SentenceType : Sentence<TokenType>>
   : EmbeddingKeyExtractor<TokenType, SentenceType> {
 
   companion object {
