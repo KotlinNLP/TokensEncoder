@@ -30,7 +30,9 @@ open class EnsembleTokensEncoderOptimizer(
   /**
    * The list of optimizers of the ensemble encoders models.
    */
-  private val encodersOptimizers  = this.model.models.map { TokensEncoderOptimizerFactory(it.model, updateMethod) }
+  private val encodersOptimizers: List<TokensEncoderOptimizer?> = this.model.models.map {
+    if (it.trainable) TokensEncoderOptimizerFactory(it.wrapperModel.model, updateMethod) else null
+  }
 
   /**
    * The optimizer of the output merge network.
@@ -42,7 +44,7 @@ open class EnsembleTokensEncoderOptimizer(
    */
   override fun update() {
     this.outputMergeOptimizer.update()
-    this.encodersOptimizers.forEach { it.update() }
+    this.encodersOptimizers.forEach { it?.update() }
   }
 
   /**
@@ -59,7 +61,7 @@ open class EnsembleTokensEncoderOptimizer(
     this.outputMergeOptimizer.accumulate(paramsErrors.outputMergeParams, copy = copy)
 
     paramsErrors.encodersParams.forEachIndexed { index, values ->
-      this.encodersOptimizers[index].accumulate(values, copy)
+      this.encodersOptimizers[index]?.accumulate(values, copy)
     }
   }
 }

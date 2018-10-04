@@ -33,7 +33,7 @@ class EnsembleTokensEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>
    * List of tokens encoder builders.
    */
   private val encoders: List<TokensEncoderWrapper<TokenType, SentenceType, *, *>> = this.model.models.map {
-    it.buildWrapper(useDropout = this.useDropout)
+    it.wrapperModel.buildWrapper(useDropout = this.useDropout)
   }
 
   /**

@@ -21,17 +21,28 @@ import com.kotlinnlp.tokensencoder.TokensEncoderModel
 /**
  * The model of the [EnsembleTokensEncoderModel].
  *
- * @property models the list of tokens-encoder models
+ * @property models the list of ensemble components (tokens-encoder models)
  * @param outputMergeConfiguration the configuration of the output merge layer
  * @param weightsInitializer the initializer of the output merge network weights
  * @param biasesInitializer the initializer of the output merge network biases
  */
 class EnsembleTokensEncoderModel<TokenType: Token, SentenceType: Sentence<TokenType>>(
-  val models: List<TokensEncoderWrapperModel<TokenType, SentenceType, *, *>>,
+  val models: List<ComponentModel<TokenType, SentenceType>>,
   outputMergeConfiguration: MergeConfiguration = ConcatMerge(),
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = null
 ) : TokensEncoderModel<TokenType, SentenceType> {
+
+  /**
+   * The model of a component.
+   *
+   * @property wrapperModel the model of a tokens encoder
+   * @property trainable whether to train the model
+   */
+  data class ComponentModel<TokenType: Token, SentenceType: Sentence<TokenType>>(
+    val wrapperModel: TokensEncoderWrapperModel<TokenType, SentenceType, *, *>,
+    val trainable: Boolean
+  )
 
   companion object {
 
@@ -46,10 +57,10 @@ class EnsembleTokensEncoderModel<TokenType: Token, SentenceType: Sentence<TokenT
     is AffineMerge -> outputMergeConfiguration.outputSize
     is BiaffineMerge -> outputMergeConfiguration.outputSize
     is ConcatFeedforwardMerge -> outputMergeConfiguration.outputSize
-    is ConcatMerge -> this.models.sumBy { it.model.tokenEncodingSize }
+    is ConcatMerge -> this.models.sumBy { it.wrapperModel.model.tokenEncodingSize }
     is SumMerge, is ProductMerge, is AvgMerge -> {
-      require(this.models.all { it.model.tokenEncodingSize == this.models[0].model.tokenEncodingSize } )
-      this.models[0].model.tokenEncodingSize
+      require(this.models.all { it.wrapperModel.tokenEncodingSize == this.models[0].wrapperModel.tokenEncodingSize })
+      this.models[0].wrapperModel.tokenEncodingSize
     }
     else -> throw RuntimeException("Invalid output merge configuration.")
   }
@@ -66,10 +77,10 @@ class EnsembleTokensEncoderModel<TokenType: Token, SentenceType: Sentence<TokenT
     layersConfiguration = if (outputMergeConfiguration is ConcatFeedforwardMerge)
       listOf(
         LayerInterface(
-          sizes = this.models.map { it.model.tokenEncodingSize },
+          sizes = this.models.map { it.wrapperModel.model.tokenEncodingSize },
           dropout = outputMergeConfiguration.dropout),
         LayerInterface(
-          size = this.models.sumBy { it.model.tokenEncodingSize },
+          size = this.models.sumBy { it.wrapperModel.model.tokenEncodingSize },
           connectionType = LayerType.Connection.Concat),
         LayerInterface(
           size = outputMergeConfiguration.outputSize,
@@ -77,7 +88,7 @@ class EnsembleTokensEncoderModel<TokenType: Token, SentenceType: Sentence<TokenT
     else
       listOf(
         LayerInterface(
-          sizes = this.models.map { it.model.tokenEncodingSize },
+          sizes = this.models.map { it.wrapperModel.model.tokenEncodingSize },
           dropout = outputMergeConfiguration.dropout),
         LayerInterface(
           size = this.mergeOutputSize,
