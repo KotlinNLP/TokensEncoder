@@ -10,14 +10,13 @@ package com.kotlinnlp.tokensencoder.ensemble
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.tokensencoder.TokensEncoderOptimizer
-import com.kotlinnlp.tokensencoder.TokensEncoderOptimizerFactory
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
 
 /**
  * The optimizer of the [EnsembleTokensEncoderOptimizer]
  *
  * @param model the model to optimize
- * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...
+ * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
  */
 open class EnsembleTokensEncoderOptimizer(
   private val model: EnsembleTokensEncoderModel<*, *>,
@@ -30,8 +29,8 @@ open class EnsembleTokensEncoderOptimizer(
   /**
    * The list of optimizers of the ensemble encoders models.
    */
-  private val encodersOptimizers: List<TokensEncoderOptimizer?> = this.model.models.map {
-    if (it.trainable) TokensEncoderOptimizerFactory(it.wrapperModel.model, updateMethod) else null
+  private val encodersOptimizers: List<TokensEncoderOptimizer?> = this.model.components.map {
+    if (it.trainable) it.buildOptimizer(updateMethod) else null
   }
 
   /**

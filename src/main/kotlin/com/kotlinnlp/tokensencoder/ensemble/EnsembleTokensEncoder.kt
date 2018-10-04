@@ -14,7 +14,6 @@ import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedfo
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.tokensencoder.TokensEncoder
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
-import com.kotlinnlp.tokensencoder.wrapper.TokensEncoderWrapper
 
 /**
  * The tokens-encoder that encodes a token by concatenating the results of other [TokensEncoder]s.
@@ -32,8 +31,8 @@ class EnsembleTokensEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>
   /**
    * List of tokens encoder builders.
    */
-  private val encoders: List<TokensEncoderWrapper<TokenType, SentenceType, *, *>> = this.model.models.map {
-    it.wrapperModel.buildWrapper(useDropout = this.useDropout)
+  private val encoders: List<TokensEncoder<TokenType, SentenceType>> = this.model.components.map {
+    it.buildEncoder(useDropout = this.useDropout, id = 0)
   }
 
   /**
