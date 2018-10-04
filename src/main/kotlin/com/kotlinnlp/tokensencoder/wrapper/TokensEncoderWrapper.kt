@@ -15,10 +15,9 @@ import com.kotlinnlp.tokensencoder.TokensEncoder
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
 
 /**
- * A wrapper of a [TokensEncoder] that combines it with a [SentenceConverter], to expand its usage with another kind of
- * input sentence.
+ * A [TokensEncoder] combined with a [SentenceConverter] that wraps the conversion of the input sentence.
  *
- * @property encoder a generic tokens encoder
+ * @property model the model of this encoder
  * @property converter a sentence converter compatible with the [encoder]
  * @property useDropout whether to apply the dropout
  * @property id an identification number useful to track a specific processor
@@ -27,18 +26,13 @@ class TokensEncoderWrapper<
   FromTokenType: Token,
   FromSentenceType: Sentence<FromTokenType>,
   ToTokenType: Token,
-  ToSentenceType: Sentence<ToTokenType>
-  >(
-  val encoder: TokensEncoder<ToTokenType, ToSentenceType>,
+  ToSentenceType: Sentence<ToTokenType>>
+(
+  override val model: TokensEncoderWrapperModel<FromTokenType, FromSentenceType, ToTokenType, ToSentenceType>,
   val converter: SentenceConverter<FromTokenType, FromSentenceType, ToTokenType, ToSentenceType>,
+  override val useDropout: Boolean = false,
   override val id: Int = 0
-) : NeuralProcessor<
-  FromSentenceType, // InputType
-  List<DenseNDArray>, // OutputType
-  List<DenseNDArray>, // ErrorsType
-  NeuralProcessor.NoInputErrors, // InputErrorsType
-  TokensEncoderParameters // ParamsType
-  > {
+) : TokensEncoder<FromTokenType, FromSentenceType>(model) {
 
   /**
    * Not used for this processor.
@@ -46,9 +40,11 @@ class TokensEncoderWrapper<
   override val propagateToInput: Boolean = false
 
   /**
-   * Not used for this processor.
+   * The tokens encoder wrapped.
    */
-  override val useDropout: Boolean = false
+  private val encoder: TokensEncoder<ToTokenType, ToSentenceType> = model.model.buildEncoder(
+    useDropout = this.useDropout,
+    id = this.id)
 
   /**
    * Encode a list of tokens.
