@@ -66,8 +66,8 @@ class CharLMEncoder(
 
     val s = input.tokens.joinToString(" ") { it.form }
 
-    val inputL2R: List<DenseNDArray> = s.map { c -> this.model.charLM.charsEmbeddings.get(c).array.values }
-    val inputR2L: List<DenseNDArray> = s.reversed().map { c -> this.model.revCharLM.charsEmbeddings.get(c).array.values }
+    val inputL2R: List<DenseNDArray> = s.map { this.model.charLM.charsEmbeddings.get(it).array.values }
+    val inputR2L: List<DenseNDArray> = s.map { this.model.revCharLM.charsEmbeddings.get(it).array.values }.reversed()
 
     val hiddenL2R: List<DenseNDArray> = this.leftToRightProcessor.forward(inputL2R)
     val hiddenR2L: List<DenseNDArray> = this.rightToLeftProcessor.forward(inputR2L)
@@ -81,7 +81,7 @@ class CharLMEncoder(
 
       tokenStart = tokenEnd + 2 // + 1 to include the spaces
 
-      listOf(hiddenR2L[reverseEnd], hiddenL2R[tokenEnd])
+      listOf(hiddenL2R[tokenEnd], hiddenR2L[reverseEnd])
     }))
   }
 
