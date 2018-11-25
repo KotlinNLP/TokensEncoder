@@ -8,7 +8,7 @@
 package com.kotlinnlp.tokensencoder.morpho
 
 import com.kotlinnlp.linguisticdescription.sentence.MorphoSentence
-import com.kotlinnlp.linguisticdescription.sentence.token.MorphoToken
+import com.kotlinnlp.linguisticdescription.sentence.token.FormToken
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedforwardProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
@@ -30,7 +30,7 @@ class MorphoEncoder(
   override val model: MorphoEncoderModel,
   override val useDropout: Boolean,
   override val id: Int = 0
-) : TokensEncoder<MorphoToken, MorphoSentence<MorphoToken>>(model) {
+) : TokensEncoder<FormToken, MorphoSentence<FormToken>>(model) {
 
   /**
    * The feed-forward network used to transform the input from sparse to dense.
@@ -47,7 +47,7 @@ class MorphoEncoder(
    *
    * @return a list of dense encoded representations of the given sentence tokens
    */
-  override fun forward(input: MorphoSentence<MorphoToken>): List<DenseNDArray> {
+  override fun forward(input: MorphoSentence<FormToken>): List<DenseNDArray> {
 
     val tokenFeatures: List<Set<String>> =
       FeaturesExtractor(sentence = input, lexicalDictionary = this.model.lexiconDictionary).extractFeatures()

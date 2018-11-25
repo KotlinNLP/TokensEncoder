@@ -9,7 +9,7 @@ package com.kotlinnlp.tokensencoder.morpho
 
 import com.kotlinnlp.linguisticdescription.lexicon.LexiconDictionary
 import com.kotlinnlp.linguisticdescription.sentence.MorphoSentence
-import com.kotlinnlp.linguisticdescription.sentence.token.MorphoToken
+import com.kotlinnlp.linguisticdescription.sentence.token.FormToken
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
@@ -35,7 +35,7 @@ class MorphoEncoderModel(
   activation: ActivationFunction?,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = null
-) : TokensEncoderModel<MorphoToken, MorphoSentence<MorphoToken>> {
+) : TokensEncoderModel<FormToken, MorphoSentence<FormToken>> {
 
   companion object {
 

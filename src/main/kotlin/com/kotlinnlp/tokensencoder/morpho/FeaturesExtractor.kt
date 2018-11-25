@@ -31,19 +31,19 @@ class FeaturesExtractor(
 
     val tokenMultiWordsMorphologiesByIndex = mutableMapOf<Int, MutableList<List<Morphology>>>()
 
-    this.sentence.multiWords?.forEach {
+    this.sentence.morphoAnalysis?.multiWords?.forEach {
       (it.startToken..it.endToken).forEach { index ->
         tokenMultiWordsMorphologiesByIndex.getOrPut(index) { mutableListOf() }.add(it.morphologies)
       }
     }
 
-    return this.sentence.tokens.mapIndexed { i, token ->
+    return this.sentence.tokens.indices.map { tokenIndex ->
 
       val tokenFeaturesSet = mutableSetOf<String>()
 
-      token.morphologies.forEach { tokenFeaturesSet.addAll(it.toFeatures()) }
+      this.sentence.morphoAnalysis?.tokensMorphologies?.get(tokenIndex)?.forEach { tokenFeaturesSet.addAll(it.toFeatures()) }
 
-      tokenMultiWordsMorphologiesByIndex[i]?.forEach { possibleMorphologies ->
+      tokenMultiWordsMorphologiesByIndex[tokenIndex]?.forEach { possibleMorphologies ->
         possibleMorphologies.forEach { tokenFeaturesSet.addAll(it.toFeatures()) }
       }
 
