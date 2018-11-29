@@ -37,7 +37,7 @@ class ReductionEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
    */
   private val reductionProcessor = BatchFeedforwardProcessor<DenseNDArray>(
     neuralNetwork = this.model.reductionNetwork,
-    useDropout = this.useDropout,
+    useDropout = false,
     propagateToInput = true)
 
   /**
