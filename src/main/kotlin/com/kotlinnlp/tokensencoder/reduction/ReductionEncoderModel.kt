@@ -45,7 +45,7 @@ class ReductionEncoderModel<TokenType: Token, SentenceType: Sentence<TokenType>>
   }
 
   /**
-   *
+   * The network used to reduce the dimension of the tokens encoding vectors.
    */
   val reductionNetwork = NeuralNetwork(
     LayerInterface(
