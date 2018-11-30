@@ -9,6 +9,7 @@ package com.kotlinnlp.tokensencoder.reduction
 
 import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.linguisticdescription.sentence.token.Token
+import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
@@ -22,12 +23,14 @@ import com.kotlinnlp.tokensencoder.TokensEncoderModel
  *
  * @property inputEncoderModel the model of the input tokens encoder
  * @property tokenEncodingSize the size of the reduced token encoding vectors after
+ * @param activationFunction the activation function of the reduction network
  * @param weightsInitializer the initializer of the weights of the reduction network (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases of the reduction network (zeros if null, default: Glorot)
  */
 class ReductionEncoderModel<TokenType: Token, SentenceType: Sentence<TokenType>>(
   val inputEncoderModel: TokensEncoderModel<TokenType, SentenceType>,
   override val tokenEncodingSize: Int,
+  activationFunction: ActivationFunction?,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer()
 ) : TokensEncoderModel<TokenType, SentenceType> {
@@ -45,8 +48,13 @@ class ReductionEncoderModel<TokenType: Token, SentenceType: Sentence<TokenType>>
    *
    */
   val reductionNetwork = NeuralNetwork(
-    LayerInterface(size = this.inputEncoderModel.tokenEncodingSize, type = LayerType.Input.Dense),
-    LayerInterface(size = this.tokenEncodingSize, connectionType = LayerType.Connection.Feedforward),
+    LayerInterface(
+      size = this.inputEncoderModel.tokenEncodingSize,
+      type = LayerType.Input.Dense),
+    LayerInterface(
+      size = this.tokenEncodingSize,
+      connectionType = LayerType.Connection.Feedforward,
+      activationFunction = activationFunction),
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer)
 
