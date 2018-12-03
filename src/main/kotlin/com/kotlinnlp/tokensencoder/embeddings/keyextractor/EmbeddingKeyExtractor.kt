@@ -20,7 +20,7 @@ interface EmbeddingKeyExtractor<TokenType: Token, SentenceType: Sentence<TokenTy
    * @param sentence a generic sentence
    * @param tokenId the id of the token from which to extract the key
    *
-   * @return the string to use as embedding key
+   * @return the string to use as embedding key (can be null)
    */
   fun getKey(sentence: SentenceType, tokenId: Int): String
 }

@@ -14,8 +14,8 @@ import com.kotlinnlp.linguisticdescription.sentence.token.Token
 /**
  * An [EmbeddingKeyExtractor] by form.
  */
-class WordKeyExtractor<TokenType : Token, SentenceType : Sentence<TokenType>>
-  : EmbeddingKeyExtractor<TokenType, SentenceType> {
+class WordKeyExtractor
+  : EmbeddingKeyExtractor<FormToken, Sentence<FormToken>> {
 
   companion object {
 
@@ -28,10 +28,9 @@ class WordKeyExtractor<TokenType : Token, SentenceType : Sentence<TokenType>>
 
   /**
    * @param sentence a generic sentence
-   * @param tokenId the id of the token from which to extract the key
+   * @param tokenId the id of the token from which to extract the key // TODO: replace with tokenIndex
    *
    * @return the form of the token
    */
-  override fun getKey(sentence: SentenceType, tokenId: Int): String =
-    (sentence.tokens[tokenId] as? FormToken)?.form ?: "_"
+  override fun getKey(sentence: Sentence<FormToken>, tokenId: Int): String = sentence.tokens[tokenId].form
 }
