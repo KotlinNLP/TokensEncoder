@@ -7,6 +7,7 @@
 
 package com.kotlinnlp.tokensencoder.embeddings
 
+import com.beust.klaxon.internal.firstNotNullResult
 import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.linguisticdescription.sentence.token.Token
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
@@ -47,9 +48,9 @@ class EmbeddingsEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
    */
   override fun forward(input: SentenceType): List<DenseNDArray> {
 
-    this.lastEmbeddings = (0 until input.tokens.size).map {
-      this.model.embeddingsMap.get(
-        element = this.model.embeddingKeyExtractor.getKey(input, it),
+    this.lastEmbeddings = (0 until input.tokens.size).map { tokenIndex ->
+
+      this.model.embeddingsMap.get(this.getKey(input, tokenIndex),
         dropoutCoefficient = if (this.useDropout) this.model.dropoutCoefficient else 0.0)
     }
 
@@ -81,6 +82,13 @@ class EmbeddingsEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
     EmbeddingsEncoderParams(this.lastEmbeddingsErrors) // TODO: fix copy
 
   /**
+   * @param copy whether to return by value or by reference
+   *
+   * @return the input errors of the last backward
+   */
+  override fun getInputErrors(copy: Boolean) = NeuralProcessor.NoInputErrors
+
+  /**
    * Accumulate the [errors] of a given token.
    *
    * @param tokenIndex the index of a token
@@ -94,9 +102,15 @@ class EmbeddingsEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
   }
 
   /**
-   * @param copy whether to return by value or by reference
+   * @param sentence a generic sentence
+   * @param tokenIndex the id index the token from which to extract the key
    *
-   * @return the input errors of the last backward
+   * @return the string to use as embedding key (can be null)
    */
-  override fun getInputErrors(copy: Boolean) = NeuralProcessor.NoInputErrors
+  private fun getKey(sentence: SentenceType, tokenIndex: Int): String? =
+    this.model.keyExtractors.firstNotNullResult {
+      it.getKey(sentence, tokenIndex).let { key ->
+        if (this.model.embeddingsMap.dictionary.contains(key)) key else null
+      }
+    }
 }

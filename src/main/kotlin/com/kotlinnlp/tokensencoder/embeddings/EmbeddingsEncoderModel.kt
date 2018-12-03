@@ -17,14 +17,17 @@ import com.kotlinnlp.tokensencoder.embeddings.keyextractor.EmbeddingKeyExtractor
 /**
  * The model of the [EmbeddingsEncoder].
  *
- * @param embeddingsMap the embeddings map
- * @param dropoutCoefficient the dropout coefficient
- * @param embeddingKeyExtractor an embeddings key extractor
+ * @property embeddingsMap the embeddings map
+ * @property dropoutCoefficient the dropout coefficient
+ * @param embeddingKeyExtractor list of embeddings key extractor
+ * @param fallbackEmbeddingKeyExtractors list of embeddings key extractors sorted by priority in descending order,
+ *                                       used in case the principal extractor does not generate a valid key
  */
 class EmbeddingsEncoderModel<TokenType: Token, SentenceType: Sentence<TokenType>>(
   val embeddingsMap: EmbeddingsMapByDictionary,
   val dropoutCoefficient: Double = 0.0,
-  val embeddingKeyExtractor: EmbeddingKeyExtractor<TokenType, SentenceType>
+  embeddingKeyExtractor: EmbeddingKeyExtractor<TokenType, SentenceType>,
+  fallbackEmbeddingKeyExtractors: List<EmbeddingKeyExtractor<TokenType, SentenceType>> = emptyList()
 ) : TokensEncoderModel<TokenType, SentenceType> {
 
   companion object {
@@ -40,6 +43,11 @@ class EmbeddingsEncoderModel<TokenType: Token, SentenceType: Sentence<TokenType>
    * The size of the token encoding vectors.
    */
   override val tokenEncodingSize: Int = this.embeddingsMap.size
+
+  /**
+   * The list of embeddings key extractors, sorted by priority in descending order.
+   */
+  internal val keyExtractors = listOf(embeddingKeyExtractor) + fallbackEmbeddingKeyExtractors
 
   /**
    * @return the string representation of this model
