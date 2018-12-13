@@ -9,13 +9,11 @@ package com.kotlinnlp.tokensencoder.embeddings.keyextractor
 
 import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.linguisticdescription.sentence.token.FormToken
-import com.kotlinnlp.linguisticdescription.sentence.token.Token
 
 /**
  * An [EmbeddingKeyExtractor] by normalized form.
  */
-class NormWordKeyExtractor
-  : EmbeddingKeyExtractor<FormToken, Sentence<FormToken>> {
+class NormWordKeyExtractor : EmbeddingKeyExtractor<FormToken, Sentence<FormToken>> {
 
   companion object {
 
