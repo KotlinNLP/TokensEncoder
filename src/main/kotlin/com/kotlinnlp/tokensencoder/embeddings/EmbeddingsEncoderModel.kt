@@ -108,12 +108,14 @@ sealed class EmbeddingsEncoderModel<TokenType: Token, SentenceType: Sentence<Tok
   /**
    * The model of the [EmbeddingsEncoder] with a transient embeddings map, which is not included in the serialization.
    *
+   * @param embeddingsMap an embeddings map
    * @property dropoutCoefficient the dropout coefficient
    * @param embeddingKeyExtractor list of embeddings key extractor
    * @param fallbackEmbeddingKeyExtractors list of embeddings key extractors sorted by priority in descending order,
    *                                       used in case the principal extractor does not generate a valid key
    */
   class Transient<TokenType: Token, SentenceType: Sentence<TokenType>>(
+    embeddingsMap: EmbeddingsMapByDictionary,
     dropoutCoefficient: Double = 0.0,
     embeddingKeyExtractor: EmbeddingKeyExtractor<TokenType, SentenceType>,
     fallbackEmbeddingKeyExtractors: List<EmbeddingKeyExtractor<TokenType, SentenceType>> = emptyList()
@@ -122,35 +124,6 @@ sealed class EmbeddingsEncoderModel<TokenType: Token, SentenceType: Sentence<Tok
     embeddingKeyExtractor = embeddingKeyExtractor,
     fallbackEmbeddingKeyExtractors = fallbackEmbeddingKeyExtractors
   ) {
-
-    companion object {
-
-      /**
-       * Build a transient embeddings encoder model with a given embeddings map.
-       *
-       * @param embeddingsMap an embeddings map
-       * @param dropoutCoefficient the dropout coefficient
-       * @param embeddingKeyExtractor list of embeddings key extractor
-       * @param fallbackEmbeddingKeyExtractors list of embeddings key extractors sorted by priority in descending order,
-       *                                       used in case the principal extractor does not generate a valid key
-       */
-      operator fun <TokenType: Token, SentenceType: Sentence<TokenType>>invoke(
-        embeddingsMap: EmbeddingsMapByDictionary,
-        dropoutCoefficient: Double = 0.0,
-        embeddingKeyExtractor: EmbeddingKeyExtractor<TokenType, SentenceType>,
-        fallbackEmbeddingKeyExtractors: List<EmbeddingKeyExtractor<TokenType, SentenceType>> = emptyList()
-      ) : EmbeddingsEncoderModel.Transient<TokenType, SentenceType> {
-
-        val model = EmbeddingsEncoderModel.Transient(
-          dropoutCoefficient = dropoutCoefficient,
-          embeddingKeyExtractor = embeddingKeyExtractor,
-          fallbackEmbeddingKeyExtractors = fallbackEmbeddingKeyExtractors)
-
-        model.setEmbeddingsMap(embeddingsMap)
-
-        return model
-      }
-    }
 
     /**
      * An embeddings map.
@@ -162,7 +135,7 @@ sealed class EmbeddingsEncoderModel<TokenType: Token, SentenceType: Sentence<Tok
     /**
      * The transient embeddings map of this model, which will not be serialized.
      */
-    @kotlin.jvm.Transient private var embeddingsMapTransient: EmbeddingsMapByDictionary? = null
+    @kotlin.jvm.Transient private var embeddingsMapTransient: EmbeddingsMapByDictionary? = embeddingsMap
 
     /**
      * Set the embeddings map of this model.
