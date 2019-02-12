@@ -103,7 +103,17 @@ sealed class EmbeddingsEncoderModel<TokenType: Token, SentenceType: Sentence<Tok
     dropoutCoefficient = dropoutCoefficient,
     embeddingKeyExtractor = embeddingKeyExtractor,
     fallbackEmbeddingKeyExtractors = fallbackEmbeddingKeyExtractors
-  )
+  ) {
+
+    companion object {
+
+      /**
+       * Private val used to serialize the class (needed by Serializable).
+       */
+      @Suppress("unused")
+      private const val serialVersionUID: Long = 1L
+    }
+  }
 
   /**
    * The model of the [EmbeddingsEncoder] with a transient embeddings map, which is not included in the serialization.
@@ -124,6 +134,15 @@ sealed class EmbeddingsEncoderModel<TokenType: Token, SentenceType: Sentence<Tok
     embeddingKeyExtractor = embeddingKeyExtractor,
     fallbackEmbeddingKeyExtractors = fallbackEmbeddingKeyExtractors
   ) {
+
+    companion object {
+
+      /**
+       * Private val used to serialize the class (needed by Serializable).
+       */
+      @Suppress("unused")
+      private const val serialVersionUID: Long = 1L
+    }
 
     /**
      * An embeddings map.
