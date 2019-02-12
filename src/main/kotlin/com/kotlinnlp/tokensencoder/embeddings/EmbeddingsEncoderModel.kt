@@ -17,14 +17,13 @@ import com.kotlinnlp.tokensencoder.embeddings.keyextractor.EmbeddingKeyExtractor
 /**
  * The model of the [EmbeddingsEncoder].
  *
- * @property embeddingsMap the embeddings map
+ * @property embeddingsMap an embeddings map
  * @property dropoutCoefficient the dropout coefficient
  * @param embeddingKeyExtractor list of embeddings key extractor
  * @param fallbackEmbeddingKeyExtractors list of embeddings key extractors sorted by priority in descending order,
  *                                       used in case the principal extractor does not generate a valid key
  */
-class EmbeddingsEncoderModel<TokenType: Token, SentenceType: Sentence<TokenType>>(
-  val embeddingsMap: EmbeddingsMapByDictionary,
+sealed class EmbeddingsEncoderModel<TokenType: Token, SentenceType: Sentence<TokenType>>(
   val dropoutCoefficient: Double = 0.0,
   embeddingKeyExtractor: EmbeddingKeyExtractor<TokenType, SentenceType>,
   fallbackEmbeddingKeyExtractors: List<EmbeddingKeyExtractor<TokenType, SentenceType>> = emptyList()
@@ -40,9 +39,14 @@ class EmbeddingsEncoderModel<TokenType: Token, SentenceType: Sentence<TokenType>
   }
 
   /**
+   * An embeddings map.
+   */
+  abstract val embeddingsMap: EmbeddingsMapByDictionary
+
+  /**
    * The size of the token encoding vectors.
    */
-  override val tokenEncodingSize: Int = this.embeddingsMap.size
+  override val tokenEncodingSize: Int by lazy { this.embeddingsMap.size }
 
   /**
    * The list of embeddings key extractors, sorted by priority in descending order.
@@ -80,4 +84,93 @@ class EmbeddingsEncoderModel<TokenType: Token, SentenceType: Sentence<TokenType>
     model = this,
     updateMethod = updateMethod
   )
+
+  /**
+   * The base model of the [EmbeddingsEncoder].
+   *
+   * @property embeddingsMap an embeddings map
+   * @property dropoutCoefficient the dropout coefficient
+   * @param embeddingKeyExtractor list of embeddings key extractor
+   * @param fallbackEmbeddingKeyExtractors list of embeddings key extractors sorted by priority in descending order,
+   *                                       used in case the principal extractor does not generate a valid key
+   */
+  class Base<TokenType: Token, SentenceType: Sentence<TokenType>>(
+    override val embeddingsMap: EmbeddingsMapByDictionary,
+    dropoutCoefficient: Double = 0.0,
+    embeddingKeyExtractor: EmbeddingKeyExtractor<TokenType, SentenceType>,
+    fallbackEmbeddingKeyExtractors: List<EmbeddingKeyExtractor<TokenType, SentenceType>> = emptyList()
+  ) : EmbeddingsEncoderModel<TokenType, SentenceType>(
+    dropoutCoefficient = dropoutCoefficient,
+    embeddingKeyExtractor = embeddingKeyExtractor,
+    fallbackEmbeddingKeyExtractors = fallbackEmbeddingKeyExtractors
+  )
+
+  /**
+   * The model of the [EmbeddingsEncoder] with a transient embeddings map, which is not included in the serialization.
+   *
+   * @property dropoutCoefficient the dropout coefficient
+   * @param embeddingKeyExtractor list of embeddings key extractor
+   * @param fallbackEmbeddingKeyExtractors list of embeddings key extractors sorted by priority in descending order,
+   *                                       used in case the principal extractor does not generate a valid key
+   */
+  class Transient<TokenType: Token, SentenceType: Sentence<TokenType>>(
+    dropoutCoefficient: Double = 0.0,
+    embeddingKeyExtractor: EmbeddingKeyExtractor<TokenType, SentenceType>,
+    fallbackEmbeddingKeyExtractors: List<EmbeddingKeyExtractor<TokenType, SentenceType>> = emptyList()
+  ) : EmbeddingsEncoderModel<TokenType, SentenceType>(
+    dropoutCoefficient = dropoutCoefficient,
+    embeddingKeyExtractor = embeddingKeyExtractor,
+    fallbackEmbeddingKeyExtractors = fallbackEmbeddingKeyExtractors
+  ) {
+
+    companion object {
+
+      /**
+       * Build a transient embeddings encoder model with a given embeddings map.
+       *
+       * @param embeddingsMap an embeddings map
+       * @param dropoutCoefficient the dropout coefficient
+       * @param embeddingKeyExtractor list of embeddings key extractor
+       * @param fallbackEmbeddingKeyExtractors list of embeddings key extractors sorted by priority in descending order,
+       *                                       used in case the principal extractor does not generate a valid key
+       */
+      operator fun <TokenType: Token, SentenceType: Sentence<TokenType>>invoke(
+        embeddingsMap: EmbeddingsMapByDictionary,
+        dropoutCoefficient: Double = 0.0,
+        embeddingKeyExtractor: EmbeddingKeyExtractor<TokenType, SentenceType>,
+        fallbackEmbeddingKeyExtractors: List<EmbeddingKeyExtractor<TokenType, SentenceType>> = emptyList()
+      ) : EmbeddingsEncoderModel.Transient<TokenType, SentenceType> {
+
+        val model = EmbeddingsEncoderModel.Transient(
+          dropoutCoefficient = dropoutCoefficient,
+          embeddingKeyExtractor = embeddingKeyExtractor,
+          fallbackEmbeddingKeyExtractors = fallbackEmbeddingKeyExtractors)
+
+        model.setEmbeddingsMap(embeddingsMap)
+
+        return model
+      }
+    }
+
+    /**
+     * An embeddings map.
+     */
+    override val embeddingsMap: EmbeddingsMapByDictionary get() = checkNotNull(this.embeddingsMapTransient) {
+      "The embeddings map must be set to use the Transient Embeddings Encoder Model."
+    }
+
+    /**
+     * The transient embeddings map of this model, which will not be serialized.
+     */
+    @kotlin.jvm.Transient private var embeddingsMapTransient: EmbeddingsMapByDictionary? = null
+
+    /**
+     * Set the embeddings map of this model.
+     *
+     * @param embeddingsMap an embeddings map
+     */
+    fun setEmbeddingsMap(embeddingsMap: EmbeddingsMapByDictionary) {
+      this.embeddingsMapTransient = embeddingsMap
+    }
+  }
 }
