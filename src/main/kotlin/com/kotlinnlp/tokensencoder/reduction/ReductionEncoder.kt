@@ -58,7 +58,8 @@ class ReductionEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
   override fun backward(outputErrors: List<DenseNDArray>) {
 
     this.reductionProcessor.backward(outputErrors)
-    this.inputEncoder.backward(this.reductionProcessor.getInputErrors(copy = false))
+
+    if (this.model.optimizeInput) this.inputEncoder.backward(this.reductionProcessor.getInputErrors(copy = false))
   }
 
   /**
@@ -67,7 +68,7 @@ class ReductionEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
    * @return the errors of the model parameters
    */
   override fun getParamsErrors(copy: Boolean) = ReductionEncoderParams(
-    inputParams = this.inputEncoder.getParamsErrors(copy = copy),
+    inputParams = if (this.model.optimizeInput) this.inputEncoder.getParamsErrors(copy = copy) else null,
     reductionParams = this.reductionProcessor.getParamsErrors(copy = copy)
   )
 

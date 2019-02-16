@@ -23,6 +23,7 @@ import com.kotlinnlp.tokensencoder.TokensEncoderModel
  *
  * @property inputEncoderModel the model of the input tokens encoder
  * @property tokenEncodingSize the size of the reduced token encoding vectors after
+ * @param optimizeInput whether the input encoder has to be optimized (default = true)
  * @param activationFunction the activation function of the reduction network
  * @param weightsInitializer the initializer of the weights of the reduction network (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases of the reduction network (zeros if null, default: Glorot)
@@ -30,6 +31,7 @@ import com.kotlinnlp.tokensencoder.TokensEncoderModel
 class ReductionEncoderModel<TokenType: Token, SentenceType: Sentence<TokenType>>(
   val inputEncoderModel: TokensEncoderModel<TokenType, SentenceType>,
   override val tokenEncodingSize: Int,
+  internal val optimizeInput: Boolean = true,
   activationFunction: ActivationFunction?,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer()

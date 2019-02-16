@@ -28,9 +28,10 @@ class ReductionEncoderOptimizer(
 ) {
 
   /**
-   * The optimizer of the parameters of the input tokens encoder.
+   * The optimizer of the parameters of the input tokens encoder (null if the input encoder must not be trained).
    */
-  private val inputOptimizer: TokensEncoderOptimizer = this.model.inputEncoderModel.buildOptimizer(updateMethod)
+  private val inputOptimizer: TokensEncoderOptimizer? =
+    if (this.model.optimizeInput) this.model.inputEncoderModel.buildOptimizer(updateMethod) else null
 
   /**
    * The optimizer of the parameters of the reduction network.
@@ -43,7 +44,7 @@ class ReductionEncoderOptimizer(
    */
   override fun update() {
 
-    this.inputOptimizer.update()
+    this.inputOptimizer?.update()
     this.reductionOptimizer.update()
   }
 
@@ -58,7 +59,7 @@ class ReductionEncoderOptimizer(
 
     paramsErrors as ReductionEncoderParams
 
-    this.inputOptimizer.accumulate(paramsErrors.inputParams)
+    this.inputOptimizer?.accumulate(paramsErrors.inputParams!!)
     this.reductionOptimizer.accumulate(paramsErrors.reductionParams)
   }
 }

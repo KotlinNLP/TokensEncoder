@@ -13,10 +13,10 @@ import com.kotlinnlp.tokensencoder.TokensEncoderParameters
 /**
  * The parameters of the [ReductionEncoder].
  *
- * @property inputParams the parameters of the input tokens encoder
+ * @property inputParams the parameters of the input tokens encoder (can be null)
  * @property reductionParams the parameters of the reduction network
  */
 class ReductionEncoderParams(
-  val inputParams: TokensEncoderParameters,
+  val inputParams: TokensEncoderParameters?,
   val reductionParams: NetworkParameters
 ) : TokensEncoderParameters
