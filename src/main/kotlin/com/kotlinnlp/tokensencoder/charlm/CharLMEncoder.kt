@@ -66,8 +66,8 @@ class CharLMEncoder(
 
     val s = input.tokens.joinToString(" ") { it.form }
 
-    val inputL2R: List<DenseNDArray> = s.map { this.model.charLM.charsEmbeddings.get(it).array.values }
-    val inputR2L: List<DenseNDArray> = s.map { this.model.revCharLM.charsEmbeddings.get(it).array.values }.reversed()
+    val inputL2R: List<DenseNDArray> = s.map { this.model.charLM.charsEmbeddings[it].array.values }
+    val inputR2L: List<DenseNDArray> = s.map { this.model.revCharLM.charsEmbeddings[it].array.values }.reversed()
 
     val hiddenL2R: List<DenseNDArray> = this.leftToRightProcessor.forward(inputL2R)
     val hiddenR2L: List<DenseNDArray> = this.rightToLeftProcessor.forward(inputR2L)

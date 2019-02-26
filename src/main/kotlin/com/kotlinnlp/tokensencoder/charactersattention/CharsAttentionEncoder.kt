@@ -60,7 +60,7 @@ class CharsAttentionEncoder(
   override fun forward(input: Sentence<FormToken>): List<DenseNDArray> {
 
     this.charsEmbeddings = input.tokens.map {
-      it.form.map { char -> this.model.charsEmbeddings.get(char) }
+      it.form.map { char -> this.model.charsEmbeddings[char] }
     }
 
     return this.encodeTokensByChars(tokens = input.tokens, charsEmbeddings = this.charsEmbeddings)
