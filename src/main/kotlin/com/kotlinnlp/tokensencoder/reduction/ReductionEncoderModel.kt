@@ -15,7 +15,7 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 
 /**
@@ -49,7 +49,7 @@ class ReductionEncoderModel<TokenType: Token, SentenceType: Sentence<TokenType>>
   /**
    * The network used to reduce the dimension of the tokens encoding vectors.
    */
-  val reductionNetwork = NeuralNetwork(
+  val reductionNetwork = StackedLayersParameters(
     LayerInterface(
       size = this.inputEncoderModel.tokenEncodingSize,
       type = LayerType.Input.Dense),

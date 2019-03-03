@@ -35,7 +35,7 @@ class CharLMEncoder(
    * The recurrent processor.
    */
   private val leftToRightProcessor = RecurrentNeuralProcessor<DenseNDArray>(
-    neuralNetwork = this.model.charLM.recurrentNetwork,
+    model = this.model.charLM.recurrentNetwork,
     useDropout = false,
     propagateToInput = false)
 
@@ -43,7 +43,7 @@ class CharLMEncoder(
    * The recurrent processor.
    */
   private val rightToLeftProcessor = RecurrentNeuralProcessor<DenseNDArray>(
-    neuralNetwork = this.model.revCharLM.recurrentNetwork,
+    model = this.model.revCharLM.recurrentNetwork,
     useDropout = false,
     propagateToInput = false)
 
@@ -51,7 +51,7 @@ class CharLMEncoder(
    * The processor that merges the encoded vectors.
    */
   private val outputMergeProcessors = BatchFeedforwardProcessor<DenseNDArray>(
-    neuralNetwork = this.model.outputMergeNetwork,
+    model = this.model.outputMergeNetwork,
     useDropout = false, // TODO: why don't use the dropout here?
     propagateToInput = false)
 

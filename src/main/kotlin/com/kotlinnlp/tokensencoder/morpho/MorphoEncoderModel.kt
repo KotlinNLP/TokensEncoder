@@ -16,7 +16,7 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 import com.kotlinnlp.utils.DictionarySet
 
@@ -49,7 +49,7 @@ class MorphoEncoderModel(
   /**
    * The model of the feed-forward Network used to transform the input from sparse to dense
    */
-  val denseEncoder = NeuralNetwork (
+  val denseEncoder = StackedLayersParameters (
     LayerInterface(
       size = this.featuresDictionary.size,
       type = LayerType.Input.SparseBinary),

@@ -8,7 +8,7 @@
 package com.kotlinnlp.tokensencoder.morpho
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.tokensencoder.TokensEncoderOptimizer
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
@@ -28,8 +28,8 @@ class MorphoEncoderOptimizer(
   /**
    * The Optimizer of the outputEncoder parameters.
    */
-  private val optimizer: ParamsOptimizer<NetworkParameters> =
-    ParamsOptimizer(params = this.model.denseEncoder.model, updateMethod = this.updateMethod)
+  private val optimizer: ParamsOptimizer<StackedLayersParameters> =
+    ParamsOptimizer(params = this.model.denseEncoder, updateMethod = this.updateMethod)
 
   /**
    * Update the parameters of the neural element associated to this optimizer.

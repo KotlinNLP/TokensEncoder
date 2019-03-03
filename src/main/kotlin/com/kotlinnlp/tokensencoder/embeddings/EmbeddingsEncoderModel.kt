@@ -9,7 +9,7 @@ package com.kotlinnlp.tokensencoder.embeddings
 
 import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.linguisticdescription.sentence.token.Token
-import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMapByDictionary
+import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 import com.kotlinnlp.tokensencoder.embeddings.keyextractor.EmbeddingKeyExtractor
@@ -18,13 +18,16 @@ import com.kotlinnlp.tokensencoder.embeddings.keyextractor.EmbeddingKeyExtractor
  * The model of the [EmbeddingsEncoder].
  *
  * @property embeddingsMap an embeddings map
- * @property dropoutCoefficient the dropout coefficient
+ * @property frequencyDictionary map of elements with their relative absolute frequency in a corpus
+ * @property dropout the dropout [0.0 .. 1.0]. When the [frequencyDictionary] is not null, the dropout is considered as
+ *                   a coefficient to calculate the probability of the final dropout probability
  * @param embeddingKeyExtractor list of embeddings key extractor
  * @param fallbackEmbeddingKeyExtractors list of embeddings key extractors sorted by priority in descending order,
  *                                       used in case the principal extractor does not generate a valid key
  */
 sealed class EmbeddingsEncoderModel<TokenType: Token, SentenceType: Sentence<TokenType>>(
-  val dropoutCoefficient: Double = 0.0,
+  internal val frequencyDictionary: Map<String, Int>? = null,
+  val dropout: Double = 0.0,
   embeddingKeyExtractor: EmbeddingKeyExtractor<TokenType, SentenceType>,
   fallbackEmbeddingKeyExtractors: List<EmbeddingKeyExtractor<TokenType, SentenceType>> = emptyList()
 ) : TokensEncoderModel<TokenType, SentenceType> {
@@ -38,10 +41,12 @@ sealed class EmbeddingsEncoderModel<TokenType: Token, SentenceType: Sentence<Tok
     private const val serialVersionUID: Long = 1L
   }
 
+  init { require(dropout in 0.0 .. 1.0) }
+
   /**
    * An embeddings map.
    */
-  abstract val embeddingsMap: EmbeddingsMapByDictionary
+  abstract val embeddingsMap: EmbeddingsMap<String>
 
   /**
    * The size of the token encoding vectors.
@@ -60,7 +65,7 @@ sealed class EmbeddingsEncoderModel<TokenType: Token, SentenceType: Sentence<Tok
     encoding size %d (dropout %.2f)
   """.trimIndent().format(
     this.tokenEncodingSize,
-    this.dropoutCoefficient
+    this.dropout
   )
 
   /**
@@ -89,18 +94,22 @@ sealed class EmbeddingsEncoderModel<TokenType: Token, SentenceType: Sentence<Tok
    * The base model of the [EmbeddingsEncoder].
    *
    * @property embeddingsMap an embeddings map
-   * @property dropoutCoefficient the dropout coefficient
+   * @property frequencyDictionary map of elements with their relative absolute frequency in a corpus
+   * @property dropout the dropout [0.0 .. 1.0]. When the [frequencyDictionary] is not null, the dropout is considered as
+   *                   a coefficient to calculate the probability of the final dropout probability
    * @param embeddingKeyExtractor list of embeddings key extractor
    * @param fallbackEmbeddingKeyExtractors list of embeddings key extractors sorted by priority in descending order,
    *                                       used in case the principal extractor does not generate a valid key
    */
   class Base<TokenType: Token, SentenceType: Sentence<TokenType>>(
-    override val embeddingsMap: EmbeddingsMapByDictionary,
-    dropoutCoefficient: Double = 0.0,
+    override val embeddingsMap: EmbeddingsMap<String>,
+    frequencyDictionary: Map<String, Int>? = null,
+    dropout: Double = 0.0,
     embeddingKeyExtractor: EmbeddingKeyExtractor<TokenType, SentenceType>,
     fallbackEmbeddingKeyExtractors: List<EmbeddingKeyExtractor<TokenType, SentenceType>> = emptyList()
   ) : EmbeddingsEncoderModel<TokenType, SentenceType>(
-    dropoutCoefficient = dropoutCoefficient,
+    frequencyDictionary = frequencyDictionary,
+    dropout = dropout,
     embeddingKeyExtractor = embeddingKeyExtractor,
     fallbackEmbeddingKeyExtractors = fallbackEmbeddingKeyExtractors
   ) {
@@ -119,18 +128,19 @@ sealed class EmbeddingsEncoderModel<TokenType: Token, SentenceType: Sentence<Tok
    * The model of the [EmbeddingsEncoder] with a transient embeddings map, which is not included in the serialization.
    *
    * @param embeddingsMap an embeddings map
-   * @property dropoutCoefficient the dropout coefficient
+   * @property dropout the dropout [0.0 .. 1.0]
    * @param embeddingKeyExtractor list of embeddings key extractor
    * @param fallbackEmbeddingKeyExtractors list of embeddings key extractors sorted by priority in descending order,
    *                                       used in case the principal extractor does not generate a valid key
    */
   class Transient<TokenType: Token, SentenceType: Sentence<TokenType>>(
-    embeddingsMap: EmbeddingsMapByDictionary,
-    dropoutCoefficient: Double = 0.0,
+    embeddingsMap: EmbeddingsMap<String>,
+    dropout: Double = 0.0,
     embeddingKeyExtractor: EmbeddingKeyExtractor<TokenType, SentenceType>,
     fallbackEmbeddingKeyExtractors: List<EmbeddingKeyExtractor<TokenType, SentenceType>> = emptyList()
   ) : EmbeddingsEncoderModel<TokenType, SentenceType>(
-    dropoutCoefficient = dropoutCoefficient,
+    frequencyDictionary = null,
+    dropout = dropout,
     embeddingKeyExtractor = embeddingKeyExtractor,
     fallbackEmbeddingKeyExtractors = fallbackEmbeddingKeyExtractors
   ) {
@@ -147,21 +157,21 @@ sealed class EmbeddingsEncoderModel<TokenType: Token, SentenceType: Sentence<Tok
     /**
      * An embeddings map.
      */
-    override val embeddingsMap: EmbeddingsMapByDictionary get() = checkNotNull(this.embeddingsMapTransient) {
+    override val embeddingsMap: EmbeddingsMap<String> get() = checkNotNull(this.embeddingsMapTransient) {
       "The embeddings map must be set to use the Transient Embeddings Encoder Model."
     }
 
     /**
      * The transient embeddings map of this model, which will not be serialized.
      */
-    @kotlin.jvm.Transient private var embeddingsMapTransient: EmbeddingsMapByDictionary? = embeddingsMap
+    @kotlin.jvm.Transient private var embeddingsMapTransient: EmbeddingsMap<String>? = embeddingsMap
 
     /**
      * Set the embeddings map of this model.
      *
      * @param embeddingsMap an embeddings map
      */
-    fun setEmbeddingsMap(embeddingsMap: EmbeddingsMapByDictionary) {
+    fun setEmbeddingsMap(embeddingsMap: EmbeddingsMap<String>) {
       this.embeddingsMapTransient = embeddingsMap
     }
   }

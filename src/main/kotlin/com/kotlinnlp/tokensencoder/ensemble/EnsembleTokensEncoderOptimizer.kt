@@ -36,7 +36,7 @@ open class EnsembleTokensEncoderOptimizer(
   /**
    * The optimizer of the output merge network.
    */
-  private val outputMergeOptimizer = ParamsOptimizer(this.model.outputMergeNetwork.model, updateMethod)
+  private val outputMergeOptimizer = ParamsOptimizer(this.model.outputMergeNetwork, updateMethod)
 
   /**
    * Update the parameters of the neural element associated to this optimizer.

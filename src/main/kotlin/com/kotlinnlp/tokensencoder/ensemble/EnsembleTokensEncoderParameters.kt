@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.tokensencoder.ensemble
 
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
 
 /**
@@ -18,4 +18,4 @@ import com.kotlinnlp.tokensencoder.TokensEncoderParameters
  */
 class EnsembleTokensEncoderParams(
   val encodersParams: List<TokensEncoderParameters>,
-  val outputMergeParams: NetworkParameters) : TokensEncoderParameters
+  val outputMergeParams: StackedLayersParameters) : TokensEncoderParameters

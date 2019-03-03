@@ -29,7 +29,7 @@ class CharLMEncoderOptimizer(
   /**
    * The optimizer of the merge layer.
    */
-  private val optimizer = ParamsOptimizer(this.model.outputMergeNetwork.model, updateMethod)
+  private val optimizer = ParamsOptimizer(this.model.outputMergeNetwork, updateMethod)
 
   /**
    * Update the parameters of the neural element associated to this optimizer.

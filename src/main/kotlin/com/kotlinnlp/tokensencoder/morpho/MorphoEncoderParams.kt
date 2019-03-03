@@ -7,10 +7,10 @@
 
 package com.kotlinnlp.tokensencoder.morpho
 
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
 
 /**
  * @property parameters the param of the feed-forward network of the [MorphoEncoderModel]
  */
-class MorphoEncoderParams(val parameters: NetworkParameters) : TokensEncoderParameters
+class MorphoEncoderParams(val parameters: StackedLayersParameters) : TokensEncoderParameters

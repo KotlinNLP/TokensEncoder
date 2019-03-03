@@ -14,8 +14,8 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig.*
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 
 /**
@@ -76,7 +76,7 @@ class EnsembleTokensEncoderModel<TokenType: Token, SentenceType: Sentence<TokenT
   /**
    * The Merge network that combines encoded vectors of each encoder.
    */
-  val outputMergeNetwork = NeuralNetwork(
+  val outputMergeNetwork = StackedLayersParameters(
     layersConfiguration = if (outputMergeConfiguration is ConcatFeedforwardMerge)
       listOf(
         LayerInterface(

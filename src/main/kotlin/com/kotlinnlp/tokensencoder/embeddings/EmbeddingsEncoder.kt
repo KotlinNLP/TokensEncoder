@@ -29,6 +29,23 @@ class EmbeddingsEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
   override val id: Int = 0
 ) : TokensEncoder<TokenType, SentenceType>(model) {
 
+  companion object {
+
+    /**
+     * Calculate the dropout probability of an element in relation to its occurrences.
+     *
+     * @param occurrences the number of occurrences of an element
+     * @param dropoutCoefficient the dropout coefficient
+     *
+     * @return the dropout probability
+     */
+    private fun dropoutProbability(occurrences: Int, dropoutCoefficient: Double): Double =
+      when {
+        dropoutCoefficient > 0.0 -> dropoutCoefficient / (occurrences + dropoutCoefficient)
+        else -> 0.0
+      }
+  }
+
   /**
    * The word embeddings of the last encoded sentence.
    */
@@ -49,13 +66,30 @@ class EmbeddingsEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
   override fun forward(input: SentenceType): List<DenseNDArray> {
 
     this.lastEmbeddings = (0 until input.tokens.size).map { tokenIndex ->
-
-      this.model.embeddingsMap.get(this.getKey(input, tokenIndex),
-        dropoutCoefficient = if (this.useDropout) this.model.dropoutCoefficient else 0.0)
+      this.getEmbeddingKey(input, tokenIndex).let { key ->
+        this.model.embeddingsMap.get(key = key, dropout = this.getDropout(key))
+      }
     }
 
     return this.lastEmbeddings.map { it.array.values }
   }
+
+  /**
+   * Get the dropout probability of the [key]-element in relation to its occurrences in the dictionary of frequencies.
+   *
+   * @param key the key of the element to find in the dictionary
+   *
+   * @return the dropout probability
+   */
+  private fun getDropout(key: String?): Double =
+    if (!this.useDropout)
+      0.0
+    else
+      this.model.frequencyDictionary?.let { dict ->
+        dropoutProbability(
+          occurrences = key?.let { dict[key] } ?: 0, // 0 if not in the dictionary
+          dropoutCoefficient = this.model.dropout)
+      } ?: this.model.dropout
 
   /**
    * Propagate the errors.
@@ -107,10 +141,10 @@ class EmbeddingsEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
    *
    * @return the string to use as embedding key (can be null)
    */
-  private fun getKey(sentence: SentenceType, tokenIndex: Int): String? =
+  private fun getEmbeddingKey(sentence: SentenceType, tokenIndex: Int): String? =
     this.model.keyExtractors.firstNotNullResult {
       it.getKey(sentence, tokenIndex).let { key ->
-        if (this.model.embeddingsMap.dictionary.contains(key)) key else null
+        if (key in this.model.embeddingsMap) key else null
       }
     }
 }

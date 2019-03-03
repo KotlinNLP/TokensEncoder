@@ -39,7 +39,7 @@ class EnsembleTokensEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>
    * The processor of the output merge network.
    */
   private val outputMergeProcessors = BatchFeedforwardProcessor<DenseNDArray>(
-    neuralNetwork = this.model.outputMergeNetwork,
+    model = this.model.outputMergeNetwork,
     useDropout = this.useDropout,
     propagateToInput = true)
 

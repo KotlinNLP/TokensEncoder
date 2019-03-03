@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.tokensencoder.charlm
 
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
 
 /**
@@ -15,4 +15,4 @@ import com.kotlinnlp.tokensencoder.TokensEncoderParameters
  *
  * @property mergeNetworkParameters the parameters of the output merge layer
  */
-class CharLMEncoderParams(val mergeNetworkParameters: NetworkParameters) : TokensEncoderParameters
+class CharLMEncoderParams(val mergeNetworkParameters: StackedLayersParameters) : TokensEncoderParameters

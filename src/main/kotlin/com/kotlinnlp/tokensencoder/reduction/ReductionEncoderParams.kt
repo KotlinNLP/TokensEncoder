@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.tokensencoder.reduction
 
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
 
 /**
@@ -18,5 +18,5 @@ import com.kotlinnlp.tokensencoder.TokensEncoderParameters
  */
 class ReductionEncoderParams(
   val inputParams: TokensEncoderParameters?,
-  val reductionParams: NetworkParameters
+  val reductionParams: StackedLayersParameters
 ) : TokensEncoderParameters

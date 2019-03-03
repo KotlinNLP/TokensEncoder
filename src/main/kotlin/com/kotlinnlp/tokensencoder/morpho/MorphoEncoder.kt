@@ -36,7 +36,7 @@ class MorphoEncoder(
    * The feed-forward network used to transform the input from sparse to dense.
    */
   private val encoder = BatchFeedforwardProcessor<SparseBinaryNDArray>(
-    neuralNetwork = this.model.denseEncoder,
+    model = this.model.denseEncoder,
     useDropout = this.useDropout,
     propagateToInput = false)
 
@@ -92,7 +92,9 @@ class MorphoEncoder(
 
     val activeIndices = mutableListOf<Int>()
 
-    this.forEach { this@MorphoEncoder.model.featuresDictionary.getId(it)?.let { activeIndices.add(it) } }
+    this.forEach { this@MorphoEncoder.model.featuresDictionary.getId(it)?.let {
+      featureId -> activeIndices.add(featureId)
+    } }
 
     return activeIndices
   }

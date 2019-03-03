@@ -15,8 +15,8 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig.*
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 
 /**
@@ -70,7 +70,7 @@ class CharLMEncoderModel(
   /**
    * The Merge network that combines the predictions of the two language models.
    */
-  val outputMergeNetwork = NeuralNetwork(
+  val outputMergeNetwork = StackedLayersParameters(
     if (outputMergeConfiguration is ConcatFeedforwardMerge) listOf(
       LayerInterface(
         sizes = listOf(this.charLM.recurrentNetwork.outputSize, this.revCharLM.recurrentNetwork.outputSize),

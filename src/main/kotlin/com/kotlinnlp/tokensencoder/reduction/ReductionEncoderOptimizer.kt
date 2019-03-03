@@ -9,7 +9,7 @@ package com.kotlinnlp.tokensencoder.reduction
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.tokensencoder.TokensEncoderOptimizer
 import com.kotlinnlp.tokensencoder.TokensEncoderParameters
 
@@ -36,8 +36,8 @@ class ReductionEncoderOptimizer(
   /**
    * The optimizer of the parameters of the reduction network.
    */
-  private val reductionOptimizer: ParamsOptimizer<NetworkParameters> =
-    ParamsOptimizer(params = this.model.reductionNetwork.model, updateMethod = updateMethod)
+  private val reductionOptimizer: ParamsOptimizer<StackedLayersParameters> =
+    ParamsOptimizer(params = this.model.reductionNetwork, updateMethod = updateMethod)
 
   /**
    * Update the parameters of the neural element associated to this optimizer.
