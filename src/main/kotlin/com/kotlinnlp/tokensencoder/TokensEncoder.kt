@@ -21,8 +21,7 @@ abstract class TokensEncoder<TokenType: Token, SentenceType: Sentence<TokenType>
   SentenceType, // InputType
   List<DenseNDArray>, // OutputType
   List<DenseNDArray>, // ErrorsType
-  NeuralProcessor.NoInputErrors, // InputErrorsType
-  TokensEncoderParameters // ParamsType
+  NeuralProcessor.NoInputErrors // InputErrorsType
   > {
 
   /**

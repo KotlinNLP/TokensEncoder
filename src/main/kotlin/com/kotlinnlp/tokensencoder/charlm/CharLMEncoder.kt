@@ -12,6 +12,7 @@ import com.kotlinnlp.linguisticdescription.sentence.token.FormToken
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedforwardProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.tokensencoder.TokensEncoder
 
@@ -66,8 +67,8 @@ class CharLMEncoder(
 
     val s = input.tokens.joinToString(" ") { it.form }
 
-    val inputL2R: List<DenseNDArray> = s.map { this.model.charLM.charsEmbeddings[it].array.values }
-    val inputR2L: List<DenseNDArray> = s.map { this.model.revCharLM.charsEmbeddings[it].array.values }.reversed()
+    val inputL2R: List<DenseNDArray> = s.map { this.model.charLM.charsEmbeddings[it].values }
+    val inputR2L: List<DenseNDArray> = s.map { this.model.revCharLM.charsEmbeddings[it].values }.reversed()
 
     val hiddenL2R: List<DenseNDArray> = this.leftToRightProcessor.forward(inputL2R)
     val hiddenR2L: List<DenseNDArray> = this.rightToLeftProcessor.forward(inputR2L)
@@ -109,6 +110,6 @@ class CharLMEncoder(
    *
    * @return the parameters errors
    */
-  override fun getParamsErrors(copy: Boolean) =
-    CharLMEncoderParams(this.outputMergeProcessors.getParamsErrors(copy = copy))
+  override fun getParamsErrors(copy: Boolean): ParamsErrorsList =
+    this.outputMergeProcessors.getParamsErrors(copy = copy)
 }

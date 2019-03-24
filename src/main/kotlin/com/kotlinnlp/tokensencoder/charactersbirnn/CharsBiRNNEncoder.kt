@@ -9,12 +9,11 @@ package com.kotlinnlp.tokensencoder.charactersbirnn
 
 import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.linguisticdescription.sentence.token.FormToken
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNEncoder
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNEncodersPool
-import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParameters
-import com.kotlinnlp.simplednn.core.embeddings.Embedding
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
+import com.kotlinnlp.simplednn.core.optimizer.ParamsList
 import com.kotlinnlp.simplednn.simplemath.concatVectorsV
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.tokensencoder.TokensEncoder
@@ -35,7 +34,7 @@ class CharsBiRNNEncoder(
   /**
    * The characters embeddings of the last encoding.
    */
-  private lateinit var charsEmbeddings: List<List<Embedding>>
+  private lateinit var charsEmbeddings: List<ParamsList>
 
   /**
    * A [BiRNNEncodersPool] to encode the chars of a token.
@@ -49,6 +48,11 @@ class CharsBiRNNEncoder(
    * The list of [BiRNNEncoder]s used in the last encoding.
    */
   private val usedEncoders = mutableListOf<BiRNNEncoder<DenseNDArray>>()
+
+  /**
+   * The accumulated params errors.
+   */
+  private val paramsErrorsAccumulator = ParamsErrorsAccumulator()
 
   /**
    * Encode a list of tokens.
@@ -75,11 +79,32 @@ class CharsBiRNNEncoder(
 
     outputErrors.forEachIndexed { tokenIndex, tokenErrors ->
 
-      val splitErrors: List<DenseNDArray> = tokenErrors.splitV(this.model.tokenEncodingSize)
+      this.usedEncoders[tokenIndex].let { encoder ->
 
-      this.usedEncoders[tokenIndex].backwardLastOutput(
-        leftToRightErrors = splitErrors[0],
-        rightToLeftErrors = splitErrors[1])
+        tokenErrors.splitV(this.model.tokenEncodingSize).let {
+          encoder.backwardLastOutput(
+            leftToRightErrors = it[0],
+            rightToLeftErrors = it[1]) }
+
+        this.paramsErrorsAccumulator.accumulate(encoder.getParamsErrors(copy = false))
+        this.accumulateEmbeddingsErrors(tokenIndex, encoder.getInputErrors(copy = false))
+      }
+    }
+
+    this.paramsErrorsAccumulator.averageErrors()
+  }
+
+  /**
+   * Accumulate the embeddings errors.
+   *
+   * @param tokenIndex the token index
+   * @param outputErrors the embeddings errors
+   */
+  private fun accumulateEmbeddingsErrors(tokenIndex: Int, outputErrors: List<DenseNDArray>) {
+
+    this.charsEmbeddings[tokenIndex].zip(outputErrors).forEach { (charEmbedding, charsErrors) ->
+
+      this.paramsErrorsAccumulator.accumulate(charEmbedding, charsErrors)
     }
   }
 
@@ -93,7 +118,7 @@ class CharsBiRNNEncoder(
    */
   private fun encodeTokensByChars(
     tokens: List<FormToken>,
-    charsEmbeddings: List<List<Embedding>>
+    charsEmbeddings: List<ParamsList>
   ): List<DenseNDArray> {
 
     this.usedEncoders.clear()
@@ -103,7 +128,7 @@ class CharsBiRNNEncoder(
       size = tokens.size,
       init = { i ->
         this.usedEncoders.add(this.biRNNEncodersPool.getItem())
-        this.usedEncoders[i].forward(charsEmbeddings[i].map { it.array.values })
+        this.usedEncoders[i].forward(charsEmbeddings[i].map { it.values })
         this.usedEncoders[i].getLastOutput(copy = true).let { concatVectorsV(it.first, it.second) }
       })
   }
@@ -113,27 +138,7 @@ class CharsBiRNNEncoder(
    *
    * @return the errors of the model parameters
    */
-  override fun getParamsErrors(copy: Boolean): CharsBiRNNEncoderParams {
-
-    val birnnParamsErrors = mutableListOf<BiRNNParameters>()
-    val embeddingsParamsErrors = mutableListOf<Embedding>()
-
-    this.usedEncoders.forEachIndexed { tokenIndex, birnnEncoder ->
-
-      birnnParamsErrors.add(birnnEncoder.getParamsErrors(copy = copy))
-
-      birnnEncoder.getInputErrors(copy = copy).forEachIndexed { charIndex, charsErrors ->
-
-        embeddingsParamsErrors.add(Embedding(
-          id = this.charsEmbeddings[tokenIndex][charIndex].id,
-          array = UpdatableDenseArray(charsErrors.copy())))
-      }
-    }
-
-    return CharsBiRNNEncoderParams(
-      biRNNParameters = birnnParamsErrors,
-      embeddingsParams = embeddingsParamsErrors)
-  }
+  override fun getParamsErrors(copy: Boolean) = this.paramsErrorsAccumulator.getParamsErrors()
 
   /**
    * @param copy whether to return by value or by reference

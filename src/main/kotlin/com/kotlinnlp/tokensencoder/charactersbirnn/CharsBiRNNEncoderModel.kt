@@ -16,7 +16,6 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNN
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 
 /**
@@ -108,15 +107,5 @@ class CharsBiRNNEncoderModel(
     model = this,
     useDropout = useDropout,
     id = id
-  )
-
-  /**
-   * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
-   *
-   * @return a new optimizer for this model
-   */
-  override fun buildOptimizer(updateMethod: UpdateMethod<*>) = CharsBiRNNEncoderOptimizer(
-    model = this,
-    updateMethod = updateMethod
   )
 }

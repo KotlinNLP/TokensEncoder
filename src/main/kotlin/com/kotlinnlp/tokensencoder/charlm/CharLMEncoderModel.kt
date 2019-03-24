@@ -12,7 +12,6 @@ import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.linguisticdescription.sentence.token.FormToken
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
@@ -95,14 +94,4 @@ class CharLMEncoderModel(
    * @return a new tokens encoder that uses this model
    */
   override fun buildEncoder(useDropout: Boolean, id: Int) = CharLMEncoder(model = this, id = id)
-
-  /**
-   * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
-   *
-   * @return a new optimizer for this model
-   */
-  override fun buildOptimizer(updateMethod: UpdateMethod<*>) = CharLMEncoderOptimizer(
-    model = this,
-    updateMethod = updateMethod
-  )
 }

@@ -9,14 +9,14 @@ package com.kotlinnlp.tokensencoder.charactersattention
 
 import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.linguisticdescription.sentence.token.FormToken
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.deeplearning.attention.han.HANEncoder
 import com.kotlinnlp.simplednn.deeplearning.attention.han.HANEncodersPool
 import com.kotlinnlp.simplednn.deeplearning.attention.han.HierarchySequence
-import com.kotlinnlp.simplednn.core.embeddings.Embedding
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
+import com.kotlinnlp.simplednn.core.optimizer.ParamsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.deeplearning.attention.han.HANParameters
 import com.kotlinnlp.tokensencoder.TokensEncoder
 
 /**
@@ -35,7 +35,7 @@ class CharsAttentionEncoder(
   /**
    * The characters embeddings of the last encoding.
    */
-  private lateinit var charsEmbeddings: List<List<Embedding>>
+  private lateinit var charsEmbeddings: List<ParamsList>
 
   /**
    * A [HANEncodersPool] to encode the chars of a token.
@@ -49,6 +49,11 @@ class CharsAttentionEncoder(
    * The list of [HANEncoder]s used in the last encoding.
    */
   private val usedEncoders = mutableListOf<HANEncoder<DenseNDArray>>()
+
+  /**
+   * The accumulated params errors.
+   */
+  private val paramsErrorsAccumulator = ParamsErrorsAccumulator()
 
   /**
    * Encode a list of tokens.
@@ -74,7 +79,30 @@ class CharsAttentionEncoder(
   override fun backward(outputErrors: List<DenseNDArray>) {
 
     outputErrors.forEachIndexed { tokenIndex, tokenErrors ->
-      this.usedEncoders[tokenIndex].backward(outputErrors = tokenErrors)
+
+      this.usedEncoders[tokenIndex].let { encoder ->
+
+        encoder.backward(outputErrors = tokenErrors)
+
+        this.paramsErrorsAccumulator.accumulate(encoder.getParamsErrors(copy = false))
+        this.accumulateEmbeddingsErrors(tokenIndex, encoder.getInputErrors(copy = false) as HierarchySequence<*>)
+      }
+    }
+
+    this.paramsErrorsAccumulator.averageErrors()
+  }
+
+  /**
+   * Accumulate the embeddings errors.
+   *
+   * @param tokenIndex the token index
+   * @param outputErrors the embeddings errors
+   */
+  private fun accumulateEmbeddingsErrors(tokenIndex: Int, outputErrors: HierarchySequence<*>) {
+
+    this.charsEmbeddings[tokenIndex].zip(outputErrors).forEach { (charEmbedding, charsErrors) ->
+
+      this.paramsErrorsAccumulator.accumulate(charEmbedding, charsErrors as DenseNDArray)
     }
   }
 
@@ -88,7 +116,7 @@ class CharsAttentionEncoder(
    */
   private fun encodeTokensByChars(
     tokens: List<FormToken>,
-    charsEmbeddings: List<List<Embedding>>
+    charsEmbeddings: List<List<ParamsArray>>
   ): List<DenseNDArray> {
 
     this.usedEncoders.clear()
@@ -98,7 +126,7 @@ class CharsAttentionEncoder(
       size = tokens.size,
       init = { i ->
 
-        val charsVectors = HierarchySequence(*charsEmbeddings[i].map { it.array.values }.toTypedArray())
+        val charsVectors = HierarchySequence(*charsEmbeddings[i].map { it.values }.toTypedArray())
 
         this.usedEncoders.add(this.hanEncodersPool.getItem())
 
@@ -111,28 +139,7 @@ class CharsAttentionEncoder(
    *
    * @return the errors of the model parameters
    */
-  override fun getParamsErrors(copy: Boolean): CharsAttentionEncoderParams {
-
-    val hanParamsErrors = mutableListOf<HANParameters>()
-    val embeddingsParamsErrors = mutableListOf<Embedding>()
-
-    this.usedEncoders.forEachIndexed { tokenIndex, hanEncoder ->
-
-      hanParamsErrors.add(hanEncoder.getParamsErrors(copy = copy))
-
-      (hanEncoder.getInputErrors(copy = copy) as HierarchySequence<*>)
-        .forEachIndexed { charIndex, charsErrors ->
-
-        embeddingsParamsErrors.add(Embedding(
-          id = this.charsEmbeddings[tokenIndex][charIndex].id,
-          array = UpdatableDenseArray((charsErrors as DenseNDArray).copy())))
-      }
-    }
-
-    return CharsAttentionEncoderParams(
-      hanParameters = hanParamsErrors,
-      embeddingsParams = embeddingsParamsErrors)
-  }
+  override fun getParamsErrors(copy: Boolean) = this.paramsErrorsAccumulator.getParamsErrors()
 
   /**
    * @param copy whether to return by value or by reference
@@ -140,5 +147,4 @@ class CharsAttentionEncoder(
    * @return the input errors of the last backward
    */
   override fun getInputErrors(copy: Boolean) = NeuralProcessor.NoInputErrors
-
 }

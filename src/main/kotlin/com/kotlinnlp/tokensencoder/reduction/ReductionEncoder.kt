@@ -11,6 +11,7 @@ import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.linguisticdescription.sentence.token.Token
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedforwardProcessor
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.tokensencoder.TokensEncoder
 
@@ -67,10 +68,9 @@ class ReductionEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
    *
    * @return the errors of the model parameters
    */
-  override fun getParamsErrors(copy: Boolean) = ReductionEncoderParams(
-    inputParams = if (this.model.optimizeInput) this.inputEncoder.getParamsErrors(copy = copy) else null,
-    reductionParams = this.reductionProcessor.getParamsErrors(copy = copy)
-  )
+  override fun getParamsErrors(copy: Boolean): ParamsErrorsList =
+    this.reductionProcessor.getParamsErrors(copy = copy) +
+      if (this.model.optimizeInput) this.inputEncoder.getParamsErrors(copy = copy) else emptyList()
 
   /**
    * @param copy whether to return by value or by reference

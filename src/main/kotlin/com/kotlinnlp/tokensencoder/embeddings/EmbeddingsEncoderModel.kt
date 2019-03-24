@@ -10,7 +10,6 @@ package com.kotlinnlp.tokensencoder.embeddings
 import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.linguisticdescription.sentence.token.Token
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 import com.kotlinnlp.tokensencoder.embeddings.keyextractor.EmbeddingKeyExtractor
 
@@ -78,16 +77,6 @@ sealed class EmbeddingsEncoderModel<TokenType: Token, SentenceType: Sentence<Tok
     model = this,
     useDropout = useDropout,
     id = id
-  )
-
-  /**
-   * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
-   *
-   * @return a new optimizer for this model
-   */
-  override fun buildOptimizer(updateMethod: UpdateMethod<*>) = EmbeddingsEncoderOptimizer(
-    model = this,
-    updateMethod = updateMethod
   )
 
   /**

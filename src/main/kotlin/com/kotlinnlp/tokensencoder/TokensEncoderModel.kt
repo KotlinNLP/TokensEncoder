@@ -9,7 +9,6 @@ package com.kotlinnlp.tokensencoder
 
 import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.linguisticdescription.sentence.token.Token
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import java.io.Serializable
 
 /**
@@ -30,11 +29,4 @@ interface TokensEncoderModel<TokenType: Token, SentenceType: Sentence<TokenType>
    * @return a new tokens encoder that uses this model
    */
   fun buildEncoder(useDropout: Boolean, id: Int = 0): TokensEncoder<TokenType, SentenceType>
-
-  /**
-   * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
-   *
-   * @return a new optimizer for this model
-   */
-  fun buildOptimizer(updateMethod: UpdateMethod<*>): TokensEncoderOptimizer
 }

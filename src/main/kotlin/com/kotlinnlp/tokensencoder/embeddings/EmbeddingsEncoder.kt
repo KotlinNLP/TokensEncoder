@@ -10,9 +10,10 @@ package com.kotlinnlp.tokensencoder.embeddings
 import com.beust.klaxon.internal.firstNotNullResult
 import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.linguisticdescription.sentence.token.Token
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
-import com.kotlinnlp.simplednn.core.embeddings.Embedding
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.tokensencoder.TokensEncoder
 
@@ -49,12 +50,12 @@ class EmbeddingsEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
   /**
    * The word embeddings of the last encoded sentence.
    */
-  private lateinit var lastEmbeddings: List<Embedding>
+  private lateinit var lastEmbeddings: List<ParamsArray>
 
   /**
    * The errors accumulated during the last backward.
    */
-  private var lastEmbeddingsErrors = mutableListOf<Embedding>()
+  private var lastEmbeddingsErrors = ParamsErrorsAccumulator()
 
   /**
    * Encode a list of tokens.
@@ -66,12 +67,14 @@ class EmbeddingsEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
   override fun forward(input: SentenceType): List<DenseNDArray> {
 
     this.lastEmbeddings = (0 until input.tokens.size).map { tokenIndex ->
+
       this.getEmbeddingKey(input, tokenIndex).let { key ->
+
         this.model.embeddingsMap.get(key = key, dropout = this.getDropout(key))
       }
     }
 
-    return this.lastEmbeddings.map { it.array.values }
+    return this.lastEmbeddings.map { it.values }
   }
 
   /**
@@ -102,9 +105,12 @@ class EmbeddingsEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
 
     this.lastEmbeddingsErrors.clear()
 
-    outputErrors.forEachIndexed { i, tokenErrors ->
-      this.accumulateTokenErrors(tokenIndex = i, errors = tokenErrors)
+    this.lastEmbeddings.zip(outputErrors).forEach { (embedding, errors) ->
+
+      this.lastEmbeddingsErrors.accumulate(embedding, errors)
     }
+
+    this.lastEmbeddingsErrors.averageErrors()
   }
 
   /**
@@ -112,8 +118,8 @@ class EmbeddingsEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
    *
    * @return the errors of the model parameters
    */
-  override fun getParamsErrors(copy: Boolean): EmbeddingsEncoderParams =
-    EmbeddingsEncoderParams(this.lastEmbeddingsErrors) // TODO: fix copy
+  override fun getParamsErrors(copy: Boolean): ParamsErrorsList =
+    this.lastEmbeddingsErrors.getParamsErrors(copy)
 
   /**
    * @param copy whether to return by value or by reference
@@ -121,19 +127,6 @@ class EmbeddingsEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
    * @return the input errors of the last backward
    */
   override fun getInputErrors(copy: Boolean) = NeuralProcessor.NoInputErrors
-
-  /**
-   * Accumulate the [errors] of a given token.
-   *
-   * @param tokenIndex the index of a token
-   * @param errors the errors to accumulate
-   */
-  private fun accumulateTokenErrors(tokenIndex: Int, errors: DenseNDArray) {
-
-    this.lastEmbeddingsErrors.add(Embedding(
-      id = this.lastEmbeddings[tokenIndex].id,
-      array = UpdatableDenseArray(errors.copy())))
-  }
 
   /**
    * @param sentence a generic sentence

@@ -9,7 +9,6 @@ package com.kotlinnlp.tokensencoder.wrapper
 
 import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.linguisticdescription.sentence.token.Token
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.tokensencoder.TokensEncoderModel
 
 /**
@@ -54,11 +53,4 @@ data class TokensEncoderWrapperModel<
     useDropout = useDropout,
     id = id
   )
-
-  /**
-   * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
-   *
-   * @return a new optimizer for this model
-   */
-  override fun buildOptimizer(updateMethod: UpdateMethod<*>) = this.model.buildOptimizer(updateMethod)
 }

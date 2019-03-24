@@ -10,9 +10,9 @@ package com.kotlinnlp.tokensencoder.wrapper
 import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.linguisticdescription.sentence.token.Token
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.tokensencoder.TokensEncoder
-import com.kotlinnlp.tokensencoder.TokensEncoderParameters
 
 /**
  * A [TokensEncoder] combined with a [SentenceConverter] that wraps the conversion of the input sentence.
@@ -73,5 +73,5 @@ class TokensEncoderWrapper<
    *
    * @return the input errors of the last backward
    */
-  override fun getParamsErrors(copy: Boolean): TokensEncoderParameters = this.encoder.getParamsErrors(copy)
+  override fun getParamsErrors(copy: Boolean): ParamsErrorsList = this.encoder.getParamsErrors(copy)
 }
