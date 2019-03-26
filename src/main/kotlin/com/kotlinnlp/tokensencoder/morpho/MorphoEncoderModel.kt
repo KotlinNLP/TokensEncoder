@@ -58,9 +58,7 @@ class MorphoEncoderModel(
       connectionType = LayerType.Connection.Feedforward
     ),
     weightsInitializer = weightsInitializer,
-    biasesInitializer = biasesInitializer,
-    forceDense = true // important
-  )
+    biasesInitializer = biasesInitializer)
 
   /**
    * @return the string representation of this model
