@@ -26,7 +26,7 @@ import com.kotlinnlp.tokensencoder.embeddings.keyextractor.EmbeddingKeyExtractor
  */
 sealed class EmbeddingsEncoderModel<TokenType: Token, SentenceType: Sentence<TokenType>>(
   internal val frequencyDictionary: Map<String, Int>? = null,
-  val dropout: Double = 0.0,
+  internal val dropout: Double = 0.0,
   embeddingKeyExtractor: EmbeddingKeyExtractor<TokenType, SentenceType>,
   fallbackEmbeddingKeyExtractors: List<EmbeddingKeyExtractor<TokenType, SentenceType>> = emptyList()
 ) : TokensEncoderModel<TokenType, SentenceType> {
