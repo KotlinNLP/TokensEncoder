@@ -36,11 +36,11 @@ class EnsembleTokensEncoderModel<TokenType: Token, SentenceType: Sentence<TokenT
    * The model of a component.
    *
    * @param model the model of a tokens encoder
-   * @property trainable whether to train the model (default = true)
+   * @property trainable whether to train the model
    */
   class ComponentModel<TokenType: Token, SentenceType: Sentence<TokenType>>(
     model: TokensEncoderModel<TokenType, SentenceType>,
-    val trainable: Boolean = true
+    val trainable: Boolean
   ) : TokensEncoderModel<TokenType, SentenceType> by model
 
   companion object {
