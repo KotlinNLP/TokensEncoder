@@ -17,9 +17,9 @@ import com.kotlinnlp.tokensencoder.embeddings.keyextractor.EmbeddingKeyExtractor
  * The model of the [EmbeddingsEncoder].
  *
  * @property embeddingsMap an embeddings map
- * @property frequencyDictionary map of elements with their relative absolute frequency in a corpus
- * @property dropout the dropout [0.0 .. 1.0]. When the [frequencyDictionary] is not null, the dropout is considered as
- *                   a coefficient to calculate the probability of the final dropout probability
+ * @property frequencyDictionary a map of words to the number of their occurrences
+ * @property dropout the dropout [0.0 .. 1.0]. When the [frequencyDictionary] is not null, the dropout is considered
+ *                   as a coefficient to calculate the probability of the final dropout probability
  * @param embeddingKeyExtractor list of embeddings key extractor
  * @param fallbackEmbeddingKeyExtractors list of embeddings key extractors sorted by priority in descending order,
  *                                       used in case the principal extractor does not generate a valid key
