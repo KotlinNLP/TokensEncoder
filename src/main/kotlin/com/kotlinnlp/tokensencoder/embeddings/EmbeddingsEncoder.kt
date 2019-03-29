@@ -33,7 +33,22 @@ class EmbeddingsEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
   companion object {
 
     /**
-     * Calculate the dropout probability of an element in relation to its occurrences.
+     * Calculate the dropout probability of an element with a proportionality that is inverse respect to its
+     * occurrences.
+     *
+     * Examples:
+     *
+     *  dropout_coeff = 1.0, occurrences = 1 -> prob = 0.50
+     *  dropout_coeff = 1.0, occurrences = 2 -> prob = 0.33
+     *  dropout_coeff = 1.0, occurrences = 3 -> prob = 0.25
+     *
+     *  dropout_coeff = 0.5, occurrences = 1 -> prob = 0.33
+     *  dropout_coeff = 0.5, occurrences = 2 -> prob = 0.20
+     *  dropout_coeff = 0.5, occurrences = 3 -> prob = 0.14
+     *
+     *  dropout_coeff = 0.25, occurrences = 1 -> prob = 0.20
+     *  dropout_coeff = 0.25, occurrences = 2 -> prob = 0.11
+     *  dropout_coeff = 0.25, occurrences = 3 -> prob = 0.08
      *
      * @param occurrences the number of occurrences of an element
      * @param dropoutCoefficient the dropout coefficient
