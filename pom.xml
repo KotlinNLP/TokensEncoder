@@ -59,11 +59,11 @@
         <surfire.version>2.19.1</surfire.version>
         <spek.version>1.1.5</spek.version>
         <dokka.version>0.9.16</dokka.version>
-        <simplednn.version>0.13.0</simplednn.version>
-        <neuraltokenizer.version>0.4.5</neuraltokenizer.version>
-        <morphologicalanalyzer.version>0.4.3</morphologicalanalyzer.version>
+        <simplednn.version>0.13.1</simplednn.version>
+        <neuraltokenizer.version>0.4.6</neuraltokenizer.version>
+        <morphologicalanalyzer.version>0.4.4</morphologicalanalyzer.version>
         <linguisticdescription.version>0.11.0</linguisticdescription.version>
-        <languagemodel.version>0.2.0</languagemodel.version>
+        <languagemodel.version>0.2.1</languagemodel.version>
         <utils.version>2.1.1</utils.version>
     </properties>
 
