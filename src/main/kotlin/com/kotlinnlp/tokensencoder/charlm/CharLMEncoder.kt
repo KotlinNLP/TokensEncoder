@@ -28,6 +28,55 @@ class CharLMEncoder(
 ) : TokensEncoder<FormToken, Sentence<FormToken>>(model) {
 
   /**
+   * @property endIndex the index of the end of a token in the left-to-right sequence
+   * @property reverseEndIndex the index of the end of a token in the right-to-left sequence
+   */
+  private data class TokenEnds(val endIndex: Int, val reverseEndIndex: Int)
+
+  /**
+   * @property tokens the list of tokens
+   */
+  private class ProcessingSentence(override val tokens: List<FormToken>) : Sentence<FormToken> {
+
+    /**
+     * Secondary constructor.
+     *
+     * @param sentence a sentence of [FormToken]
+     */
+    constructor(sentence: Sentence<FormToken>): this(sentence.tokens)
+
+    /**
+     * String composed by the sentence tokens separated by space.
+     */
+    val spaceSeparatedForms: String get() = this.tokens.joinToString(" ") { it.form }
+
+    /**
+     * Indexes of the end of the tokens in the left-to-right and the right-to-left sequence.
+     */
+    val tokensEnds: List<TokenEnds>
+
+    /**
+     * Initialize the 'tokensEnds'.
+     */
+    init {
+
+      var tokenStart = 0
+
+      this.tokensEnds = this.tokens.map {
+
+        val ends = TokenEnds(
+          endIndex = tokenStart + it.form.lastIndex,
+          reverseEndIndex = this.spaceSeparatedForms.lastIndex - tokenStart
+        )
+
+        tokenStart = ends.endIndex + 2 // + 1 to include the spaces
+
+        ends
+      }
+    }
+  }
+
+  /**
    * Don't use the dropout.
    */
   override val useDropout: Boolean = false
@@ -57,6 +106,11 @@ class CharLMEncoder(
     propagateToInput = false)
 
   /**
+   * The current [forward]ed input.
+   **/
+  private lateinit var curSentence: ProcessingSentence
+
+  /**
    * The Forward.
    *
    * @param input the input
@@ -65,24 +119,21 @@ class CharLMEncoder(
    */
   override fun forward(input: Sentence<FormToken>): List<DenseNDArray> {
 
-    val s = input.tokens.joinToString(" ") { it.form }
+    this.curSentence = ProcessingSentence(input)
 
-    val inputL2R: List<DenseNDArray> = s.map { this.model.charLM.charsEmbeddings[it].values }
-    val inputR2L: List<DenseNDArray> = s.map { this.model.revCharLM.charsEmbeddings[it].values }.reversed()
+    val inputL2R: List<DenseNDArray>
+    val inputR2L: List<DenseNDArray>
+
+    this.curSentence.spaceSeparatedForms.let { s ->
+      inputL2R = s.map { this.model.charLM.charsEmbeddings[it].values }
+      inputR2L = s.map { this.model.revCharLM.charsEmbeddings[it].values }.reversed()
+    }
 
     val hiddenL2R: List<DenseNDArray> = this.leftToRightProcessor.forward(inputL2R)
     val hiddenR2L: List<DenseNDArray> = this.rightToLeftProcessor.forward(inputR2L)
 
-    var tokenStart = 0
-
-    return this.outputMergeProcessors.forward(ArrayList(input.tokens.map {
-
-      val tokenEnd = tokenStart + it.form.lastIndex
-      val reverseEnd = s.lastIndex - tokenStart
-
-      tokenStart = tokenEnd + 2 // + 1 to include the spaces
-
-      listOf(hiddenL2R[tokenEnd], hiddenR2L[reverseEnd])
+    return this.outputMergeProcessors.forward(ArrayList(this.curSentence.tokensEnds.map {
+      listOf(hiddenL2R[it.endIndex], hiddenR2L[it.reverseEndIndex])
     }))
   }
 
