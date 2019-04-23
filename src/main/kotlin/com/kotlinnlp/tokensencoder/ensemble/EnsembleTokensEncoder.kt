@@ -74,11 +74,15 @@ class EnsembleTokensEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>
 
     this.outputMergeProcessors.backward(outputErrors)
 
-    val inputErrors: List<List<DenseNDArray>> = this.outputMergeProcessors.getInputsErrors(copy = false)
+    if (this.outputMergeProcessors.propagateToInput) {
 
-    this.encoders.forEachIndexed { encoderIndex, encoder ->
-      if (this.model.components[encoderIndex].trainable)
-        encoder.backward(inputErrors.map { it[encoderIndex] } )
+      this.outputMergeProcessors.getInputsErrors(copy = false).let { inputErrors ->
+
+        this.encoders.forEachIndexed { encoderIndex, encoder ->
+          if (this.model.components[encoderIndex].trainable)
+            encoder.backward(inputErrors.map { it[encoderIndex] })
+        }
+      }
     }
   }
 
