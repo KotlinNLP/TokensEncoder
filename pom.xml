@@ -62,7 +62,7 @@
         <simplednn.version>0.13.1</simplednn.version>
         <neuraltokenizer.version>0.4.6</neuraltokenizer.version>
         <morphologicalanalyzer.version>0.4.4</morphologicalanalyzer.version>
-        <linguisticdescription.version>0.11.0</linguisticdescription.version>
+        <linguisticdescription.version>0.12.0</linguisticdescription.version>
         <languagemodel.version>0.2.1</languagemodel.version>
         <utils.version>2.1.2</utils.version>
     </properties>
