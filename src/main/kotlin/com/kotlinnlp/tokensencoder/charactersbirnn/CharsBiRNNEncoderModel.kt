@@ -78,8 +78,9 @@ class CharsBiRNNEncoderModel(
    *
    * @param word a string
    */
-  private fun EmbeddingsMap<Char>.includeChars(word: String) =
-    word.filterNot { this.contains(it) }.forEach { this.set(it) }
+  private fun EmbeddingsMap<Char>.includeChars(word: String) = word.forEach { char ->
+    if (!this.contains(char)) this.set(char)
+  }
 
   /**
    * @return the string representation of this model
