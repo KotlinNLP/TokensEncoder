@@ -81,7 +81,7 @@ class CharsBiRNNEncoder(
 
       this.usedEncoders[tokenIndex].let { encoder ->
 
-        tokenErrors.splitV(this.model.tokenEncodingSize).let {
+        tokenErrors.splitV(this.model.biRNN.hiddenSize).let {
           encoder.backwardLastOutput(
             leftToRightErrors = it[0],
             rightToLeftErrors = it[1]) }
