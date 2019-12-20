@@ -26,7 +26,7 @@ class EnsembleTokensEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>
   override val model: EnsembleTokensEncoderModel<TokenType, SentenceType>,
   override val useDropout: Boolean,
   override val id: Int = 0
-) : TokensEncoder<TokenType, SentenceType>(model) {
+) : TokensEncoder<TokenType, SentenceType>() {
 
   /**
    * List of tokens encoder builders.

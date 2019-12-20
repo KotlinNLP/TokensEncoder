@@ -30,7 +30,7 @@ class MorphoEncoder(
   override val model: MorphoEncoderModel,
   override val useDropout: Boolean,
   override val id: Int = 0
-) : TokensEncoder<FormToken, MorphoSentence<FormToken>>(model) {
+) : TokensEncoder<FormToken, MorphoSentence<FormToken>>() {
 
   /**
    * The feed-forward network used to transform the input from sparse to dense.

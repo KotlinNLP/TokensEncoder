@@ -25,7 +25,7 @@ import com.kotlinnlp.tokensencoder.TokensEncoder
 class CharLMEncoder(
   override val model: CharLMEncoderModel,
   override val id: Int = 0
-) : TokensEncoder<FormToken, Sentence<FormToken>>(model) {
+) : TokensEncoder<FormToken, Sentence<FormToken>>() {
 
   /**
    * @property endIndex the index of the end of a token in the left-to-right sequence

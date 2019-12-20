@@ -26,7 +26,7 @@ class ReductionEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
   override val model: ReductionEncoderModel<TokenType, SentenceType>,
   override val useDropout: Boolean,
   override val id: Int = 0
-) : TokensEncoder<TokenType, SentenceType>(model) {
+) : TokensEncoder<TokenType, SentenceType>() {
 
   /**
    * The tokens encoder of input.

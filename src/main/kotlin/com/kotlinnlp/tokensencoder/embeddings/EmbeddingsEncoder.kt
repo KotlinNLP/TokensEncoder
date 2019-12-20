@@ -28,7 +28,7 @@ class EmbeddingsEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
   override val model: EmbeddingsEncoderModel<TokenType, SentenceType>,
   override val useDropout: Boolean,
   override val id: Int = 0
-) : TokensEncoder<TokenType, SentenceType>(model) {
+) : TokensEncoder<TokenType, SentenceType>() {
 
   companion object {
 

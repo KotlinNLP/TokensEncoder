@@ -30,12 +30,7 @@ class TokensEncoderWrapper<
   override val model: TokensEncoderWrapperModel<FromTokenType, FromSentenceType, ToTokenType, ToSentenceType>,
   override val useDropout: Boolean = false,
   override val id: Int = 0
-) : TokensEncoder<FromTokenType, FromSentenceType>(model) {
-
-  /**
-   * Not used for this processor.
-   */
-  override val propagateToInput: Boolean = false
+) : TokensEncoder<FromTokenType, FromSentenceType>() {
 
   /**
    * The tokens encoder wrapped.

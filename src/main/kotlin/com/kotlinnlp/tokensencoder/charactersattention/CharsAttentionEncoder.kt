@@ -30,7 +30,7 @@ class CharsAttentionEncoder(
   override val model: CharsAttentionEncoderModel,
   override val useDropout: Boolean,
   override val id: Int = 0
-) : TokensEncoder<FormToken, Sentence<FormToken>>(model) {
+) : TokensEncoder<FormToken, Sentence<FormToken>>() {
 
   /**
    * The characters embeddings of the last encoding.

@@ -11,18 +11,19 @@ import com.kotlinnlp.linguisticdescription.sentence.Sentence
 import com.kotlinnlp.linguisticdescription.sentence.token.Token
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.utils.ItemsPool
 
 /**
  * Encoder that generates a dense representation of sentence tokens.
  */
-abstract class TokensEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
-  open val model: TokensEncoderModel<TokenType, SentenceType>
-) : NeuralProcessor<
-  SentenceType, // InputType
-  List<DenseNDArray>, // OutputType
-  List<DenseNDArray>, // ErrorsType
-  NeuralProcessor.NoInputErrors // InputErrorsType
-  > {
+abstract class TokensEncoder<TokenType: Token, SentenceType: Sentence<TokenType>> :
+  ItemsPool.IDItem,
+  NeuralProcessor<SentenceType, List<DenseNDArray>, List<DenseNDArray>, NeuralProcessor.NoInputErrors> {
+
+  /**
+   * The tokens encoder model-
+   */
+  abstract val model: TokensEncoderModel<TokenType, SentenceType>
 
   /**
    * Do not propagate input errors during the backward.
