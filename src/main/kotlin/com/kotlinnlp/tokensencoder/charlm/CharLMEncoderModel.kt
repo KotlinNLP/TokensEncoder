@@ -45,8 +45,6 @@ class CharLMEncoderModel(
   }
 
   init {
-    require(!this.charLM.reverseModel) { "The charLM must be trained to process the sequence from left to right."}
-    require(this.revCharLM.reverseModel) { "The revCharLM must be trained to process the sequence from right to left."}
     require(this.charLM.recurrentNetwork.outputSize == this.revCharLM.recurrentNetwork.outputSize) {
       "The charLM and the reverse CharLM must have the same recurrent hidden size."
     }
