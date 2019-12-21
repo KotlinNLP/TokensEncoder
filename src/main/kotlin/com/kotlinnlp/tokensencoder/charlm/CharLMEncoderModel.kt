@@ -21,8 +21,8 @@ import com.kotlinnlp.tokensencoder.TokensEncoderModel
 /**
  * The model of the [CharLMEncoder].
  *
- * @param charLM the CharLM trained left to right
- * @param revCharLM the CharLM trained right to left
+ * @param charLM a char language model trained left to right
+ * @param revCharLM a char language model trained right to left
  * @param outputMergeConfiguration the configuration of the output merge layer
  * @param weightsInitializer the initializer of the weights of the merge layer (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases of the merge layer (zeros if null, default: null)
