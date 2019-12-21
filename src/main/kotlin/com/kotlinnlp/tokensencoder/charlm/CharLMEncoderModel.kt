@@ -21,14 +21,14 @@ import com.kotlinnlp.tokensencoder.TokensEncoderModel
 /**
  * The model of the [CharLMEncoder].
  *
- * @param charLM a char language model trained left to right
+ * @param dirCharLM a char language model trained left to right
  * @param revCharLM a char language model trained right to left
  * @param outputMergeConfiguration the configuration of the output merge layer
  * @param weightsInitializer the initializer of the weights of the merge layer (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases of the merge layer (zeros if null, default: null)
  */
 class CharLMEncoderModel(
-  val charLM: CharLM,
+  val dirCharLM: CharLM,
   val revCharLM: CharLM,
   outputMergeConfiguration: MergeConfiguration = ConcatMerge(),
   weightsInitializer: Initializer? = GlorotInitializer(),
@@ -45,8 +45,8 @@ class CharLMEncoderModel(
   }
 
   init {
-    require(this.charLM.recurrentNetwork.outputSize == this.revCharLM.recurrentNetwork.outputSize) {
-      "The charLM and the reverse CharLM must have the same recurrent hidden size."
+    require(this.dirCharLM.recurrentNetwork.outputSize == this.revCharLM.recurrentNetwork.outputSize) {
+      "The direct and the reverse char language models must have the same recurrent hidden size."
     }
   }
 
@@ -57,10 +57,10 @@ class CharLMEncoderModel(
     is AffineMerge -> outputMergeConfiguration.outputSize
     is BiaffineMerge -> outputMergeConfiguration.outputSize
     is ConcatFeedforwardMerge -> outputMergeConfiguration.outputSize
-    is ConcatMerge -> 2 * this.charLM.recurrentNetwork.outputSize
-    is SumMerge -> this.charLM.recurrentNetwork.outputSize
-    is ProductMerge -> this.charLM.recurrentNetwork.outputSize
-    is AvgMerge -> this.charLM.recurrentNetwork.outputSize
+    is ConcatMerge -> 2 * this.dirCharLM.recurrentNetwork.outputSize
+    is SumMerge -> this.dirCharLM.recurrentNetwork.outputSize
+    is ProductMerge -> this.dirCharLM.recurrentNetwork.outputSize
+    is AvgMerge -> this.dirCharLM.recurrentNetwork.outputSize
     else -> throw RuntimeException("Invalid output merge configuration.")
   }
 
@@ -70,16 +70,17 @@ class CharLMEncoderModel(
   val outputMergeNetwork = StackedLayersParameters(
     if (outputMergeConfiguration is ConcatFeedforwardMerge) listOf(
       LayerInterface(
-        sizes = listOf(this.charLM.recurrentNetwork.outputSize, this.revCharLM.recurrentNetwork.outputSize),
+        sizes = listOf(this.dirCharLM.recurrentNetwork.outputSize, this.revCharLM.recurrentNetwork.outputSize),
         dropout = outputMergeConfiguration.dropout),
-      LayerInterface(size = 2 * this.charLM.recurrentNetwork.outputSize, connectionType = LayerType.Connection.Concat),
+      LayerInterface(
+        size = 2 * this.dirCharLM.recurrentNetwork.outputSize, connectionType = LayerType.Connection.Concat),
       LayerInterface(
         size = outputMergeConfiguration.outputSize,
         activationFunction = outputMergeConfiguration.activationFunction,
         connectionType = LayerType.Connection.Feedforward))
     else listOf(
       LayerInterface(
-        sizes = listOf(this.charLM.recurrentNetwork.outputSize, this.revCharLM.recurrentNetwork.outputSize),
+        sizes = listOf(this.dirCharLM.recurrentNetwork.outputSize, this.revCharLM.recurrentNetwork.outputSize),
         dropout = outputMergeConfiguration.dropout),
       LayerInterface(size = this.tokenEncodingSize, connectionType = outputMergeConfiguration.type)),
     weightsInitializer = weightsInitializer,

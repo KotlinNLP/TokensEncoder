@@ -28,15 +28,17 @@ class CharLMEncoder(
 ) : TokensEncoder<FormToken, Sentence<FormToken>>() {
 
   /**
-   * @property endIndex the index of the end of a token in the left-to-right sequence
-   * @property reverseEndIndex the index of the end of a token in the right-to-left sequence
-   */
-  private data class TokenEnds(val endIndex: Int, val reverseEndIndex: Int)
-
-  /**
+   * The processing sentence.
+   *
    * @property tokens the list of tokens
    */
   private class ProcessingSentence(override val tokens: List<FormToken>) : Sentence<FormToken> {
+
+    /**
+     * @property direct the index of the end of a token in the left-to-right sequence
+     * @property reverse the index of the end of a token in the right-to-left sequence
+     */
+    data class TokenEnd(val direct: Int, val reverse: Int)
 
     /**
      * Secondary constructor.
@@ -51,27 +53,24 @@ class CharLMEncoder(
     val spaceSeparatedForms: String get() = this.tokens.joinToString(" ") { it.form }
 
     /**
-     * Indexes of the end of the tokens in the left-to-right and the right-to-left sequence.
+     * The indexes of the tokens ends within the sequence, seen left-to-right (direct) and right-to-left (reverse).
      */
-    val tokensEnds: List<TokenEnds>
+    val tokensEnds: List<TokenEnd>
 
     /**
-     * Initialize the 'tokensEnds'.
+     * Initialize the tokens ends.
      */
     init {
 
       var tokenStart = 0
 
       this.tokensEnds = this.tokens.map {
-
-        val ends = TokenEnds(
-          endIndex = tokenStart + it.form.lastIndex,
-          reverseEndIndex = this.spaceSeparatedForms.lastIndex - tokenStart
-        )
-
-        tokenStart = ends.endIndex + 2 // + 1 to include the spaces
-
-        ends
+        TokenEnd(
+          direct = tokenStart + it.form.lastIndex,
+          reverse = this.spaceSeparatedForms.lastIndex - tokenStart
+        ).also { e ->
+          tokenStart = e.direct + 2 // space included
+        }
       }
     }
   }
@@ -82,17 +81,17 @@ class CharLMEncoder(
   override val useDropout: Boolean = false
 
   /**
-   * The recurrent processor.
+   * The hidden recurrent processor that auto-encodes the sequence from left to right.
    */
-  private val leftToRightProcessor = RecurrentNeuralProcessor<DenseNDArray>(
-    model = this.model.charLM.recurrentNetwork,
+  private val directProcessor = RecurrentNeuralProcessor<DenseNDArray>(
+    model = this.model.dirCharLM.recurrentNetwork,
     useDropout = false,
     propagateToInput = false)
 
   /**
-   * The recurrent processor.
+   * The hidden recurrent processor that auto-encodes the sequence from right to left.
    */
-  private val rightToLeftProcessor = RecurrentNeuralProcessor<DenseNDArray>(
+  private val reverseProcessor = RecurrentNeuralProcessor<DenseNDArray>(
     model = this.model.revCharLM.recurrentNetwork,
     useDropout = false,
     propagateToInput = false)
@@ -121,19 +120,19 @@ class CharLMEncoder(
 
     this.curSentence = ProcessingSentence(input)
 
-    val inputL2R: List<DenseNDArray>
-    val inputR2L: List<DenseNDArray>
+    val inputDirect: List<DenseNDArray>
+    val inputReverse: List<DenseNDArray>
 
     this.curSentence.spaceSeparatedForms.let { s ->
-      inputL2R = s.map { this.model.charLM.charsEmbeddings[it].values }
-      inputR2L = s.map { this.model.revCharLM.charsEmbeddings[it].values }.reversed()
+      inputDirect = s.map { this.model.dirCharLM.charsEmbeddings[it].values }
+      inputReverse = s.map { this.model.revCharLM.charsEmbeddings[it].values }.reversed()
     }
 
-    val hiddenL2R: List<DenseNDArray> = this.leftToRightProcessor.forward(inputL2R)
-    val hiddenR2L: List<DenseNDArray> = this.rightToLeftProcessor.forward(inputR2L)
+    val hiddenDirect: List<DenseNDArray> = this.directProcessor.forward(inputDirect)
+    val hiddenReverse: List<DenseNDArray> = this.reverseProcessor.forward(inputReverse)
 
     return this.outputMergeProcessors.forward(ArrayList(this.curSentence.tokensEnds.map {
-      listOf(hiddenL2R[it.endIndex], hiddenR2L[it.reverseEndIndex])
+      listOf(hiddenDirect[it.direct], hiddenReverse[it.reverse])
     }))
   }
 
