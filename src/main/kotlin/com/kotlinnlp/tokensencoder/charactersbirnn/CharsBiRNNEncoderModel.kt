@@ -28,7 +28,7 @@ import com.kotlinnlp.tokensencoder.TokensEncoderModel
  * @param hiddenActivation the activation function of the BiRNN
  */
 class CharsBiRNNEncoderModel(
-  private val words: List<String>,
+  words: List<String>,
   charEmbeddingSize: Int = 25,
   hiddenSize: Int = 25,
   connectionType: LayerType.Connection = LayerType.Connection.LSTM,
@@ -71,7 +71,9 @@ class CharsBiRNNEncoderModel(
   /**
    * Initialize chars embeddings.
    */
-  init { this.words.forEach { this.charsEmbeddings.includeChars(it) } }
+  init {
+    words.forEach { this.charsEmbeddings.includeChars(it) }
+  }
 
   /**
    * Include in the map the characters of the given [word].
