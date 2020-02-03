@@ -1,4 +1,4 @@
-# TokensEncoder
+# TokensEncoder [![Maven Central](https://img.shields.io/maven-central/v/com.kotlinnlp/tokensencoder.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.kotlinnlp%22%20AND%20a:%22tokensencoder%22) [![Build Status](https://travis-ci.org/KotlinNLP/TokensEncoder.svg?branch=master)](https://travis-ci.org/KotlinNLP/TokensEncoder)
 
 TokensEncoder is a very simple to use tokens encoder library which uses neural networks from [SimpleDNN](https://github.com/KotlinNLP/SimpleDNN "SimpleDNN").
 
