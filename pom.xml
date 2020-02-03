@@ -59,12 +59,8 @@
         <gpg.keyname>C73F18F0</gpg.keyname>
         <kotlin.version>1.3.31</kotlin.version>
         <dokka.version>0.9.16</dokka.version>
-        <simplednn.version>0.13.3</simplednn.version>
         <neuraltokenizer.version>0.4.8</neuraltokenizer.version>
-        <morphologicalanalyzer.version>0.4.6</morphologicalanalyzer.version>
-        <linguisticdescription.version>0.12.2</linguisticdescription.version>
         <languagemodel.version>0.3.0</languagemodel.version>
-        <utils.version>2.1.4</utils.version>
     </properties>
 
     <pluginRepositories>
@@ -205,24 +201,6 @@
 
         <dependency>
             <groupId>com.kotlinnlp</groupId>
-            <artifactId>simplednn</artifactId>
-            <version>${simplednn.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.kotlinnlp</groupId>
-            <artifactId>morphologicalanalyzer</artifactId>
-            <version>${morphologicalanalyzer.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.kotlinnlp</groupId>
-            <artifactId>linguisticdescription</artifactId>
-            <version>${linguisticdescription.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.kotlinnlp</groupId>
             <artifactId>languagemodel</artifactId>
             <version>${languagemodel.version}</version>
         </dependency>
@@ -231,12 +209,6 @@
             <groupId>com.kotlinnlp</groupId>
             <artifactId>neuraltokenizer</artifactId>
             <version>${neuraltokenizer.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.kotlinnlp</groupId>
-            <artifactId>utils</artifactId>
-            <version>${utils.version}</version>
         </dependency>
     </dependencies>
 </project>
