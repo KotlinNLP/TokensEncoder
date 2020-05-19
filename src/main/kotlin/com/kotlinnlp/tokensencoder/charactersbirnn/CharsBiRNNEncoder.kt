@@ -90,8 +90,6 @@ class CharsBiRNNEncoder(
         this.accumulateEmbeddingsErrors(tokenIndex, encoder.getInputErrors(copy = false))
       }
     }
-
-    this.paramsErrorsAccumulator.averageErrors()
   }
 
   /**

@@ -124,8 +124,6 @@ class EmbeddingsEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
 
       this.lastEmbeddingsErrors.accumulate(embedding, errors)
     }
-
-    this.lastEmbeddingsErrors.averageErrors()
   }
 
   /**

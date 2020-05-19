@@ -88,8 +88,6 @@ class CharsAttentionEncoder(
         this.accumulateEmbeddingsErrors(tokenIndex, encoder.getInputErrors(copy = false) as HierarchySequence<*>)
       }
     }
-
-    this.paramsErrorsAccumulator.averageErrors()
   }
 
   /**
