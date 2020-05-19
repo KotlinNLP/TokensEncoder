@@ -32,7 +32,7 @@ class CharsBiRNNEncoderModel(
   charEmbeddingSize: Int = 25,
   hiddenSize: Int = 25,
   connectionType: LayerType.Connection = LayerType.Connection.LSTM,
-  hiddenActivation: ActivationFunction? = Tanh(),
+  hiddenActivation: ActivationFunction? = Tanh,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = null
 ) : TokensEncoderModel<FormToken, Sentence<FormToken>> {

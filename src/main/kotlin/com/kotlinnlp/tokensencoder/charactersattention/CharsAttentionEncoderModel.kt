@@ -32,7 +32,7 @@ class CharsAttentionEncoderModel(
   wordEmbeddingSize: Int = 50,
   hanAttentionSize: Int = 25,
   hanConnectionType: LayerType.Connection = LayerType.Connection.LSTM,
-  hanHiddenActivation: ActivationFunction? = Tanh()
+  hanHiddenActivation: ActivationFunction? = Tanh
 ) : TokensEncoderModel<FormToken, Sentence<FormToken>> {
 
   companion object {
