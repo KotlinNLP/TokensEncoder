@@ -131,9 +131,10 @@ class CharLMEncoder(
     val hiddenDirect: List<DenseNDArray> = this.directProcessor.forward(inputDirect)
     val hiddenReverse: List<DenseNDArray> = this.reverseProcessor.forward(inputReverse)
 
-    return this.outputMergeProcessors.forward(ArrayList(this.curSentence.tokensEnds.map {
-      listOf(hiddenDirect[it.direct], hiddenReverse[it.reverse])
-    }))
+    return this.outputMergeProcessors.forward(
+      this.curSentence.tokensEnds
+        .map { listOf(hiddenDirect[it.direct], hiddenReverse[it.reverse]) }
+        .toTypedArray())
   }
 
   /**
