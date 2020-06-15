@@ -101,14 +101,9 @@ class CharsBiRNNEncoderModel(
   )
 
   /**
-   * @param useDropout whether to apply the dropout
    * @param id an identification number useful to track a specific encoder
    *
    * @return a new tokens encoder that uses this model
    */
-  override fun buildEncoder(useDropout: Boolean, id: Int) = CharsBiRNNEncoder(
-    model = this,
-    useDropout = useDropout,
-    id = id
-  )
+  override fun buildEncoder(id: Int) = CharsBiRNNEncoder(model = this, id = id)
 }

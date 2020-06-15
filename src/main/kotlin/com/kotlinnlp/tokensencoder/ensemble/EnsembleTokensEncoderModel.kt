@@ -79,8 +79,7 @@ class EnsembleTokensEncoderModel<TokenType: Token, SentenceType: Sentence<TokenT
     layersConfiguration = if (outputMergeConfiguration is ConcatFeedforwardMerge)
       listOf(
         LayerInterface(
-          sizes = this.components.map { it.tokenEncodingSize },
-          dropout = outputMergeConfiguration.dropout),
+          sizes = this.components.map { it.tokenEncodingSize }),
         LayerInterface(
           size = this.components.sumBy { it.tokenEncodingSize },
           connectionType = LayerType.Connection.Concat),
@@ -89,12 +88,8 @@ class EnsembleTokensEncoderModel<TokenType: Token, SentenceType: Sentence<TokenT
           connectionType = LayerType.Connection.Feedforward))
     else
       listOf(
-        LayerInterface(
-          sizes = this.components.map { it.tokenEncodingSize },
-          dropout = outputMergeConfiguration.dropout),
-        LayerInterface(
-          size = this.mergeOutputSize,
-          connectionType = outputMergeConfiguration.type)),
+        LayerInterface(sizes = this.components.map { it.tokenEncodingSize }),
+        LayerInterface(size = this.mergeOutputSize, connectionType = outputMergeConfiguration.type)),
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer
   )
@@ -105,14 +100,9 @@ class EnsembleTokensEncoderModel<TokenType: Token, SentenceType: Sentence<TokenT
   override fun toString(): String = "encoding size %d".format(this.tokenEncodingSize)
 
   /**
-   * @param useDropout whether to apply the dropout
    * @param id an identification number useful to track a specific encoder
    *
    * @return a new tokens encoder that uses this model
    */
-  override fun buildEncoder(useDropout: Boolean, id: Int) = EnsembleTokensEncoder(
-    model = this,
-    useDropout = useDropout,
-    id = id
-  )
+  override fun buildEncoder(id: Int) = EnsembleTokensEncoder(model = this, id = id)
 }

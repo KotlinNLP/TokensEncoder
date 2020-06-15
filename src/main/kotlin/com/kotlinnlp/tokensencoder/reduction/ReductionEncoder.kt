@@ -19,27 +19,23 @@ import com.kotlinnlp.tokensencoder.TokensEncoder
  * The [TokensEncoder] that encodes a token using another tokens encoder as input and then reduces its output vectors.
  *
  * @property model the model of this tokens encoder
- * @property useDropout whether to apply the dropout
  * @property id an identification number useful to track a specific processor*
  */
 class ReductionEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
   override val model: ReductionEncoderModel<TokenType, SentenceType>,
-  override val useDropout: Boolean,
   override val id: Int = 0
 ) : TokensEncoder<TokenType, SentenceType>() {
 
   /**
    * The tokens encoder of input.
    */
-  private val inputEncoder = this.model.inputEncoderModel.buildEncoder(useDropout = this.useDropout)
+  private val inputEncoder = this.model.inputEncoderModel.buildEncoder()
 
   /**
    * The reduction neural processor.
    */
-  private val reductionProcessor = BatchFeedforwardProcessor<DenseNDArray>(
-    model = this.model.reductionNetwork,
-    useDropout = false,
-    propagateToInput = true)
+  private val reductionProcessor: BatchFeedforwardProcessor<DenseNDArray> =
+    BatchFeedforwardProcessor(model = this.model.reductionNetwork, propagateToInput = true)
 
   /**
    * Encode a list of tokens.

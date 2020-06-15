@@ -23,10 +23,9 @@ interface TokensEncoderModel<TokenType: Token, SentenceType: Sentence<TokenType>
   val tokenEncodingSize: Int
 
   /**
-   * @param useDropout whether to apply the dropout
    * @param id an identification number useful to track a specific encoder
    *
    * @return a new tokens encoder that uses this model
    */
-  fun buildEncoder(useDropout: Boolean, id: Int = 0): TokensEncoder<TokenType, SentenceType>
+  fun buildEncoder(id: Int = 0): TokensEncoder<TokenType, SentenceType>
 }

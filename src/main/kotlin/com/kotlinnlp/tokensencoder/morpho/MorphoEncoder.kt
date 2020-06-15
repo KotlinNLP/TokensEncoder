@@ -17,28 +17,23 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArrayFactory
 import com.kotlinnlp.tokensencoder.TokensEncoder
-import com.kotlinnlp.neuraltokenizer.Token as TKToken
 
 /**
  * The [TokensEncoder] that encodes each token of a sentence using its morphological properties.
  *
  * @property model the model of this tokens encoder
- * @property useDropout whether to apply the dropout
  * @property id an identification number useful to track a specific processor
  */
 class MorphoEncoder(
   override val model: MorphoEncoderModel,
-  override val useDropout: Boolean,
   override val id: Int = 0
 ) : TokensEncoder<FormToken, MorphoSentence<FormToken>>() {
 
   /**
    * The feed-forward network used to transform the input from sparse to dense.
    */
-  private val encoder = BatchFeedforwardProcessor<SparseBinaryNDArray>(
-    model = this.model.denseEncoder,
-    useDropout = this.useDropout,
-    propagateToInput = false)
+  private val encoder: BatchFeedforwardProcessor<SparseBinaryNDArray> =
+    BatchFeedforwardProcessor(model = this.model.denseEncoder, propagateToInput = false)
 
   /**
    * Encode a list of tokens.

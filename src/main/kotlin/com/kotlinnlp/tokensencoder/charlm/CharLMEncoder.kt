@@ -76,33 +76,22 @@ class CharLMEncoder(
   }
 
   /**
-   * Don't use the dropout.
-   */
-  override val useDropout: Boolean = false
-
-  /**
    * The hidden recurrent processor that auto-encodes the sequence from left to right.
    */
-  private val directProcessor = RecurrentNeuralProcessor<DenseNDArray>(
-    model = this.model.dirCharLM.recurrentNetwork,
-    useDropout = false,
-    propagateToInput = false)
+  private val directProcessor: RecurrentNeuralProcessor<DenseNDArray> =
+    RecurrentNeuralProcessor(model = this.model.dirCharLM.hiddenNetwork, propagateToInput = false)
 
   /**
    * The hidden recurrent processor that auto-encodes the sequence from right to left.
    */
-  private val reverseProcessor = RecurrentNeuralProcessor<DenseNDArray>(
-    model = this.model.revCharLM.recurrentNetwork,
-    useDropout = false,
-    propagateToInput = false)
+  private val reverseProcessor: RecurrentNeuralProcessor<DenseNDArray> =
+    RecurrentNeuralProcessor(model = this.model.revCharLM.hiddenNetwork, propagateToInput = false)
 
   /**
    * The processor that merges the encoded vectors.
    */
-  private val outputMergeProcessors = BatchFeedforwardProcessor<DenseNDArray>(
-    model = this.model.outputMergeNetwork,
-    useDropout = false, // TODO: why don't use the dropout here?
-    propagateToInput = false)
+  private val outputMergeProcessors: BatchFeedforwardProcessor<DenseNDArray> =
+    BatchFeedforwardProcessor(model = this.model.outputMergeNetwork, propagateToInput = false)
 
   /**
    * The current [forward]ed input.

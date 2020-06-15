@@ -15,11 +15,9 @@ import com.kotlinnlp.utils.ItemsPool
  * A pool of [TokensEncoder]s.
  *
  * @param model the model of the tokens encoder
- * @param useDropout whether to apply the dropout of the input
  */
 class TokensEncodersPool<TokenType: Token, SentenceType: Sentence<TokenType>>(
-  private val model: TokensEncoderModel<TokenType, SentenceType>,
-  private val useDropout: Boolean
+  private val model: TokensEncoderModel<TokenType, SentenceType>
 ) : ItemsPool<TokensEncoder<TokenType, SentenceType>>() {
 
   /**
@@ -30,7 +28,7 @@ class TokensEncodersPool<TokenType: Token, SentenceType: Sentence<TokenType>>(
    * @return a new item with the given [id]
    */
   override fun itemFactory(id: Int): TokensEncoder<TokenType, SentenceType> =
-    this.model.buildEncoder(useDropout = this.useDropout, id = id)
+    this.model.buildEncoder(id)
 
   /**
    * Release all the items of the pool and return a given number of available encoders.

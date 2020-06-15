@@ -22,12 +22,10 @@ import com.kotlinnlp.tokensencoder.TokensEncoder
  * The [TokensEncoder] that encodes a token using a BiRNN on its characters.
  *
  * @property model the model of this tokens encoder
- * @property useDropout whether to apply the dropout
  * @property id an identification number useful to track a specific processor*
  */
 class CharsBiRNNEncoder(
   override val model: CharsBiRNNEncoderModel,
-  override val useDropout: Boolean,
   override val id: Int = 0
 ) : TokensEncoder<FormToken, Sentence<FormToken>>() {
 
@@ -39,10 +37,7 @@ class CharsBiRNNEncoder(
   /**
    * A [BiRNNEncodersPool] to encode the chars of a token.
    */
-  private val biRNNEncodersPool = BiRNNEncodersPool<DenseNDArray>(
-    network = this.model.biRNN,
-    useDropout = this.useDropout,
-    propagateToInput = true)
+  private val biRNNEncodersPool = BiRNNEncodersPool<DenseNDArray>(network = this.model.biRNN, propagateToInput = true)
 
   /**
    * The list of [BiRNNEncoder]s used in the last encoding.

@@ -23,12 +23,10 @@ import com.kotlinnlp.tokensencoder.TokensEncoder
  * The [TokensEncoder] that encodes a token using an [HANEncoder] on its characters.
  *
  * @property model the model of this tokens encoder
- * @property useDropout whether to apply the dropout
  * @property id an identification number useful to track a specific processor
  */
 class CharsAttentionEncoder(
   override val model: CharsAttentionEncoderModel,
-  override val useDropout: Boolean,
   override val id: Int = 0
 ) : TokensEncoder<FormToken, Sentence<FormToken>>() {
 
@@ -40,10 +38,8 @@ class CharsAttentionEncoder(
   /**
    * A [HANEncodersPool] to encode the chars of a token.
    */
-  private val hanEncodersPool = HANEncodersPool<DenseNDArray>(
-    model = this.model.charactersNetwork,
-    useDropout = this.useDropout,
-    propagateToInput = true)
+  private val hanEncodersPool: HANEncodersPool<DenseNDArray> =
+    HANEncodersPool(model = this.model.charactersNetwork, propagateToInput = true)
 
   /**
    * The list of [HANEncoder]s used in the last encoding.

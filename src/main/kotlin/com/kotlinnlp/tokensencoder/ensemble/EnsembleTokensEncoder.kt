@@ -19,12 +19,10 @@ import com.kotlinnlp.tokensencoder.TokensEncoder
  * The tokens-encoder that encodes a token by concatenating the results of other [TokensEncoder]s.
  *
  * @property model the model of this tokens encoder
- * @property useDropout whether to apply the dropout
  * @property id an identification number useful to track a specific processor
  */
 class EnsembleTokensEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
   override val model: EnsembleTokensEncoderModel<TokenType, SentenceType>,
-  override val useDropout: Boolean,
   override val id: Int = 0
 ) : TokensEncoder<TokenType, SentenceType>() {
 
@@ -32,7 +30,7 @@ class EnsembleTokensEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>
    * List of tokens encoder builders.
    */
   private val encoders: List<TokensEncoder<TokenType, SentenceType>> = this.model.components.map {
-    it.buildEncoder(useDropout = this.useDropout, id = 0)
+    it.buildEncoder(id = 0)
   }
 
   /**
@@ -40,7 +38,6 @@ class EnsembleTokensEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>
    */
   private val outputMergeProcessors = BatchFeedforwardProcessor<DenseNDArray>(
     model = this.model.outputMergeNetwork,
-    useDropout = this.useDropout,
     propagateToInput = this.model.components.any { it.trainable })
 
   /**

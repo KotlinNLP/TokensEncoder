@@ -18,7 +18,6 @@ import com.kotlinnlp.tokensencoder.TokensEncoder
  * A [TokensEncoder] combined with a [SentenceConverter] that wraps the conversion of the input sentence.
  *
  * @property model the model of this encoder
- * @property useDropout whether to apply the dropout
  * @property id an identification number useful to track a specific processor
  */
 class TokensEncoderWrapper<
@@ -28,16 +27,13 @@ class TokensEncoderWrapper<
   ToSentenceType: Sentence<ToTokenType>>
 (
   override val model: TokensEncoderWrapperModel<FromTokenType, FromSentenceType, ToTokenType, ToSentenceType>,
-  override val useDropout: Boolean = false,
   override val id: Int = 0
 ) : TokensEncoder<FromTokenType, FromSentenceType>() {
 
   /**
    * The tokens encoder wrapped.
    */
-  private val encoder: TokensEncoder<ToTokenType, ToSentenceType> = this.model.model.buildEncoder(
-    useDropout = this.useDropout,
-    id = this.id)
+  private val encoder: TokensEncoder<ToTokenType, ToSentenceType> = this.model.model.buildEncoder(this.id)
 
   /**
    * Encode a list of tokens.

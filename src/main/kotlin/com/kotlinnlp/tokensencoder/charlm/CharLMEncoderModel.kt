@@ -45,7 +45,7 @@ class CharLMEncoderModel(
   }
 
   init {
-    require(this.dirCharLM.recurrentNetwork.outputSize == this.revCharLM.recurrentNetwork.outputSize) {
+    require(this.dirCharLM.hiddenNetwork.outputSize == this.revCharLM.hiddenNetwork.outputSize) {
       "The direct and the reverse char language models must have the same recurrent hidden size."
     }
   }
@@ -57,10 +57,10 @@ class CharLMEncoderModel(
     is AffineMerge -> outputMergeConfiguration.outputSize
     is BiaffineMerge -> outputMergeConfiguration.outputSize
     is ConcatFeedforwardMerge -> outputMergeConfiguration.outputSize
-    is ConcatMerge -> 2 * this.dirCharLM.recurrentNetwork.outputSize
-    is SumMerge -> this.dirCharLM.recurrentNetwork.outputSize
-    is ProductMerge -> this.dirCharLM.recurrentNetwork.outputSize
-    is AvgMerge -> this.dirCharLM.recurrentNetwork.outputSize
+    is ConcatMerge -> 2 * this.dirCharLM.hiddenNetwork.outputSize
+    is SumMerge -> this.dirCharLM.hiddenNetwork.outputSize
+    is ProductMerge -> this.dirCharLM.hiddenNetwork.outputSize
+    is AvgMerge -> this.dirCharLM.hiddenNetwork.outputSize
     else -> throw RuntimeException("Invalid output merge configuration.")
   }
 
@@ -68,29 +68,31 @@ class CharLMEncoderModel(
    * The Merge network that combines the predictions of the two language models.
    */
   val outputMergeNetwork = StackedLayersParameters(
-    if (outputMergeConfiguration is ConcatFeedforwardMerge) listOf(
-      LayerInterface(
-        sizes = listOf(this.dirCharLM.recurrentNetwork.outputSize, this.revCharLM.recurrentNetwork.outputSize),
-        dropout = outputMergeConfiguration.dropout),
-      LayerInterface(
-        size = 2 * this.dirCharLM.recurrentNetwork.outputSize, connectionType = LayerType.Connection.Concat),
-      LayerInterface(
-        size = outputMergeConfiguration.outputSize,
-        activationFunction = outputMergeConfiguration.activationFunction,
-        connectionType = LayerType.Connection.Feedforward))
-    else listOf(
-      LayerInterface(
-        sizes = listOf(this.dirCharLM.recurrentNetwork.outputSize, this.revCharLM.recurrentNetwork.outputSize),
-        dropout = outputMergeConfiguration.dropout),
-      LayerInterface(size = this.tokenEncodingSize, connectionType = outputMergeConfiguration.type)),
+    layersConfiguration = if (outputMergeConfiguration is ConcatFeedforwardMerge)
+      listOf(
+        LayerInterface(
+          sizes = listOf(this.dirCharLM.hiddenNetwork.outputSize, this.revCharLM.hiddenNetwork.outputSize)),
+        LayerInterface(
+          size = 2 * this.dirCharLM.hiddenNetwork.outputSize,
+          connectionType = LayerType.Connection.Concat),
+        LayerInterface(
+          size = outputMergeConfiguration.outputSize,
+          activationFunction = outputMergeConfiguration.activationFunction,
+          connectionType = LayerType.Connection.Feedforward))
+    else
+      listOf(
+        LayerInterface(
+          sizes = listOf(this.dirCharLM.hiddenNetwork.outputSize, this.revCharLM.hiddenNetwork.outputSize)),
+        LayerInterface(
+          size = this.tokenEncodingSize,
+          connectionType = outputMergeConfiguration.type)),
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer)
 
   /**
-   * @param useDropout whether to apply the dropout
    * @param id an identification number useful to track a specific encoder
    *
    * @return a new tokens encoder that uses this model
    */
-  override fun buildEncoder(useDropout: Boolean, id: Int) = CharLMEncoder(model = this, id = id)
+  override fun buildEncoder(id: Int) = CharLMEncoder(model = this, id = id)
 }

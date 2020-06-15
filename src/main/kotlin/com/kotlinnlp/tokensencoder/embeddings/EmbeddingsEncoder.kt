@@ -21,12 +21,10 @@ import com.kotlinnlp.tokensencoder.TokensEncoder
  * The [TokensEncoder] that encodes a token using the word embeddings
  *
  * @property model the model of this tokens encoder
- * @property useDropout whether to apply the dropout
  * @property id an identification number useful to track a specific processor
  */
 class EmbeddingsEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
   override val model: EmbeddingsEncoderModel<TokenType, SentenceType>,
-  override val useDropout: Boolean,
   override val id: Int = 0
 ) : TokensEncoder<TokenType, SentenceType>() {
 
@@ -100,7 +98,7 @@ class EmbeddingsEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
    * @return the dropout probability
    */
   private fun getDropout(key: String?): Double =
-    if (!this.useDropout)
+    if (false)
       0.0
     else
       this.model.frequencyDictionary?.let { dict ->
