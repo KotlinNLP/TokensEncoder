@@ -20,7 +20,7 @@ import com.kotlinnlp.tokensencoder.TokensEncoder
  * The [TokensEncoder] that encodes a token using a the hidden states of two characters language models.
  *
  * @property model the model of this tokens encoder
- * @property id an identification number useful to track a specific processor*
+ * @property id an identification number useful to track a specific processor
  */
 class CharLMEncoder(
   override val model: CharLMEncoderModel,

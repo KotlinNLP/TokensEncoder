@@ -22,7 +22,7 @@ import com.kotlinnlp.tokensencoder.TokensEncoder
  * The [TokensEncoder] that encodes a token using a BiRNN on its characters.
  *
  * @property model the model of this tokens encoder
- * @property id an identification number useful to track a specific processor*
+ * @property id an identification number useful to track a specific processor
  */
 class CharsBiRNNEncoder(
   override val model: CharsBiRNNEncoderModel,

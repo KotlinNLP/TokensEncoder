@@ -19,7 +19,7 @@ import com.kotlinnlp.tokensencoder.TokensEncoder
  * The [TokensEncoder] that encodes a token using another tokens encoder as input and then reduces its output vectors.
  *
  * @property model the model of this tokens encoder
- * @property id an identification number useful to track a specific processor*
+ * @property id an identification number useful to track a specific processor
  */
 class ReductionEncoder<TokenType: Token, SentenceType: Sentence<TokenType>>(
   override val model: ReductionEncoderModel<TokenType, SentenceType>,
