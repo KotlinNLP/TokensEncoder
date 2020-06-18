@@ -59,9 +59,9 @@
         <gpg.keyname>C73F18F0</gpg.keyname>
         <kotlin.version>1.3.31</kotlin.version>
         <dokka.version>0.9.16</dokka.version>
-        <morphologicalanalyzer.version>0.4.6</morphologicalanalyzer.version>
-        <languagemodel.version>0.3.0</languagemodel.version>
-        <neuraltokenizer.version>0.4.8</neuraltokenizer.version>
+        <morphologicalanalyzer.version>0.4.7</morphologicalanalyzer.version>
+        <languagemodel.version>0.3.1</languagemodel.version>
+        <neuraltokenizer.version>0.4.9</neuraltokenizer.version>
     </properties>
 
     <pluginRepositories>
